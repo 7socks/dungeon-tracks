@@ -1,2 +1,4 @@
 node_modules
 client/dist/bundle.js
+Dockerfile
+docker-compose.yml
