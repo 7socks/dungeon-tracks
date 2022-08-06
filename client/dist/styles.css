@@ -6,8 +6,9 @@ body {
 
 /* Theme Colors */
 :root {
-  --color-white: #fff;
-  --color-list-bg: #22223c;
+  --theme-list-bg: #22223c;
+  --theme-text: #fff;
+  --theme-text-highlight: #b9ffff;
 
   --icon-color-green: #2e8b2e;
 }

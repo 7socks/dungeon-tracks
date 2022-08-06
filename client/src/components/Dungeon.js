@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import FXIcon from './FXIcon';
+import { FXIcon, FXIconEditor } from './FXIcon';
 
 const AudioControlContainer = styled.div`
   width: 30%;
@@ -27,6 +27,7 @@ const PlaylistContainer = styled.div`
     flex-direction: row;
     align-items: center;
     padding: .2em 0;
+    position: relative;
 
     span {
       margin-left: .5em;
@@ -34,8 +35,9 @@ const PlaylistContainer = styled.div`
   }
 `;
 
-const Playlist = ({playlist, fx}) => {
-  console.log(fx);
+const Playlist = ({playlist, fx, updateIcon}) => {
+  const [editIcon, setEditIcon] = useState(null);
+
   return (
     <PlaylistContainer fx={fx}><ol>
       {
@@ -43,6 +45,16 @@ const Playlist = ({playlist, fx}) => {
           return <li key={i}>
             { fx ? <FXIcon icon={track.icon} color={track.color} onClick={()=>{}}/> : null }
             <span>{track.title}</span>
+            { fx ? <button onClick={() => setEditIcon(editIcon !== null ? null : i)}>Edit</button> : null }
+            {
+              i === editIcon
+              ? <FXIconEditor
+                  effect={track}
+                  onConfirm={()=>{}}
+                  onCancel={() => editIcon(null)}
+                />
+              : null
+            }
           </li>;
         })
       }
