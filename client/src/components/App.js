@@ -9,12 +9,28 @@ const example = {
     {
       title: "In the Hall of the Mountain King",
       source: ""
+    },
+    {
+      title: "SAIL",
+      source: ""
+    },
+    {
+      title: "Clash vx80 - Remix",
+      source: ""
     }
   ],
   effects: [
     {
       title: "Roar",
-      source: ""
+      source: "",
+      icon: "dragon",
+      color: "green"
+    },
+    {
+      title: "Falling Treasure",
+      source: "",
+      icon: "music",
+      color: "green"
     }
   ],
   creator: "dev",
@@ -23,11 +39,15 @@ const example = {
 
 const NavContainer = styled.div`
   height: 2.5em;
+
+  h1 {
+    margin: 0;
+  }
 `;
 
 const Nav = ({}) => {
   return <NavContainer>
-    <span>Dungeon Tracks</span>
+    <h1>Dungeon Tracks</h1>
   </NavContainer>;
 };
 

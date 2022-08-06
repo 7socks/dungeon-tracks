@@ -3,3 +3,11 @@ body {
   height: 100vh;
   width: 100vw;
 }
+
+/* Theme Colors */
+:root {
+  --color-white: #fff;
+  --color-list-bg: #22223c;
+
+  --icon-color-green: #2e8b2e;
+}
