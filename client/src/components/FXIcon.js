@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { ImCheckmark, ImCross } from 'react-icons/im';
 import {
   GiBeech, GiBrute, GiCat, GiCharm, GiCrossbow, GiCurledTentacle,
   GiCurlyWing, GiDelighted, GiDeathSkull, GiDoubleQuaver, GiDrakkar,
@@ -47,7 +48,7 @@ const ICONS = {
   splash: <GiWaterSplash/>
 };
 
-const COLORS = ['green'];
+const COLORS = ['green', 'teal', 'blue', 'yellow', 'red', 'pink'];
 
 const IconContainer = styled.span`
   height: 2em;
@@ -66,7 +67,7 @@ const FXIconEditorContainer = styled.div`
   top: 2.5em;
   display: flex;
   flex-direction: column;
-  background: var(--theme-list-bg);
+  background: var(--theme-bg);
   font-size: 18px;
   padding: .5em;
   border: 2px solid black;
@@ -82,10 +83,18 @@ const PickerContainer = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
 
+  ${({type}) =>
+    type === 'color'
+    ? 'justify-content: space-evenly; align-items: center;'
+    : null
+  }
+
   span {
     display: flex;
     height: 1.5em;
     width: 1.5em;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -96,8 +105,9 @@ const ColorInput = styled.span`
   border: ${({selected}) =>
     selected
     ? '2px solid #fff'
-    : 'none'
+    : '1px solid #fff'
   };
+  justify-self: center;
 `;
 
 const IconInput = styled.span`
@@ -108,13 +118,45 @@ const IconInput = styled.span`
   };
 `;
 
+const CancelConfirmContainer = styled.div`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
+  button {
+    background: none;
+    border: none;
+    width: fit-content;
+  }
+
+  button:hover {
+    color: #fff;
+  }
+
+  .edit-btn-confirm {
+    color: green;
+  }
+
+  .edit-btn-cancel {
+    color: red;
+  }
+`;
+
+{/* <CancelConfirmContainer>
+<button className="edit-btn-confirm" onClick={onConfirm}>
+  <ImCheckmark/>
+</button>
+<button className="edit-btn-cancel" onClick={onCancel}>
+  <ImCross/>
+</button>
+</CancelConfirmContainer> */}
 
 const FXIconEditor = ({effect, onCancel, onConfirm}) => {
   const [icon, setIcon] = useState(effect.icon);
   const [color, setColor] = useState(effect.color);
 
   return <FXIconEditorContainer>
-    <PickerContainer>
+    <PickerContainer type="color">
       {COLORS.map((opt) => {
         return <ColorInput
           key={opt} onClick={() => setColor(opt)}
@@ -122,7 +164,7 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
         />
       })}
     </PickerContainer>
-    <PickerContainer>
+    <PickerContainer type="icon">
       {Object.keys(ICONS).map((opt) => {
         return <IconInput
           key={opt} onClick={() => setIcon(opt)}

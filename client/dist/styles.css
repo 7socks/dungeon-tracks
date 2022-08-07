@@ -1,14 +1,30 @@
+/* Theme Colors */
+:root {
+  --theme-bg: #22223c;
+  --theme-text: #fff;
+  --theme-text-highlight: #b9ffff;
+
+  --theme-btn-text-dim: rgba(255, 255, 255, 0.4);
+  --theme-btn-text-undim: rgba(255, 255, 255, 0.8);
+
+  --theme-list-bg: #32486d;
+  --theme-list-border-inner: #5b80c0;
+  --theme-list-border-outer: #5b80c0;
+
+  --icon-color-green: #2e8b2e;
+  --icon-color-blue: #0F8CD1;
+  --icon-color-red: #D10F5C;
+  --icon-color-pink: #E73AE4;
+  --icon-color-teal: #2FD6B0;
+  --icon-color-yellow: #fe0;
+}
+
+/* Base */
 body {
   margin: 0;
   height: 100vh;
   width: 100vw;
+  background: var(--theme-bg);
+  color: var(--theme-text);
 }
 
-/* Theme Colors */
-:root {
-  --theme-list-bg: #22223c;
-  --theme-text: #fff;
-  --theme-text-highlight: #b9ffff;
-
-  --icon-color-green: #2e8b2e;
-}

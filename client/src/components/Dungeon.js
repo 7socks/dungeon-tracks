@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { MdEdit } from 'react-icons/md';
 
 import { FXIcon, FXIconEditor } from './FXIcon';
 
@@ -16,6 +17,8 @@ const PlaylistContainer = styled.div`
   width: ${({fx}) => fx ? '30' : '40'}%;
   cursor: default;
 
+  background: var(--theme-list-bg);
+
   ol {
     list-style-type: none;
     padding-inline-start: 0;
@@ -28,10 +31,32 @@ const PlaylistContainer = styled.div`
     align-items: center;
     padding: .2em 0;
     position: relative;
+    border-bottom: 1px solid var(--theme-list-border-inner)
 
     span {
       margin-left: .5em;
     }
+  }
+`;
+
+const EditIconButton = styled.button`
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: ${({editing, i}) =>
+    editing === i
+    ? 'var(--theme-text-highlight)'
+    : 'var(--theme-btn-text-dim)'
+  };
+
+  :hover {
+    color: ${({editing, i}) =>
+    editing === i
+    ? 'var(--theme-text-highlight)'
+    : 'var(--theme-btn-text-undim)'
+  }
   }
 `;
 
@@ -45,7 +70,11 @@ const Playlist = ({playlist, fx, updateIcon}) => {
           return <li key={i}>
             { fx ? <FXIcon icon={track.icon} color={track.color} onClick={()=>{}}/> : null }
             <span>{track.title}</span>
-            { fx ? <button onClick={() => setEditIcon(editIcon !== null ? null : i)}>Edit</button> : null }
+            {
+              fx
+              ? <EditIconButton i={i} editing={editIcon} onClick={() => setEditIcon(editIcon !== null ? null : i)}><MdEdit/></EditIconButton>
+              : null
+            }
             {
               i === editIcon
               ? <FXIconEditor
