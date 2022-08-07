@@ -7,7 +7,8 @@
   --theme-btn-text-dim: rgba(255, 255, 255, 0.4);
   --theme-btn-text-undim: rgba(255, 255, 255, 0.8);
 
-  --theme-list-bg: #32486d;
+  --theme-list-bg: #213352;
+  --theme-list-bg-highlight: #32486d;
   --theme-list-border-inner: #5b80c0;
   --theme-list-border-outer: #5b80c0;
 

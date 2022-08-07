@@ -31,11 +31,14 @@ const PlaylistContainer = styled.div`
     align-items: center;
     padding: .2em 0;
     position: relative;
-    border-bottom: 1px solid var(--theme-list-border-inner)
 
     span {
       margin-left: .5em;
     }
+  }
+
+  li:hover {
+    background: var(--theme-list-bg-highlight);
   }
 `;
 

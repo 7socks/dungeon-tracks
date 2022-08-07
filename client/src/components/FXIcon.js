@@ -102,7 +102,7 @@ const PickerContainer = styled.div`
 const ColorInput = styled.span`
   background: var(--icon-color-${({color}) => color});
   border-radius: 50%;
-  margin-bottom: .5em;
+  margin: 0;
   border: ${({selected}) =>
     selected
     ? '2px solid #fff'

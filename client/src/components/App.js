@@ -30,7 +30,7 @@ const example = {
       title: "Falling Treasure",
       source: "",
       icon: "music",
-      color: "green"
+      color: "orange"
     }
   ],
   creator: "dev",
