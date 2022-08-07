@@ -79,8 +79,11 @@ const Playlist = ({playlist, fx, updateIcon}) => {
               i === editIcon
               ? <FXIconEditor
                   effect={track}
-                  onConfirm={()=>{}}
-                  onCancel={() => editIcon(null)}
+                  onConfirm={(effect) => {
+                    updateIcon(effect);
+                    setEditIcon(null);
+                  }}
+                  onCancel={() => setEditIcon(null)}
                 />
               : null
             }
@@ -103,6 +106,13 @@ const DungeonContainer = styled.div`
 `;
 
 const Dungeon = ({dungeon}) => {
+  const updateEffect = (effect) => {
+    // input 'effect' == new version of effect obj
+    // call to server to update db
+
+    // update effect as it exists as a prop in state (w/in dungeon)
+    // currently only works locally bc dungeon is a ext. constant
+  };
 
   return (
     <DungeonContainer>
@@ -110,7 +120,7 @@ const Dungeon = ({dungeon}) => {
 
       <AudioControl/>
       <Playlist playlist={dungeon.tracks} fx={0}/>
-      <Playlist playlist={dungeon.effects} fx={1}/>
+      <Playlist playlist={dungeon.effects} fx={1} updateIcon={updateEffect}/>
     </DungeonContainer>
   );
 };

@@ -48,7 +48,7 @@ const ICONS = {
   splash: <GiWaterSplash/>
 };
 
-const COLORS = ['green', 'teal', 'blue', 'yellow', 'red', 'pink'];
+const COLORS = ['green', 'teal', 'blue', 'orange', 'red', 'pink'];
 
 const IconContainer = styled.span`
   height: 2em;
@@ -76,6 +76,7 @@ const FXIconEditorContainer = styled.div`
   height: 10em;
   z-index: 10;
   overflow-y: scroll;
+  justify-content: center;
 `;
 
 const PickerContainer = styled.div`
@@ -119,9 +120,9 @@ const IconInput = styled.span`
 `;
 
 const CancelConfirmContainer = styled.div`
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 
   button {
     background: none;
@@ -134,26 +135,24 @@ const CancelConfirmContainer = styled.div`
   }
 
   .edit-btn-confirm {
-    color: green;
+    color: #65FF62;
+    font-size: 17px;
   }
 
   .edit-btn-cancel {
-    color: red;
+    color: #FF4364;
   }
 `;
-
-{/* <CancelConfirmContainer>
-<button className="edit-btn-confirm" onClick={onConfirm}>
-  <ImCheckmark/>
-</button>
-<button className="edit-btn-cancel" onClick={onCancel}>
-  <ImCross/>
-</button>
-</CancelConfirmContainer> */}
 
 const FXIconEditor = ({effect, onCancel, onConfirm}) => {
   const [icon, setIcon] = useState(effect.icon);
   const [color, setColor] = useState(effect.color);
+
+  const confirm = () => {
+    effect.icon = icon;
+    effect.color = color;
+    onConfirm(effect);
+  };
 
   return <FXIconEditorContainer>
     <PickerContainer type="color">
@@ -174,6 +173,14 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
         </IconInput>
       })}
     </PickerContainer>
+    <CancelConfirmContainer>
+      <button className="edit-btn-cancel" onClick={onCancel}>
+        <ImCross />
+      </button>
+      <button className="edit-btn-confirm" onClick={confirm}>
+        <ImCheckmark />
+      </button>
+    </CancelConfirmContainer>
   </FXIconEditorContainer>;
 };
 
