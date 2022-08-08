@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import Dungeon from './Dungeon';
-import ControlBar from './ControlBar';
+import { ControlBar } from './AudioControls';
 
 const example = {
   title: "Dragon Lair",
@@ -95,7 +95,7 @@ const AppContainer = styled.div`
 
 const App = () => {
   const [currentDungeon, setCurrentDungeon] = useState(example);
-  const [currentTrack, setCurrentTrack] = useState({});
+  const [currentTrack, setCurrentTrack] = useState(example.tracks[0]);
   const [currentEffect, setCurrentEffect] = useState({});
 
   return (

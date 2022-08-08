@@ -47,9 +47,13 @@ const ControlBarContainer = styled.div`
   }
 `;
 
-const ControlBar = ({currentDungeon, currentTrack, setTrack, setEffect}) => {
-  return <ControlBarContainer>
-    <img src={currentDungeon.cover}></img>
+const PlaylistControlsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const AudioControls = ({currentDungeon, currentTrack, fxCount}) => {
+  return (<>
     <span>{currentTrack.title}</span>
 
     <div className="audio-bar">
@@ -65,7 +69,7 @@ const ControlBar = ({currentDungeon, currentTrack, setTrack, setEffect}) => {
     </div>
 
     <div className="fx-bar">
-      {currentDungeon.effects.slice(0,3).map((effect, i) => {
+      {currentDungeon.effects.slice(0, fxCount).map((effect, i) => {
         return <FXIcon
           key={i}
           icon={effect.icon}
@@ -75,9 +79,20 @@ const ControlBar = ({currentDungeon, currentTrack, setTrack, setEffect}) => {
       })}
       <button id="more-fx"><BsThreeDots/></button>
     </div>
+  </>);
+}
 
+const ControlBar = ({currentDungeon, currentTrack, setTrack, setEffect}) => {
+  return <ControlBarContainer>
+    <AudioControls fxCount={3} currentDungeon={currentDungeon} currentTrack={currentTrack}/>
     <span id="dungeon-title">{currentDungeon.title}</span>
   </ControlBarContainer>;
 };
 
-export default ControlBar;
+const PlaylistControls = ({}) => {
+  return (<PlaylistControlsContainer>
+    <AudioControls/>
+  </PlaylistControlsContainer>);
+};
+
+export { ControlBar, PlaylistControls };
