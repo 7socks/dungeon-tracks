@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { MdEdit } from 'react-icons/md';
+import { HiPencilAlt } from 'react-icons/hi';
 
 import { FXIcon, FXIconEditor } from './FXIcon';
 
@@ -75,7 +75,7 @@ const Playlist = ({playlist, fx, updateIcon}) => {
             <span>{track.title}</span>
             {
               fx
-              ? <EditIconButton i={i} editing={editIcon} onClick={() => setEditIcon(editIcon !== null ? null : i)}><MdEdit/></EditIconButton>
+              ? <EditIconButton i={i} editing={editIcon} onClick={() => setEditIcon(editIcon !== null ? null : i)}><HiPencilAlt/></EditIconButton>
               : null
             }
             {
