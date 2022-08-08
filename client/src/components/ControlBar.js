@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { IoMdSkipBackward, IoMdSkipForward } from 'react-icons/io';
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { BsThreeDots } from 'react-icons/bs';
+import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 
 import MuffleButton from './MuffleButton';
 import { FXIcon } from './FXIcon';
@@ -40,6 +41,10 @@ const ControlBarContainer = styled.div`
     align-items: center;
     justify-content: center;
   }
+
+  #dungeon-title {
+    font-size: 18px;
+  }
 `;
 
 const ControlBar = ({currentDungeon, currentTrack, setTrack, setEffect}) => {
@@ -47,13 +52,16 @@ const ControlBar = ({currentDungeon, currentTrack, setTrack, setEffect}) => {
     <img src={currentDungeon.cover}></img>
     <span>{currentTrack.title}</span>
 
-    <MuffleButton/>
-
     <div className="audio-bar">
       <IoMdSkipBackward/>
       <FaPlay/>
-      <FaPause/>
       <IoMdSkipForward/>
+    </div>
+
+    <MuffleButton/>
+    <div id="volume-bar">
+      <HiVolumeUp/>
+      <input type="range"/>
     </div>
 
     <div className="fx-bar">
@@ -68,7 +76,7 @@ const ControlBar = ({currentDungeon, currentTrack, setTrack, setEffect}) => {
       <button id="more-fx"><BsThreeDots/></button>
     </div>
 
-    <span>{currentDungeon.title}</span>
+    <span id="dungeon-title">{currentDungeon.title}</span>
   </ControlBarContainer>;
 };
 
