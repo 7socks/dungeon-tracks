@@ -79,24 +79,77 @@ const EditButtonsContainer = styled.div`
   right: 0;
 `;
 
-const Playlist = ({playlist, fx, updateIcon}) => {
+const Playlist = ({playlist, fx, updateList}) => {
   const [editIcon, setEditIcon] = useState(null);
+  const dispatch = useDispatch();
+
+  const orderPlaylist = (e, index, shift) => {
+    e.stopPropagation();
+
+    let current = playlist[index];
+    let alt = playlist[index + shift];
+
+    alt.index = index;
+    current.index = index + shift;
+
+    playlist[index] = alt;
+    playlist[index + shift] = current;
+
+    updateList(!!fx, playlist);
+  };
+
+  const updateIcon = (e, index, icon, color) => {
+    var effect = playlist[index];
+    effect.icon = icon;
+    effect.color = color;
+    updateList(true, playlist);
+  };
 
   return (
     <PlaylistContainer fx={fx}><ol>
       {
         playlist.map((track, i) => {
-          return <li key={i}>
+          return <li
+            key={i}
+            onClick={() =>
+              fx
+              ? null
+              : dispatch(setTrack(track))
+            }
+          >
             { fx ? <FXIcon icon={track.icon} color={track.color} onClick={()=>{}}/> : null }
 
             <span>{track.title}</span>
 
             <EditButtonsContainer>
-              <EditButton><TiArrowSortedUp/></EditButton>
-              <EditButton><TiArrowSortedDown/></EditButton>
+              {
+                i > 0
+                ? <EditButton onClick={(e) => orderPlaylist(e, i, -1, fx)}>
+                    <TiArrowSortedUp/>
+                  </EditButton>
+                : null
+              }
+
+              {
+                i + 1 < playlist.length
+                ? <EditButton onClick={(e) => orderPlaylist(e, i, 1, fx)}>
+                    <TiArrowSortedDown/>
+                  </EditButton>
+                : null
+              }
+
               {
               fx
-              ? <EditIconButton i={i} editing={editIcon} onClick={() => setEditIcon(editIcon !== null ? null : i)}><HiPencilAlt/></EditIconButton>
+              ? <EditIconButton
+                  i={i}
+                  editing={editIcon}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditIcon(editIcon !== null ? null : i);
+                  }}
+                >
+                  <HiPencilAlt/>
+                </EditIconButton>
               : null
             }
             </EditButtonsContainer>
@@ -109,7 +162,10 @@ const Playlist = ({playlist, fx, updateIcon}) => {
                     updateIcon(effect);
                     setEditIcon(null);
                   }}
-                  onCancel={() => setEditIcon(null)}
+                  onCancel={(e) => {
+                    e.stopPropagation();
+                    setEditIcon(null);
+                  }}
                 />
               : null
             }

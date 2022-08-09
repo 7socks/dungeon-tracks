@@ -148,7 +148,9 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
   const [icon, setIcon] = useState(effect.icon);
   const [color, setColor] = useState(effect.color);
 
-  const confirm = () => {
+  const confirm = (e) => {
+    e.stopPropagation();
+
     effect.icon = icon;
     effect.color = color;
     onConfirm(effect);

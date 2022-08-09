@@ -16,7 +16,31 @@ const DungeonContainer = styled.div`
   }
 `;
 
-const Dungeon = ({viewDungeon}) => {
+const DungeonTitle = ({title, update}) => {
+  const [editing, setEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(title);
+
+  const edit = (e) => {
+    setEditTitle(e.target.value);
+  };
+
+  if (!editing) {
+    return <h1>{title}</h1>
+  } else {
+    return (<div>
+      <input type="text" value={editTitle} onChange={edit}/>
+      <button onClick={() => {
+        setEditing(false);
+        update(editTitle);
+      }}>V</button>
+      <button onClick={() => {
+        setEditing(false);
+      }}>X</button>
+    </div>);
+  }
+};
+
+const Dungeon = ({viewDungeon, setViewDungeon}) => {
   const updateEffect = (effect) => {
     // input 'effect' == new version of effect obj
     // call to server to update db
@@ -25,13 +49,18 @@ const Dungeon = ({viewDungeon}) => {
     // currently only works locally bc dungeon is a ext. constant
   };
 
+  const updatePlaylist = (isFX, list) => {
+    let playlist = isFX ? 'effects' : 'tracks';
+    viewDungeon[playlist] = list;
+  };
+
   return (
     <DungeonContainer>
-      <h1>{viewDungeon.title}</h1>
+      <DungeonTitle title={viewDungeon.title} update={() => {}}/>
 
       <PlaylistControls dungeon={viewDungeon}/>
-      <Playlist playlist={viewDungeon.tracks} fx={0}/>
-      <Playlist playlist={viewDungeon.effects} fx={1} updateIcon={updateEffect}/>
+      <Playlist updateList={updatePlaylist} playlist={viewDungeon.tracks} fx={0}/>
+      <Playlist updateList={updatePlaylist} playlist={viewDungeon.effects} fx={1}/>
     </DungeonContainer>
   );
 };
