@@ -94,25 +94,17 @@ const AppContainer = styled.div`
 `;
 
 const App = () => {
-  const [currentDungeon, setCurrentDungeon] = useState(example);
-  const [currentTrack, setCurrentTrack] = useState(example.tracks[0]);
-  const [currentEffect, setCurrentEffect] = useState({});
+  const [viewDungeon, setViewDungeon] = useState(example);
 
   return (
     <AppContainer>
       <Nav/>
 
-      <Dungeon dungeon={example}/>
+      <Dungeon viewDungeon={viewDungeon}/>
+      <ControlBar/>
 
-      <ControlBar
-        currentDungeon={currentDungeon}
-        currentTrack={currentTrack}
-        setTrack={setCurrentTrack}
-        setEffect={setCurrentEffect}
-      />
-
-      <audio id="track-audio" src={currentTrack.source}/>
-      <audio id="effect-audio" src={currentEffect.source}/>
+      {/* <audio id="track-audio" src={currentTrack.source}/>
+      <audio id="effect-audio" src={currentEffect.source}/> */}
     </AppContainer>
   );
 };

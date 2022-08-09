@@ -5,6 +5,9 @@ import { FaPlay, FaPause } from 'react-icons/fa';
 import { BsThreeDots } from 'react-icons/bs';
 import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { setTrack } from '../app/reducers/audioSlice';
+
 import MuffleButton from './MuffleButton';
 import { FXIcon } from './FXIcon';
 
@@ -50,6 +53,20 @@ const ControlBarContainer = styled.div`
 const PlaylistControlsContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+
+  * {
+    margin: 1em 0;
+  }
+
+  div {
+    display: flex;
+    flex-direction: row;
+
+    * {
+      margin: 0 .5em;
+    }
+  }
 `;
 
 const AudioControls = ({currentDungeon, currentTrack, fxCount}) => {
@@ -62,11 +79,11 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount}) => {
       <IoMdSkipForward/>
     </div>
 
-    <MuffleButton/>
     <div id="volume-bar">
       <HiVolumeUp/>
       <input type="range"/>
     </div>
+    <MuffleButton/>
 
     <div className="fx-bar">
       {currentDungeon.effects.slice(0, fxCount).map((effect, i) => {
@@ -77,21 +94,33 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount}) => {
           onClick={()=>{}}
         />;
       })}
-      <button id="more-fx"><BsThreeDots/></button>
+      {
+        fxCount > 0
+        ? <button id="more-fx"><BsThreeDots/></button>
+        : null
+      }
     </div>
   </>);
 }
 
-const ControlBar = ({currentDungeon, currentTrack, setTrack, setEffect}) => {
+const ControlBar = () => {
+  const dungeon = useSelector((state) => state.audio.dungeon)
+  const track = useSelector((state) => state.audio.track);
+  const dispatch = useDispatch();
+
   return <ControlBarContainer>
-    <AudioControls fxCount={3} currentDungeon={currentDungeon} currentTrack={currentTrack}/>
-    <span id="dungeon-title">{currentDungeon.title}</span>
+    <AudioControls fxCount={3} currentDungeon={dungeon} currentTrack={track}/>
+    <span id="dungeon-title">{dungeon.title}</span>
   </ControlBarContainer>;
 };
 
-const PlaylistControls = ({}) => {
+const PlaylistControls = ({dungeon}) => {
   return (<PlaylistControlsContainer>
-    <AudioControls/>
+    <AudioControls
+      currentDungeon={dungeon}
+      currentTrack={{}}
+      fxCount={0}
+    />
   </PlaylistControlsContainer>);
 };
 

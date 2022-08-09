@@ -2,16 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { HiPencilAlt } from 'react-icons/hi';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { setTrack } from '../app/reducers/audioSlice';
+
+import { PlaylistControls } from './AudioControls';
 import { FXIcon, FXIconEditor } from './FXIcon';
-
-const AudioControlContainer = styled.div`
-  width: 30%;
-`;
-
-const AudioControl = ({}) => {
-  return <AudioControlContainer>
-  </AudioControlContainer>;
-}
 
 const PlaylistContainer = styled.div`
   width: ${({fx}) => fx ? '30' : '40'}%;
@@ -101,6 +96,7 @@ const DungeonContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: space-around;
   width: 100%;
 
   h1 {
@@ -108,7 +104,7 @@ const DungeonContainer = styled.div`
   }
 `;
 
-const Dungeon = ({dungeon}) => {
+const Dungeon = ({viewDungeon}) => {
   const updateEffect = (effect) => {
     // input 'effect' == new version of effect obj
     // call to server to update db
@@ -119,11 +115,11 @@ const Dungeon = ({dungeon}) => {
 
   return (
     <DungeonContainer>
-      <h1>{dungeon.title}</h1>
+      <h1>{viewDungeon.title}</h1>
 
-      <AudioControl/>
-      <Playlist playlist={dungeon.tracks} fx={0}/>
-      <Playlist playlist={dungeon.effects} fx={1} updateIcon={updateEffect}/>
+      <PlaylistControls dungeon={viewDungeon}/>
+      <Playlist playlist={viewDungeon.tracks} fx={0}/>
+      <Playlist playlist={viewDungeon.effects} fx={1} updateIcon={updateEffect}/>
     </DungeonContainer>
   );
 };
