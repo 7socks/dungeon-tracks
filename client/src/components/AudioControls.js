@@ -146,7 +146,7 @@ const PlaylistControls = ({dungeon}) => {
   return (<PlaylistControlsContainer>
     <AudioControls
       currentDungeon={dungeon}
-      currentTrack={selected ? dungeon.tracks[track] : {}}
+      currentTrack={selected ? selectedDungeon.tracks[track] : {}}
       fxCount={0}
       onPlay={() => dispatch(setDungeon(dungeon))}
     />
