@@ -6,7 +6,9 @@ import { BsThreeDots } from 'react-icons/bs';
 import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setDungeon, setTrack, playPause } from '../app/reducers/audioSlice';
+import {
+  setDungeon, setTrack, playPause, trackForward, trackBackward
+} from '../app/reducers/audioSlice';
 
 import MuffleButton from './MuffleButton';
 import { FXIcon } from './FXIcon';
@@ -20,6 +22,11 @@ const ControlsContainer = styled.div`
 
   button:not(.muffle-btn):hover {
     color: var(--theme-text);
+  }
+
+  .track-title {
+    width: 15em;
+    text-overflow-x:
   }
 `;
 
@@ -79,6 +86,10 @@ const PlaylistControlsContainer = styled(ControlsContainer)`
       margin: 0 .5em;
     }
   }
+
+  .track-title {
+    text-align: center;
+  }
 `;
 
 const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
@@ -89,12 +100,12 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
   };
 
   return (<>
-    <span>{currentTrack.title}</span>
+    <span className="track-title">{currentTrack.title}</span>
 
     <div className="audio-bar">
-      <IoMdSkipBackward/>
+      <button onClick={() => dispatch(trackBackward())}><IoMdSkipBackward/></button>
       <button onClick={onPlayPause}><FaPlay/></button>
-      <IoMdSkipForward/>
+      <button onClick={() => dispatch(trackForward())}><IoMdSkipForward/></button>
     </div>
 
     <div id="volume-bar">

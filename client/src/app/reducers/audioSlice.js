@@ -61,11 +61,21 @@ export const audioSlice = createSlice({
     setTrack: (state, action) => {
       state.track = action.payload;
     },
+    trackForward: (state) => {
+      if (state.track + 1 < state.dungeon.tracks.length) {
+        state.track += 1;
+      }
+    },
+    trackBackward: (state) => {
+      if (state.track - 1 >= 0) {
+        state.track -= 1;
+      }
+    },
     playPause: (state) => {
       state.playing = !state.playing;
     }
   }
 });
 
-export const { setDungeon, setTrack, playPause } = audioSlice.actions;
+export const { setDungeon, setTrack, playPause, trackForward, trackBackward } = audioSlice.actions;
 export default audioSlice.reducer;
