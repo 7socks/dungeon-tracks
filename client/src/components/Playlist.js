@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { HiPencilAlt } from 'react-icons/hi';
 import { TiArrowSortedUp, TiArrowSortedDown } from 'react-icons/ti';
@@ -17,6 +17,7 @@ const PlaylistContainer = styled.div`
   ol {
     list-style-type: none;
     padding-inline-start: 0;
+    padding: none;
     font-size: 16px;
   }
 
