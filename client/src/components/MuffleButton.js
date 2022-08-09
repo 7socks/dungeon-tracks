@@ -3,25 +3,25 @@ import styled from 'styled-components';
 
 const StyledButton = styled.button`
   background: none;
-  color: var(--theme-text);
-  border: 2px solid var(--theme-text);
+  color: var(--theme-btn-text-undim);
+  border: 2px solid var(--theme-btn-text-undim);
   border-radius: .5em;
   font-size: 18px;
 
   :hover {
-    color: var(--theme-text-highlight);
-    border-color: var(--theme-text-highlight);
+    color: var(--theme-text);
+    border-color: var(--theme-text);
   }
 
   ${({muffled}) =>
     muffled
-    ? 'color: var(--theme-btn-text-undim);'
+    ? 'color: var(--theme-text-highlight);'
     : null
   }
 `;
 
 const MuffleButton = ({muffled, onClick}) => (
-  <StyledButton
+  <StyledButton className="muffle-btn"
     muffled={muffled}
     onClick={onClick}
   >

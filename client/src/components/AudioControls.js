@@ -6,12 +6,24 @@ import { BsThreeDots } from 'react-icons/bs';
 import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setTrack } from '../app/reducers/audioSlice';
+import { setDungeon, setTrack, playPause } from '../app/reducers/audioSlice';
 
 import MuffleButton from './MuffleButton';
 import { FXIcon } from './FXIcon';
 
-const ControlBarContainer = styled.div`
+const ControlsContainer = styled.div`
+  button:not(.muffle-btn) {
+    background: none;
+    border: none;
+    color: var(--theme-btn-text-undim);
+  }
+
+  button:not(.muffle-btn):hover {
+    color: var(--theme-text);
+  }
+`;
+
+const ControlBarContainer = styled(ControlsContainer)`
   height: 2.5em;
   position: absolute;
   bottom: 0;
@@ -50,7 +62,7 @@ const ControlBarContainer = styled.div`
   }
 `;
 
-const PlaylistControlsContainer = styled.div`
+const PlaylistControlsContainer = styled(ControlsContainer)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -69,13 +81,19 @@ const PlaylistControlsContainer = styled.div`
   }
 `;
 
-const AudioControls = ({currentDungeon, currentTrack, fxCount}) => {
+const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
+  const dispatch = useDispatch();
+  const onPlayPause = () => {
+    onPlay && onPlay();
+    dispatch(playPause());
+  };
+
   return (<>
     <span>{currentTrack.title}</span>
 
     <div className="audio-bar">
       <IoMdSkipBackward/>
-      <FaPlay/>
+      <button onClick={onPlayPause}><FaPlay/></button>
       <IoMdSkipForward/>
     </div>
 
@@ -109,17 +127,24 @@ const ControlBar = () => {
   const dispatch = useDispatch();
 
   return <ControlBarContainer>
-    <AudioControls fxCount={3} currentDungeon={dungeon} currentTrack={track}/>
+    <AudioControls
+      fxCount={3}
+      currentDungeon={dungeon}
+      currentTrack={track}
+    />
     <span id="dungeon-title">{dungeon.title}</span>
   </ControlBarContainer>;
 };
 
 const PlaylistControls = ({dungeon}) => {
+  const dispatch = useDispatch();
+
   return (<PlaylistControlsContainer>
     <AudioControls
       currentDungeon={dungeon}
       currentTrack={{}}
       fxCount={0}
+      onPlay={() => dispatch(setDungeon(dungeon))}
     />
   </PlaylistControlsContainer>);
 };

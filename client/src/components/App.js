@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+import { useSelector } from 'react-redux';
+
 import Dungeon from './Dungeon';
 import { ControlBar } from './AudioControls';
 
@@ -100,7 +102,7 @@ const App = () => {
     <AppContainer>
       <Nav/>
 
-      <Dungeon viewDungeon={viewDungeon}/>
+      <Dungeon viewDungeon={viewDungeon} setViewDungeon={setViewDungeon}/>
       <ControlBar/>
 
       {/* <audio id="track-audio" src={currentTrack.source}/>

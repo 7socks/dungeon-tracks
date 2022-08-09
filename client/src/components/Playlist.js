@@ -4,21 +4,28 @@ import { HiPencilAlt } from 'react-icons/hi';
 import { TiArrowSortedUp, TiArrowSortedDown } from 'react-icons/ti';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setTrack } from '../app/reducers/audioSlice';
+import { setTrack, setDungeon } from '../app/reducers/audioSlice';
 
 import { FXIcon, FXIconEditor } from './FXIcon';
 
 const PlaylistContainer = styled.div`
+  position: relative;
   width: ${({fx}) => fx ? '30' : '40'}%;
   cursor: default;
 
-  background: var(--theme-list-bg);
+  h2 {
+    margin: 0 0 .2em .2em;
+    font-size: 18px;
+  }
 
   ol {
+    background: var(--theme-list-bg);
     list-style-type: none;
     padding-inline-start: 0;
-    padding: none;
+    padding: 0;
+    margin: 0;
     font-size: 16px;
+    height: 100%;
   }
 
   li {
@@ -79,23 +86,21 @@ const EditButtonsContainer = styled.div`
   right: 0;
 `;
 
-const Playlist = ({playlist, fx, updateList}) => {
+const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
   const [editIcon, setEditIcon] = useState(null);
   const dispatch = useDispatch();
 
   const orderPlaylist = (e, index, shift) => {
     e.stopPropagation();
 
+    let updatedPlaylist = playlist.slice();
     let current = playlist[index];
     let alt = playlist[index + shift];
 
-    alt.index = index;
-    current.index = index + shift;
+    updatedPlaylist[index] = alt;
+    updatedPlaylist[index + shift] = current;
 
-    playlist[index] = alt;
-    playlist[index + shift] = current;
-
-    updateList(!!fx, playlist);
+    updateList(!!fx, updatedPlaylist);
   };
 
   const updateIcon = (e, index, icon, color) => {
@@ -105,74 +110,82 @@ const Playlist = ({playlist, fx, updateList}) => {
     updateList(true, playlist);
   };
 
+  const selectTrack = (i) => {
+    dispatch(setDungeon(viewDungeon));
+    dispatch(setTrack(i));
+  };
+
   return (
-    <PlaylistContainer fx={fx}><ol>
-      {
-        playlist.map((track, i) => {
-          return <li
-            key={i}
-            onClick={() =>
-              fx
-              ? null
-              : dispatch(setTrack(track))
-            }
-          >
-            { fx ? <FXIcon icon={track.icon} color={track.color} onClick={()=>{}}/> : null }
+    <PlaylistContainer fx={fx}>
+      <h2>{fx ? 'Effects' : 'Tracks'}</h2>
+      <ol>
+        {
+          playlist.map((track, i) => {
+            return <li
+              key={i}
+              onClick={() =>
+                fx
+                ? null
+                : selectTrack(i)
+              }
+            >
+              { fx ? <FXIcon icon={track.icon} color={track.color} onClick={()=>{}}/> : null }
 
-            <span>{track.title}</span>
+              <span>{track.title}</span>
 
-            <EditButtonsContainer>
-              {
-                i > 0
-                ? <EditButton onClick={(e) => orderPlaylist(e, i, -1, fx)}>
-                    <TiArrowSortedUp/>
-                  </EditButton>
+              <EditButtonsContainer>
+                {
+                  i > 0
+                  ? <EditButton onClick={(e) => orderPlaylist(e, i, -1, fx)}>
+                      <TiArrowSortedUp/>
+                    </EditButton>
+                  : null
+                }
+
+                {
+                  i + 1 < playlist.length
+                  ? <EditButton onClick={(e) => orderPlaylist(e, i, 1, fx)}>
+                      <TiArrowSortedDown/>
+                    </EditButton>
+                  : null
+                }
+
+                {
+                fx
+                ? <EditIconButton
+                    i={i}
+                    editing={editIcon}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditIcon(editIcon !== null ? null : i);
+                    }}
+                  >
+                    <HiPencilAlt/>
+                  </EditIconButton>
                 : null
               }
+              </EditButtonsContainer>
 
               {
-                i + 1 < playlist.length
-                ? <EditButton onClick={(e) => orderPlaylist(e, i, 1, fx)}>
-                    <TiArrowSortedDown/>
-                  </EditButton>
+                i === editIcon
+                ? <FXIconEditor
+                    effect={track}
+                    onConfirm={(effect) => {
+                      updateIcon(effect);
+                      setEditIcon(null);
+                    }}
+                    onCancel={(e) => {
+                      e.stopPropagation();
+                      setEditIcon(null);
+                    }}
+                  />
                 : null
               }
-
-              {
-              fx
-              ? <EditIconButton
-                  i={i}
-                  editing={editIcon}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setEditIcon(editIcon !== null ? null : i);
-                  }}
-                >
-                  <HiPencilAlt/>
-                </EditIconButton>
-              : null
-            }
-            </EditButtonsContainer>
-
-            {
-              i === editIcon
-              ? <FXIconEditor
-                  effect={track}
-                  onConfirm={(effect) => {
-                    updateIcon(effect);
-                    setEditIcon(null);
-                  }}
-                  onCancel={(e) => {
-                    e.stopPropagation();
-                    setEditIcon(null);
-                  }}
-                />
-              : null
-            }
-          </li>;
-        })
-      }
-    </ol></PlaylistContainer>
+            </li>;
+          })
+        }
+      </ol>
+    </PlaylistContainer>
   );
 };
 

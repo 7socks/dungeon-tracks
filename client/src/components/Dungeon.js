@@ -51,7 +51,18 @@ const Dungeon = ({viewDungeon, setViewDungeon}) => {
 
   const updatePlaylist = (isFX, list) => {
     let playlist = isFX ? 'effects' : 'tracks';
-    viewDungeon[playlist] = list;
+    let updatedDungeon = {
+      title: viewDungeon.title,
+      tracks: viewDungeon.tracks,
+      effects: viewDungeon.effects,
+      creator: viewDungeon.creator,
+      cover: viewDungeon.cover,
+    };
+
+    updatedDungeon[playlist] = list;
+    setViewDungeon(updatedDungeon);
+
+    // send to server
   };
 
   return (
@@ -59,8 +70,8 @@ const Dungeon = ({viewDungeon, setViewDungeon}) => {
       <DungeonTitle title={viewDungeon.title} update={() => {}}/>
 
       <PlaylistControls dungeon={viewDungeon}/>
-      <Playlist updateList={updatePlaylist} playlist={viewDungeon.tracks} fx={0}/>
-      <Playlist updateList={updatePlaylist} playlist={viewDungeon.effects} fx={1}/>
+      <Playlist updateList={updatePlaylist} playlist={viewDungeon.tracks} viewDungeon={viewDungeon}fx={0}/>
+      <Playlist updateList={updatePlaylist} playlist={viewDungeon.effects} viewDungeon={viewDungeon} fx={1}/>
     </DungeonContainer>
   );
 };

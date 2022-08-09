@@ -50,17 +50,22 @@ export const audioSlice = createSlice({
   name: 'audio',
   initialState: {
     dungeon: example,
-    track: {}
+    track: {},
+    playing: false
   },
   reducers: {
     setDungeon: (state, action) => {
       state.dungeon = action.payload;
     },
     setTrack: (state, action) => {
-      state.track = action.payload;
+      let index = action.payload;
+      state.track = state.dungeon.tracks[index];
+    },
+    playPause: (state) => {
+      state.playing = !state.playing;
     }
   }
 });
 
-export const { setDungeon, setTrack } = audioSlice.actions;
+export const { setDungeon, setTrack, playPause } = audioSlice.actions;
 export default audioSlice.reducer;
