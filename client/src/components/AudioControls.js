@@ -130,19 +130,23 @@ const ControlBar = () => {
     <AudioControls
       fxCount={3}
       currentDungeon={dungeon}
-      currentTrack={track}
+      currentTrack={dungeon.tracks[track]}
     />
     <span id="dungeon-title">{dungeon.title}</span>
   </ControlBarContainer>;
 };
 
 const PlaylistControls = ({dungeon}) => {
+  const selectedDungeon = useSelector((state) => state.audio.dungeon);
+  const track = useSelector((state) => state.audio.track)
   const dispatch = useDispatch();
+
+  let selected = selectedDungeon.id === dungeon.id;
 
   return (<PlaylistControlsContainer>
     <AudioControls
       currentDungeon={dungeon}
-      currentTrack={{}}
+      currentTrack={selected ? dungeon.tracks[track] : {}}
       fxCount={0}
       onPlay={() => dispatch(setDungeon(dungeon))}
     />

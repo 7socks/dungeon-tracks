@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const example = {
+  id: "123456789",
   title: "Dragon Lair",
   tracks: [
     {
@@ -50,7 +51,7 @@ export const audioSlice = createSlice({
   name: 'audio',
   initialState: {
     dungeon: example,
-    track: {},
+    track: 0,
     playing: false
   },
   reducers: {
@@ -58,8 +59,7 @@ export const audioSlice = createSlice({
       state.dungeon = action.payload;
     },
     setTrack: (state, action) => {
-      let index = action.payload;
-      state.track = state.dungeon.tracks[index];
+      state.track = action.payload;
     },
     playPause: (state) => {
       state.playing = !state.playing;
