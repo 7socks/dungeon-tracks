@@ -52,7 +52,10 @@ export const audioSlice = createSlice({
   initialState: {
     dungeon: example,
     track: 0,
-    playing: false
+    playing: false,
+    volume: 1.0,
+    muted: false,
+    muffled: false
   },
   reducers: {
     setDungeon: (state, action) => {
@@ -73,9 +76,28 @@ export const audioSlice = createSlice({
     },
     playPause: (state) => {
       state.playing = !state.playing;
+    },
+    mute: (state) => {
+      state.muted = !state.muted;
+    },
+    muffle: (state) => {
+      state.muffled = !state.muffled;
+    },
+    setVolume: (state, action) => {
+      state.volume = action.payload;
     }
   }
 });
 
-export const { setDungeon, setTrack, playPause, trackForward, trackBackward } = audioSlice.actions;
+export const {
+  setDungeon,
+  setTrack,
+  playPause,
+  trackForward,
+  trackBackward,
+  mute,
+  muffle,
+  setVolume
+} = audioSlice.actions;
+
 export default audioSlice.reducer;

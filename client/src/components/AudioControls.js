@@ -7,7 +7,8 @@ import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  setDungeon, setTrack, playPause, trackForward, trackBackward
+  setDungeon, setTrack, playPause, trackForward, trackBackward,
+  setVolume, mute
 } from '../app/reducers/audioSlice';
 
 import MuffleButton from './MuffleButton';
@@ -15,9 +16,11 @@ import { FXIcon } from './FXIcon';
 
 const ControlsContainer = styled.div`
   button:not(.muffle-btn) {
+    display: grid;
     background: none;
     border: none;
     color: var(--theme-btn-text-undim);
+    font-size: 16px;
   }
 
   button:not(.muffle-btn):hover {
@@ -27,6 +30,12 @@ const ControlsContainer = styled.div`
   .track-title {
     width: 15em;
     text-overflow-x:
+  }
+
+  #volume-bar {
+    * {
+      margin: 0;
+    }
   }
 `;
 
@@ -93,7 +102,11 @@ const PlaylistControlsContainer = styled(ControlsContainer)`
 `;
 
 const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
+  const playing = useSelector((state) => state.audio.playing);
+  const volume = useSelector((state) => state.audio.volume);
+  const muted = useSelector((state) => state.audio.muted);
   const dispatch = useDispatch();
+
   const onPlayPause = () => {
     onPlay && onPlay();
     dispatch(playPause());
@@ -104,13 +117,24 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
 
     <div className="audio-bar">
       <button onClick={() => dispatch(trackBackward())}><IoMdSkipBackward/></button>
-      <button onClick={onPlayPause}><FaPlay/></button>
+      <button onClick={onPlayPause}>
+        { playing ? <FaPause/> : <FaPlay/> }
+      </button>
       <button onClick={() => dispatch(trackForward())}><IoMdSkipForward/></button>
     </div>
 
     <div id="volume-bar">
-      <HiVolumeUp/>
-      <input type="range"/>
+      <button onClick={() => dispatch(mute())}>
+        { muted ? <HiVolumeOff/> : <HiVolumeUp/> }
+      </button>
+      <input
+        type="range"
+        step=".05"
+        min="0"
+        max="1"
+        value={volume}
+        onChange={(e) => dispatch(setVolume(Number(e.target.value)))}
+      />
     </div>
     <MuffleButton/>
 
