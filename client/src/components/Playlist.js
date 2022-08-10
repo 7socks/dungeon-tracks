@@ -147,7 +147,7 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
             >
               { fx ? <FXIcon icon={track.icon} color={track.color} onClick={()=>{}}/> : null }
 
-              <TrackTitle selected={isSelected && playingTrack === i}>
+              <TrackTitle selected={!fx && isSelected && playingTrack === i}>
                 {track.title}
               </TrackTitle>
 
