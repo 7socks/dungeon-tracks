@@ -32,6 +32,18 @@ const TitleContainer = styled.div`
 
   h1 {
     margin: 0;
+    font-size: 32px;
+  }
+
+  input {
+    margin: 0;
+    font-size: 32px;
+    background: none;
+    color: var(--theme-text);
+    border: none;
+    border-bottom: 2px solid var(--theme-btn-text-undim);
+    outline: none;
+    font-family: inherit;
   }
 
   button {
@@ -48,12 +60,14 @@ const DungeonTitle = ({title, update}) => {
     setFocused(editing);
   }, [editing]);
 
-  const edit = (e) => {
-    setEditTitle(e.target.value);
+  const handleBlur = () => {
+    setTimeout(() => {
+      setEditing(false);
+    }, 100);
   };
 
-  const handleBlur = () => {
-    setEditing(false);
+  const edit = (e) => {
+    setEditTitle(e.target.value);
   };
 
   if (!editing) {
@@ -66,9 +80,9 @@ const DungeonTitle = ({title, update}) => {
   } else {
     return (<TitleContainer onBlur={focused ? handleBlur : null}>
       <input type="text" value={editTitle} onChange={edit} autoFocus/>
-      <button onClick={() => {
-        setEditing(false);
+      <button onClick={(e) => {
         update(editTitle);
+        setEditing(false);
       }}><ImCheckmark/></button>
     </TitleContainer>);
   }
@@ -108,11 +122,11 @@ const Dungeon = ({viewDungeon, setViewDungeon}) => {
     };
     setViewDungeon(updatedDungeon);
     updateDungeon(updatedDungeon);
-  }
+  };
 
   return (
     <DungeonContainer>
-      <DungeonTitle title={viewDungeon.title} update={() => {}}/>
+      <DungeonTitle title={viewDungeon.title} update={updateTitle}/>
 
       <PlaylistControls dungeon={viewDungeon}/>
       <Playlist updateList={updatePlaylist} playlist={viewDungeon.tracks} viewDungeon={viewDungeon}fx={0}/>
