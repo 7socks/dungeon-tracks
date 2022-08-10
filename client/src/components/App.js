@@ -3,7 +3,9 @@ import styled from 'styled-components';
 
 import { useSelector } from 'react-redux';
 
+import Search from './Search';
 import Dungeon from './Dungeon';
+import DungeonList from './DungeonList';
 import { ControlBar } from './AudioControls';
 
 const example = {
@@ -81,12 +83,12 @@ const NavContainer = styled.div`
   }
 `;
 
-const Nav = ({}) => {
+const Nav = ({setPage}) => {
   return <NavContainer>
     <h1>Dungeon Tracks</h1>
     <div>
-      <span>Browse Sounds</span>
-      <span>Your Dungeons</span>
+      <span onClick={() => setPage(1)}>Browse Sounds</span>
+      <span onClick={() => setPage(2)}>Your Dungeons</span>
     </div>
   </NavContainer>;
 };
@@ -98,16 +100,17 @@ const AppContainer = styled.div`
 
 const App = () => {
   const [viewDungeon, setViewDungeon] = useState(example);
+  const [page, setPage] = useState(3);
 
   return (
     <AppContainer>
-      <Nav/>
+      <Nav setPage={setPage}/>
 
-      <Dungeon viewDungeon={viewDungeon} setViewDungeon={setViewDungeon}/>
+      {page === 1 && <Search/>}
+      {page === 2 && <DungeonList setViewDungeon={setViewDungeon}/>}
+      {page === 3 && <Dungeon viewDungeon={viewDungeon} setViewDungeon={setViewDungeon}/>}
+
       <ControlBar/>
-
-      {/* <audio id="track-audio" src={currentTrack.source}/>
-      <audio id="effect-audio" src={currentEffect.source}/> */}
     </AppContainer>
   );
 };
