@@ -75,17 +75,16 @@ const DungeonTitle = ({title, update}) => {
 };
 
 const Dungeon = ({viewDungeon, setViewDungeon}) => {
-  const updateEffect = (effect) => {
-    // input 'effect' == new version of effect obj
-    // call to server to update db
-
-    // update effect as it exists as a prop in state (w/in dungeon)
-    // currently only works locally bc dungeon is a ext. constant
+  const updateDungeon = (updated) => {
+    // send to server
   };
 
   const updatePlaylist = (isFX, list) => {
     let playlist = isFX ? 'effects' : 'tracks';
+
+    // simplify this later, since server will send back a fresh obj
     let updatedDungeon = {
+      id: viewDungeon.id,
       title: viewDungeon.title,
       tracks: viewDungeon.tracks,
       effects: viewDungeon.effects,
@@ -95,9 +94,21 @@ const Dungeon = ({viewDungeon, setViewDungeon}) => {
 
     updatedDungeon[playlist] = list;
     setViewDungeon(updatedDungeon);
-
-    // send to server
+    updateDungeon(updatedDungeon);
   };
+
+  const updateTitle = (title) => {
+    let updatedDungeon = {
+      id: viewDungeon.id,
+      title: title,
+      tracks: viewDungeon.tracks,
+      effects: viewDungeon.effects,
+      creator: viewDungeon.creator,
+      cover: viewDungeon.cover,
+    };
+    setViewDungeon(updatedDungeon);
+    updateDungeon(updatedDungeon);
+  }
 
   return (
     <DungeonContainer>

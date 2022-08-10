@@ -150,10 +150,7 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
 
   const confirm = (e) => {
     e.stopPropagation();
-
-    effect.icon = icon;
-    effect.color = color;
-    onConfirm(effect);
+    onConfirm(icon, color);
   };
 
   return <FXIconEditorContainer>

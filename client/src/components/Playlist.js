@@ -103,11 +103,15 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
     updateList(!!fx, updatedPlaylist);
   };
 
-  const updateIcon = (e, index, icon, color) => {
-    var effect = playlist[index];
+  const updateIcon = (index, icon, color) => {
+    let effect = playlist[index];
+    let updatedPlaylist = playlist.slice();
+
     effect.icon = icon;
     effect.color = color;
-    updateList(true, playlist);
+    updatedPlaylist[index] = effect;
+
+    updateList(true, updatedPlaylist);
   };
 
   const selectTrack = (i) => {
@@ -170,8 +174,8 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
                 i === editIcon
                 ? <FXIconEditor
                     effect={track}
-                    onConfirm={(effect) => {
-                      updateIcon(effect);
+                    onConfirm={(icon, color) => {
+                      updateIcon(i, icon, color);
                       setEditIcon(null);
                     }}
                     onCancel={(e) => {
