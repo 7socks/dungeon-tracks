@@ -53,6 +53,14 @@ const PlaylistContainer = styled.div`
   }
 `;
 
+const TrackTitle = styled.span`
+  color: ${({selected}) =>
+    selected
+    ? 'var(--theme-list-text-selected);'
+    : 'var(--theme-list-text);'
+  }
+`;
+
 const EditButton = styled.button`
   background: none;
   border: none;
@@ -88,7 +96,11 @@ const EditButtonsContainer = styled.div`
 
 const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
   const [editIcon, setEditIcon] = useState(null);
+  const playingTrack = useSelector((state) => state.audio.track);
+  const playingDungeon = useSelector((state) => state.audio.dungeon);
   const dispatch = useDispatch();
+
+  const isSelected = playingDungeon.id === viewDungeon.id;
 
   const orderPlaylist = (e, index, shift) => {
     e.stopPropagation();
@@ -135,7 +147,9 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
             >
               { fx ? <FXIcon icon={track.icon} color={track.color} onClick={()=>{}}/> : null }
 
-              <span>{track.title}</span>
+              <TrackTitle selected={isSelected && playingTrack === i}>
+                {track.title}
+              </TrackTitle>
 
               <EditButtonsContainer>
                 {

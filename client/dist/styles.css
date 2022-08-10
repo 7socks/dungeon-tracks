@@ -14,6 +14,8 @@
   --theme-list-bg-highlight: #32486d;
   --theme-list-border-inner: #5b80c0;
   --theme-list-border-outer: #5b80c0;
+  --theme-list-text: #fff;
+  --theme-list-text-selected: rgb(52, 255, 147);
 
   --theme-bar-bg: #32486d;
 
@@ -26,10 +28,13 @@
 }
 
 /* Base */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+
 body {
   margin: 0;
   height: 100vh;
   width: 100vw;
   background: var(--theme-bg);
   color: var(--theme-text);
+  font-family: 'Raleway', sans-serif;
 }
