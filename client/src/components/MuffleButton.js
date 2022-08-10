@@ -1,32 +1,39 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { muffle } from '../app/reducers/audioSlice';
+
 const StyledButton = styled.button`
-  background: none;
-  color: var(--theme-btn-text-undim);
-  border: 2px solid var(--theme-btn-text-undim);
+  padding: .2em;
+  border: none;
   border-radius: .5em;
   font-size: 18px;
 
-  :hover {
-    color: var(--theme-text);
-    border-color: var(--theme-text);
-  }
-
-  ${({muffled}) =>
-    muffled
-    ? 'color: var(--theme-text-highlight);'
-    : null
-  }
+  ${({muffled}) => {
+    if (muffled) {
+      return `
+        background: var(--theme-btn-bg-dark);
+        color: var(--theme-btn-text-undim);
+      `;
+    } else {
+      return `
+        background: var(--theme-btn-bg-light);
+        color: var(--theme-text);
+      `;
+    }
+  }}
 `;
 
-const MuffleButton = ({muffled, onClick}) => (
-  <StyledButton className="muffle-btn"
+const MuffleButton = () => {
+  const muffled = useSelector((state) => state.audio.muffled);
+  const dispatch = useDispatch();
+
+  return (<StyledButton className="muffle-btn"
     muffled={muffled}
-    onClick={onClick}
-  >
-  Muffle
-  </StyledButton>
-);
+    onClick={() => dispatch(muffle())}
+  >Muffle
+  </StyledButton>);
+};
 
 export default MuffleButton;

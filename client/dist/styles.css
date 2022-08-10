@@ -6,6 +6,9 @@
 
   --theme-btn-text-dim: rgba(255, 255, 255, 0.4);
   --theme-btn-text-undim: rgba(255, 255, 255, 0.8);
+  --theme-btn-bg-light: rgb(255, 166, 0);
+  --theme-btn-bg-dark: rgb(220, 110, 10);
+  /* --theme-btn-bg-dark: rgb(223, 112, 0); */
 
   --theme-list-bg: #213352;
   --theme-list-bg-highlight: #32486d;
