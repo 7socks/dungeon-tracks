@@ -45,7 +45,7 @@ const example = {
     },
     {
       title: "Fireball",
-      source: "",
+      source: "temp/fireball.wav",
       icon: "flame",
       color: "red",
       index: 2

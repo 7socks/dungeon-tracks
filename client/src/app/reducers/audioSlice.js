@@ -37,7 +37,7 @@ const example = {
     },
     {
       title: "Fireball",
-      source: "",
+      source: "temp/fireball.wav",
       icon: "flame",
       color: "red",
       index: 2
@@ -52,6 +52,7 @@ export const audioSlice = createSlice({
   initialState: {
     dungeon: example,
     track: 0,
+    effect: null,
     playing: false,
     volume: 1.0,
     muted: false,
@@ -85,6 +86,9 @@ export const audioSlice = createSlice({
     },
     setVolume: (state, action) => {
       state.volume = action.payload;
+    },
+    playFX: (state, action) => {
+      state.effect = action.payload;
     }
   }
 });
@@ -97,7 +101,8 @@ export const {
   trackBackward,
   mute,
   muffle,
-  setVolume
+  setVolume,
+  playFX
 } = audioSlice.actions;
 
 export default audioSlice.reducer;

@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import { HiPencilAlt } from 'react-icons/hi';
 import { TiArrowSortedUp, TiArrowSortedDown } from 'react-icons/ti';
 
+import Audio from '../app/audio';
+
 import { useSelector, useDispatch } from 'react-redux';
-import { setTrack, setDungeon } from '../app/reducers/audioSlice';
+import { setTrack, setDungeon, playFX } from '../app/reducers/audioSlice';
 
 import { FXIcon, FXIconEditor } from './FXIcon';
 
@@ -96,6 +98,7 @@ const EditButtonsContainer = styled.div`
 
 const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
   const [editIcon, setEditIcon] = useState(null);
+  const playingEffect = useSelector((state) => state.audio.effect);
   const playingTrack = useSelector((state) => state.audio.track);
   const playingDungeon = useSelector((state) => state.audio.dungeon);
   const dispatch = useDispatch();
@@ -139,13 +142,27 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
           playlist.map((track, i) => {
             return <li
               key={i}
-              onClick={() =>
-                fx
-                ? null
-                : selectTrack(i)
-              }
+              onClick={() => {
+                if (fx) {
+                  dispatch(playFX(track));
+                  Audio.playFX(track.source, () => {
+                    dispatch(playFX(null));
+                  });
+                } else {
+                  selectTrack(i);
+                }
+              }}
             >
-              { fx ? <FXIcon icon={track.icon} color={track.color} onClick={()=>{}}/> : null }
+              {
+                fx
+                ? <FXIcon
+                  icon={track.icon}
+                  color={track.color}
+                  playing={playingEffect === track}
+                  onClick={()=>{}}
+                  />
+                : null
+              }
 
               <TrackTitle selected={!fx && isSelected && playingTrack === i}>
                 {track.title}

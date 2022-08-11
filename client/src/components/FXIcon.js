@@ -59,7 +59,11 @@ const IconContainer = styled.span`
   font-size: 18px;
   border-radius: 50%;
   background: var(--icon-color-${({color}) => color});
-  color: #fff;
+  color: ${({playing}) =>
+    playing
+    ? 'var(--theme-list-text-selected)'
+    : '#fff'
+  };
 `;
 
 const FXIconEditorContainer = styled.div`
@@ -183,8 +187,8 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
   </FXIconEditorContainer>;
 };
 
-const FXIcon = ({icon, color, onClick}) => {
-  return <IconContainer color={color} onClick={onClick}>
+const FXIcon = ({playing, icon, color, onClick}) => {
+  return <IconContainer playing={playing} color={color} onClick={onClick}>
     {ICONS[icon]}
   </IconContainer>;
 };

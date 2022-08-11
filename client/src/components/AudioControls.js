@@ -5,10 +5,12 @@ import { FaPlay, FaPause } from 'react-icons/fa';
 import { BsThreeDots } from 'react-icons/bs';
 import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 
+import Audio from '../app/audio';
+
 import { useSelector, useDispatch } from 'react-redux';
 import {
   setDungeon, setTrack, playPause, trackForward, trackBackward,
-  setVolume, mute
+  setVolume, mute, playFX
 } from '../app/reducers/audioSlice';
 
 import MuffleButton from './MuffleButton';
@@ -105,11 +107,14 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
   const playing = useSelector((state) => state.audio.playing);
   const volume = useSelector((state) => state.audio.volume);
   const muted = useSelector((state) => state.audio.muted);
+  const playingFX = useSelector((state) => state.audio.effect);
   const dispatch = useDispatch();
 
   const onPlayPause = () => {
     onPlay && onPlay();
     dispatch(playPause());
+
+    playing ? Audio.pause() : Audio.resume();
   };
 
   return (<>
@@ -144,7 +149,13 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
           key={i}
           icon={effect.icon}
           color={effect.color}
-          onClick={()=>{}}
+          playing={playingFX && playingFX.index === effect.index}
+          onClick={() => {
+            dispatch(playFX(effect));
+            Audio.playFX(effect.source, () => {
+              dispatch(playFX(null));
+            });
+          }}
         />;
       })}
       {
