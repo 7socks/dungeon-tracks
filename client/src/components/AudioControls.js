@@ -121,15 +121,34 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
     <span className="track-title">{currentTrack.title}</span>
 
     <div className="audio-bar">
-      <button onClick={() => dispatch(trackBackward())}><IoMdSkipBackward/></button>
+      <button onClick={() => {
+        dispatch(trackBackward());
+        Audio.skipBack((i) => {
+          dispatch(setTrack(i));
+        });
+      }}>
+        <IoMdSkipBackward/>
+      </button>
+
       <button onClick={onPlayPause}>
         { playing ? <FaPause/> : <FaPlay/> }
       </button>
-      <button onClick={() => dispatch(trackForward())}><IoMdSkipForward/></button>
+
+      <button onClick={() => {
+        dispatch(trackForward());
+        Audio.skipForward((i) => {
+          dispatch(setTrack(i));
+        });
+      }}>
+        <IoMdSkipForward/>
+      </button>
     </div>
 
     <div id="volume-bar">
-      <button onClick={() => dispatch(mute())}>
+      <button onClick={() => {
+        dispatch(mute());
+        Audio.mute(!muted);
+      }}>
         { muted ? <HiVolumeOff/> : <HiVolumeUp/> }
       </button>
       <input
@@ -138,7 +157,10 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
         min="0"
         max="1"
         value={volume}
-        onChange={(e) => dispatch(setVolume(Number(e.target.value)))}
+        onChange={(e) => {
+          dispatch(setVolume(Number(e.target.value)));
+          Audio.setVolume(Number(e.target.value));
+        }}
       />
     </div>
     <MuffleButton/>

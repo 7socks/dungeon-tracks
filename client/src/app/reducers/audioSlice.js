@@ -5,18 +5,18 @@ const example = {
   title: "Dragon Lair",
   tracks: [
     {
-      title: "In the Hall of the Mountain King",
-      source: "",
+      title: "The Roman Legionary - Maarten Schellekens",
+      source: "temp/Maarten_Schellekens__The_Roman_Legionary.mp3",
       index: 0
     },
     {
-      title: "SAIL",
-      source: "",
+      title: "The Battle of Hangman's Hill - Kiggler",
+      source: "temp/Kiggler__The_Battle_Of_Hangmans_Hill.mp3",
       index: 1
     },
     {
-      title: "Clash vx80 - Remix",
-      source: "",
+      title: "Wanderer of Wonders - Philip Ravenel",
+      source: "temp/Philip_Ravenel__Wanderer_of_Wonders.mp3",
       index: 2
     }
   ],
@@ -63,6 +63,7 @@ export const audioSlice = createSlice({
       state.dungeon = action.payload;
     },
     setTrack: (state, action) => {
+      state.playing = true;
       state.track = action.payload;
     },
     trackForward: (state) => {

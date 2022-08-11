@@ -132,6 +132,9 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
   const selectTrack = (i) => {
     dispatch(setDungeon(viewDungeon));
     dispatch(setTrack(i));
+    Audio.playQueue(viewDungeon.tracks.slice(i), (i) => {
+      dispatch(setTrack(i));
+    });
   };
 
   return (

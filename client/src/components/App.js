@@ -8,53 +8,6 @@ import Dungeon from './Dungeon';
 import DungeonList from './DungeonList';
 import { ControlBar } from './AudioControls';
 
-const example = {
-  id: "123456789",
-  title: "Dragon Lair",
-  tracks: [
-    {
-      title: "In the Hall of the Mountain King",
-      source: "",
-      index: 0
-    },
-    {
-      title: "SAIL",
-      source: "",
-      index: 1
-    },
-    {
-      title: "Clash vx80 - Remix",
-      source: "",
-      index: 2
-    }
-  ],
-  effects: [
-    {
-      title: "Roar",
-      source: "",
-      icon: "dragon",
-      color: "green",
-      index: 0
-    },
-    {
-      title: "Falling Treasure",
-      source: "",
-      icon: "music",
-      color: "orange",
-      index: 1
-    },
-    {
-      title: "Fireball",
-      source: "temp/fireball.wav",
-      icon: "flame",
-      color: "red",
-      index: 2
-    }
-  ],
-  creator: "dev",
-  cover: ""
-};
-
 const NavContainer = styled.div`
   height: 2.5em;
   display: flex;
@@ -99,7 +52,8 @@ const AppContainer = styled.div`
 `;
 
 const App = () => {
-  const [viewDungeon, setViewDungeon] = useState(example);
+  const selectedDungeon = useSelector((state) => state.audio.dungeon);
+  const [viewDungeon, setViewDungeon] = useState(selectedDungeon);
   const [page, setPage] = useState(3);
 
   return (
