@@ -8,7 +8,12 @@ const ListContainer = styled.div`
 `;
 
 const DungeonContainer = styled.div`
+  display: grid;
+  justify-content: center;
+  align-items: center;
   font-size: 18px;
+  height: 2em;
+  width: 3em;
 `;
 
 const DungeonList = ({setViewDungeon}) => {

@@ -67,6 +67,7 @@ const IconContainer = styled.span`
 `;
 
 const FXIconEditorContainer = styled.div`
+  z-index: var(--layer-popup);
   position: absolute;
   top: 2.5em;
   display: flex;
@@ -78,7 +79,6 @@ const FXIconEditorContainer = styled.div`
   border-radius: 1.5em;
   width: 15em;
   height: 10em;
-  z-index: 10;
   overflow-y: scroll;
   justify-content: center;
 `;

@@ -1,5 +1,5 @@
-/* Theme Colors */
 :root {
+  /* Theme Colors */
   --theme-bg: #22223c;
   --theme-text: #fff;
   --theme-text-highlight: #b9ffff;
@@ -8,7 +8,6 @@
   --theme-btn-text-undim: rgba(255, 255, 255, 0.8);
   --theme-btn-bg-light: rgb(255, 166, 0);
   --theme-btn-bg-dark: rgb(220, 110, 10);
-  /* --theme-btn-bg-dark: rgb(223, 112, 0); */
 
   --theme-list-bg: #213352;
   --theme-list-bg-highlight: #32486d;
@@ -19,12 +18,26 @@
 
   --theme-bar-bg: #32486d;
 
+  --theme-login-bg: #fff;
+  --theme-login-text: #006a3f;
+  --theme-login-text-highlight: #00dc84;
+  --theme-login-text-plain: #282828;
+  --theme-login-btn-bg: #006a3f;
+  --theme-login-btn-bg-hover: #00dc84;
+  --theme-login-btn-text: #fff;
+
   --icon-color-green: #2e8b2e;
   --icon-color-blue: #0F8CD1;
   --icon-color-red: #D10F5C;
   --icon-color-pink: #E73AE4;
   --icon-color-teal: #2FD6B0;
   --icon-color-orange: #FFA800;
+
+  /* Layers (z-index) */
+  --layer-popup: 40;
+  --layer-nav: 30;
+  --layer-bar: 20;
+  --layer-main: 10;
 }
 
 /* Base */

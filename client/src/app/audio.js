@@ -70,10 +70,6 @@ Audio.mute = (state) => {
 };
 
 Audio.duration = (track) => {
-  let sound = new Howl({ src: [track.source] });
-  let result = sound.duration();
-  sound.on('load', sound.unload);
-  return result;
 };
 
 Audio.timecode = () => {

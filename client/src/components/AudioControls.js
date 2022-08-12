@@ -42,6 +42,7 @@ const ControlsContainer = styled.div`
 `;
 
 const ControlBarContainer = styled(ControlsContainer)`
+  z-index: var(--layer-bar);
   height: 2.5em;
   position: absolute;
   bottom: 0;
