@@ -7,6 +7,33 @@ const {
   MYSQL_DB: DATABASE
 } = process.env;
 
+const stringifyData = (data) => {
+  let keys = Object.keys(data);
+  let values = keys.map((key) => {
+    return data[key];
+  });
+
+  let keyString = JSON.stringify(keys);
+  let valueString = JSON.stringify(values);
+
+  return {
+    keys: keyString.slice(1, keyString.length - 1),
+    values: valueString.slice(1, valueString.length - 1)
+  };
+};
+
+stringifyQuery = (keys) => {
+  let output = '';
+  for (let i = 0; i < keys.length; i++) {
+    let key = keys[i];
+    output.push('`' + key + '` = ?');
+    if (i < keys.length - 1) {
+      output.push(' AND ');
+    }
+  }
+  return output;
+};
+
 let pool;
 
 module.exports.init = async () => {
@@ -108,3 +135,18 @@ module.exports.init = async () => {
       console.log(err);
     })
 };
+
+module.exports.POST = async (table, data) => {
+  return pool.query(`
+    INSERT INTO TABLE ${table}
+    (${stringifyData(data).keys})
+    VALUES (${stringifyData(data).values})
+  `)
+};
+
+module.exports.GET = async (table, query) => {
+  return pool.query(`
+    SELECT ${stringifyData(query).keys} FROM TABLE
+    WHERE ${stringifyQuery(query.params)}
+  `, [query.values])
+}
