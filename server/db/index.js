@@ -13,22 +13,31 @@ const stringifyData = (data) => {
     return data[key];
   });
 
-  let keyString = JSON.stringify(keys);
-  let valueString = JSON.stringify(values);
+  let keyString = '';
+  let valueString = '';
+
+  for (let i = 0; i < keys.length; i++) {
+    keyString += keys[i];
+    valueString += `"${values[i]}"`;
+    if (i < keys.length - 1) {
+      keyString += ', ';
+      valueString += ', ';
+    }
+  }
 
   return {
-    keys: keyString.slice(1, keyString.length - 1),
-    values: valueString.slice(1, valueString.length - 1)
+    keys: keyString,
+    values: valueString
   };
 };
 
-stringifyQuery = (keys) => {
+const stringifyQuery = (keys) => {
   let output = '';
   for (let i = 0; i < keys.length; i++) {
     let key = keys[i];
-    output.push('`' + key + '` = ?');
+    output += '`' + key + '` = ?';
     if (i < keys.length - 1) {
-      output.push(' AND ');
+      output += ' AND ';
     }
   }
   return output;
@@ -52,9 +61,8 @@ module.exports.init = async () => {
     .then(() => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS tracks (
-          id INT NOT NULL,
+          id INT NOT NULL AUTO_INCREMENT,
           title VARCHAR(30) NOT NULL,
-          author VARCHAR(30) DEFAULT "Unknown" NOT NULL,
           source VARCHAR(50) NOT NULL,
           PRIMARY KEY (id)
         );
@@ -63,9 +71,8 @@ module.exports.init = async () => {
     .then(() => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS effects (
-          id INT NOT NULL,
+          id INT NOT NULL AUTO_INCREMENT,
           title VARCHAR(30) NOT NULL,
-          author VARCHAR(30) DEFAULT "Unknown" NOT NULL,
           source VARCHAR(50) NOT NULL,
           PRIMARY KEY (id)
         );
@@ -74,9 +81,9 @@ module.exports.init = async () => {
     .then(() => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS users (
-          id INT NOT NULL,
-          user VARCHAR(20) NOT NULL,
-          hashkey VARCHAR(50) NOT NULL,
+          id INT NOT NULL AUTO_INCREMENT,
+          user VARCHAR(20) NOT NULL UNIQUE,
+          hashkey VARCHAR(60) NOT NULL,
           PRIMARY KEY (id)
         );
       `);
@@ -84,7 +91,7 @@ module.exports.init = async () => {
     .then(() => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS dungeons (
-          id INT NOT NULL,
+          id INT NOT NULL AUTO_INCREMENT,
           creator INT NOT NULL,
           title VARCHAR(30),
           PRIMARY KEY (id),
@@ -95,7 +102,6 @@ module.exports.init = async () => {
     .then(() => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS dungeons_tracks (
-          id INT,
           track_id INT,
           dungeon_id INT,
           position INT,
@@ -107,7 +113,6 @@ module.exports.init = async () => {
     .then(() => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS dungeons_effects (
-          id INT,
           effect_id INT,
           dungeon_id INT,
           icon VARCHAR(10),
@@ -121,7 +126,7 @@ module.exports.init = async () => {
     .then(() => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS user_sessions (
-          cookie VARCHAR(30) NOT NULL,
+          cookie CHAR(36) NOT NULL,
           user INT NOT NULL,
           FOREIGN KEY (user) REFERENCES users(id)
         );
@@ -138,15 +143,15 @@ module.exports.init = async () => {
 
 module.exports.POST = async (table, data) => {
   return pool.query(`
-    INSERT INTO TABLE ${table}
+    INSERT INTO ${table}
     (${stringifyData(data).keys})
-    VALUES (${stringifyData(data).values})
+    VALUES(${stringifyData(data).values});
   `)
 };
 
 module.exports.GET = async (table, query) => {
   return pool.query(`
-    SELECT ${stringifyData(query).keys} FROM TABLE
+    SELECT ${query.keys.join(', ')} FROM ${table}
     WHERE ${stringifyQuery(query.params)}
   `, [query.values])
 }
