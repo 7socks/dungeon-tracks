@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { logIn, createUser } from '../router/router';
+import { useDispatch } from 'react-redux';
+import { login } from '../app/reducers/userSlice';
+import REQUEST from '../router/router';
 
 const PageContainer = styled.div`
   z-index: var(--layer-main);
@@ -32,13 +34,29 @@ const LogInContainer = styled.div`
 
   input {
     height: 1.5em;
-    border: 1px solid var(--theme-login-text);
+    border: 1px solid;
     border-radius: .5em;
     padding: .1em .3em;
 
     :focus {
       outline: 2px solid var(--theme-login-text-highlight);
     }
+  }
+
+  #input-pwd {
+    border-color: ${({pass}) =>
+     pass
+     ? 'var(--theme-login-error)'
+     : 'var(--theme-login-text)'
+    };
+  }
+
+  #input-usr {
+    border-color: ${({user}) =>
+      user
+      ? 'var(--theme-login-error)'
+      : 'var(--theme-login-text)'
+    };
   }
 
   label {
@@ -84,33 +102,88 @@ const LogInContainer = styled.div`
   }
 `;
 
-const LogIn = () => {
+const validateUsername = (username) => {
+  return username.length > 2 && username.length < 20;
+};
+
+const validatePassword = (password) => {
+  return password.length > 5 && password.length <= 25;
+}
+
+const LogIn = ({setPage}) => {
+  const dispatch = useDispatch();
   const [existing, setExisting] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorUser, setErrorUser] = useState(false);
+  const [errorPass, setErrorPass] = useState(false);
+
+  useEffect(() => {
+    setUsername('');
+    setPassword('');
+    setErrorUser(false);
+    setErrorPass(false);
+  }, [existing]);
+
+  useEffect(() => {
+    if (!existing) {
+      errorUser && setErrorUser(!validateUsername(username));
+      errorPass && setErrorPass(!validatePassword(password));
+    }
+  }, [username, password]);
 
   const signIn = () => {
-
+    var validUser = validateUsername(username);
+    var validPass = validatePassword(password);
+    if (validUser && validPass) {
+      REQUEST.logIn({username, password})
+        .then((success) => {
+          if (success) {
+            dispatch(login());
+            setPage(2);
+          } else {
+            setErrorUser(true);
+            setErrorUser(false);
+          }
+        })
+    } else {
+      setErrorUser(true);
+      setErrorPass(true);
+    }
   };
 
   const signUp = () => {
-    // form validation
-
-
+    var validUser = validateUsername(username);
+    var validPass = validatePassword(password);
+    if (validUser && validPass) {
+      REQUEST.createUser({username, password})
+        .then((success) => {
+          if (success) {
+            dispatch(login());
+            setPage(2);
+          } else {
+            // error msg to user
+            setErrorUser(true);
+          }
+        })
+    } else {
+      setErrorUser(!validUser);
+      setErrorPass(!validPass);
+    }
   };
 
   return (
-    <PageContainer><LogInContainer>
+    <PageContainer><LogInContainer user={errorUser} pass={errorPass}>
       <label>
         <span>Username</span>
-        <input type="text" value={username} onChange={(e) => {
+        <input id="input-usr" type="text" value={username} onChange={(e) => {
           setUsername(e.target.value);
         }}/>
       </label>
 
       <label>
         <span>Password</span>
-        <input type="password" value={password} onChange={(e) => {
+        <input id="input-pwd" type={existing ? 'password' : 'text'} value={password} onChange={(e) => {
           setPassword(e.target.value);
         }}/>
       </label>

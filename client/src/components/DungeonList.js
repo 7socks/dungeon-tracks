@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { FaPlus } from 'react-icons/fa';
+
+import { useSelector } from 'react-redux';
+import REQUEST from '../router/router';
 
 const ListContainer = styled.div`
   display: flex;
@@ -16,15 +20,36 @@ const DungeonContainer = styled.div`
   width: 3em;
 `;
 
-const DungeonList = ({setViewDungeon}) => {
-  let dungeons = [{title: 'DragonLair'}];
+const DungeonList = ({setViewDungeon, dungeonList, setDungeonList}) => {
+  const loggedIn = useSelector((state) => state.user.loggedIn);
+
+  useEffect(() => {
+    REQUEST.getDungeons()
+      .then((data) => {
+        setDungeonList(data);
+      })
+  }, []);
+
+  const handleCreate = () => {
+    REQUEST.createDungeon({
+      title: 'Untitled Dungeon'
+    })
+      .then((data) => {
+        setDungeonList(data);
+      })
+  };
 
   return <ListContainer>
-    {dungeons.map((dungeon, i) => {
+    {dungeonList.map((dungeon, i) => {
       return <DungeonContainer key={i} onClick={() => setViewDungeon(dungeon)}>
-        <span>{dungeon.title}</span>
+        <div><span>{dungeon.title}</span></div>
       </DungeonContainer>;
     })}
+    {
+      loggedIn
+      ? <div onClick={handleCreate}><FaPlus/></div>
+      : <span>Log in to view or create your dungeons!</span>
+    }
   </ListContainer>
 };
 

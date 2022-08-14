@@ -2,22 +2,14 @@ import axios from 'axios';
 
 async function createUser (data) {
   return axios.post('/signup', data)
-    .then(() => {
-      console.log('Signup success')
-    })
-    .catch(() => {
-      console.log('Signup failed')
-    })
+    .then(() => {return true})
+    .catch(() => {return false})
 }
 
 async function logIn (data) {
-  return axios.post('/login', {
-    data: data
-  })
-    .then((res) => {
-    })
-    .catch(() => {
-    })
+  return axios.post('/login', data)
+    .then(() => {return true})
+    .catch(() => {return false})
 }
 
 async function logOut (data) {
@@ -25,14 +17,13 @@ async function logOut (data) {
   })
 }
 
-async function createDungeon (user) {
-  return axios.post('/dungeons', {
-  })
+async function createDungeon (data) {
+  return axios.post('/dungeons', data)
+    .then((res) => res.data)
 }
 
-async function updateDungeon (data, user) {
-  return axios.patch('/dungeons', {
-  })
+async function updateDungeon (data) {
+  return axios.patch('/dungeons', data)
     .then((res) => {
 
     })
@@ -41,9 +32,9 @@ async function updateDungeon (data, user) {
     })
 }
 
-async function getDungeons (user) {
-  return axios.get('/dungeons', {
-  })
+async function getDungeons () {
+  return axios.get('/dungeons')
+    .then((res) => res.data)
 }
 
 async function getSounds (query) {
@@ -51,7 +42,7 @@ async function getSounds (query) {
   })
 }
 
-export {
+export default {
   createUser,
   logIn,
   logOut,

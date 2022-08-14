@@ -41,5 +41,19 @@ module.exports.logIn = async (username, password) => {
 };
 
 module.exports.logOut = async (cookie) => {
-  // delete stored session data
+  return db.DELETE('user_sessions', {
+    params: ['cookie'],
+    values: [cookie]
+  })
+};
+
+module.exports.matchUser = async (cookie) => {
+  return db.GET('user_sessions', {
+    keys: ['user'],
+    params: ['cookie'],
+    values: [cookie]
+  })
+    .then(([data]) => {
+      return data[0].user;
+    })
 };

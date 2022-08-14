@@ -11,6 +11,3 @@ module.exports.create = async (userId) => {
       return cookie;
     })
 };
-
-module.exports.delete = async (cookie) => {
-};

@@ -19,16 +19,21 @@ const AppContainer = styled.div`
 
 const App = () => {
   const selectedDungeon = useSelector((state) => state.audio.dungeon);
+  const [dungeonList, setDungeonList] = useState([]);
   const [viewDungeon, setViewDungeon] = useState(selectedDungeon);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   return (
     <AppContainer>
       <Nav setPage={setPage}/>
 
-      {page === 0 && <LogIn/>}
+      {page === 0 && <LogIn setPage={setPage}/>}
       {page === 1 && <Search/>}
-      {page === 2 && <DungeonList setViewDungeon={setViewDungeon}/>}
+      {page === 2 && <DungeonList
+        dungeonList={dungeonList}
+        setDungeonList={setDungeonList}
+        setViewDungeon={setViewDungeon}
+      />}
       {page === 3 && <Dungeon viewDungeon={viewDungeon} setViewDungeon={setViewDungeon}/>}
 
       <ControlBar/>

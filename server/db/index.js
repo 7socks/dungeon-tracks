@@ -18,12 +18,14 @@ const stringifyData = (data) => {
 
   for (let i = 0; i < keys.length; i++) {
     keyString += keys[i];
-    valueString += `"${values[i]}"`;
+    valueString += isNaN(values[i]) ? `"${values[i]}"` : values[i];
     if (i < keys.length - 1) {
       keyString += ', ';
       valueString += ', ';
     }
   }
+
+  console.log('keystring', keyString, 'valuestring', valueString)
 
   return {
     keys: keyString,
@@ -92,10 +94,10 @@ module.exports.init = async () => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS dungeons (
           id INT NOT NULL AUTO_INCREMENT,
-          creator INT NOT NULL,
+          user INT NOT NULL,
           title VARCHAR(30),
           PRIMARY KEY (id),
-          FOREIGN KEY (creator) REFERENCES users(id)
+          FOREIGN KEY (user) REFERENCES users(id)
         );
       `);
     })
@@ -142,6 +144,8 @@ module.exports.init = async () => {
 };
 
 module.exports.POST = async (table, data) => {
+  console.log('post data:', data)
+  stringifyData(data);
   return pool.query(`
     INSERT INTO ${table}
     (${stringifyData(data).keys})
@@ -154,4 +158,14 @@ module.exports.GET = async (table, query) => {
     SELECT ${query.keys.join(', ')} FROM ${table}
     WHERE ${stringifyQuery(query.params)}
   `, [query.values])
-}
+};
+
+module.exports.DELETE = async (table, query) => {
+  return pool.query(`
+    DELETE FROM ${table}
+    WHERE ${stringifyQuery(query.params)}
+  `, [query.values]);
+};
+
+module.exports.PATCH = async (table, query, data) => {
+};
