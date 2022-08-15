@@ -9,6 +9,10 @@
   --theme-btn-bg-light: rgb(255, 166, 0);
   --theme-btn-bg-dark: rgb(220, 110, 10);
 
+  --theme-dungeoncard-bg: #fff;
+  --theme-dungeoncard-text: #000;
+  --theme-dungeoncard-text-highlight: #006a3f;
+
   --theme-list-bg: #213352;
   --theme-list-bg-highlight: #32486d;
   --theme-list-border-inner: #5b80c0;

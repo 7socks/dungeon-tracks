@@ -30,6 +30,8 @@ const LogInContainer = styled.div`
 
   span {
     cursor: default;
+    display: grid;
+    align-content: center;
   }
 
   input {
