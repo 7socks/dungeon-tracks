@@ -38,7 +38,10 @@ async function getDungeons () {
 }
 
 async function getDungeon (id) {
-  return axios.get('/dungeon', {id})
+  return axios({
+    url: '/dungeon',
+    params: {id}
+  })
     .then((res) => res.data)
 }
 

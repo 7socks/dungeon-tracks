@@ -3,6 +3,7 @@ const express = require('express');
 const db = require('./db/index');
 const { matchUser, createUser, logIn, logOut } = require('./db/users');
 const Dungeon = require('./db/dungeon');
+const { genPlaylist } = require('./util');
 
 const app = express();
 app.use(express.json());
@@ -30,12 +31,40 @@ app.get('/sounds', (req, res) => {
 
 // Request dungeon list
 app.get('/dungeons', (req, res) => {
+  if (req.userId === null) {
+    res.status(401).send();
+  }
   Dungeon.list(req.userId)
     .then((data) => {
       res.status(200).send(data);
     })
     .catch(() => {
-      res.status(401).send();
+      res.status(400).send();
+    })
+});
+
+// Request dungeon data
+app.get('/dungeon', (req, res) => {
+  const output = {};
+  Dungeon.get(req.userId, Number(req.query.id))
+    .then((data) => {
+      output.id = data.id;
+      output.title = data.title;
+      return Dungeon.getTracks(req.body.id);
+    })
+    .then((tracks) => {
+      output.tracks = genPlaylist(tracks);
+      return Dungeon.getEffects(req.body.id);
+    })
+    .then((effects) => {
+      output.effects = genPlaylist(effects);
+    })
+    .then(() => {
+      res.status(200).send(output);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).send();
     })
 });
 

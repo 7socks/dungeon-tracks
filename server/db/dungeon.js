@@ -24,6 +24,21 @@ module.exports.list = async (userId) => {
     })
 };
 
+module.exports.get = async (userId, dungeonId) => {
+  return db.GET('dungeons', {
+    keys: ['id', 'title'],
+    params: ['user', 'id'],
+    values: [userId, dungeonId]
+  })
+    .then(([res]) => {
+      if (res.length === 0) {
+        throw new Error('No match found for user and dungeon IDs');
+      } else {
+        return res[0];
+      }
+    })
+}
+
 module.exports.getTracks = async (dungeonId) => {
   return db.GET('dungeons_tracks', {
     keys: ['*'],

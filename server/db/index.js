@@ -157,14 +157,14 @@ module.exports.GET = async (table, query) => {
   return pool.query(`
     SELECT ${query.keys.join(', ')} FROM ${table}
     WHERE ${stringifyQuery(query.params)}
-  `, [query.values])
+  `, query.values)
 };
 
 module.exports.DELETE = async (table, query) => {
   return pool.query(`
     DELETE FROM ${table}
     WHERE ${stringifyQuery(query.params)}
-  `, [query.values]);
+  `, query.values);
 };
 
 module.exports.PATCH = async (table, query, data) => {
