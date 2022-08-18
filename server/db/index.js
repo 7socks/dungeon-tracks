@@ -168,4 +168,9 @@ module.exports.DELETE = async (table, query) => {
 };
 
 module.exports.PATCH = async (table, query, data) => {
+  return pool.query(`
+    UPDATE ${table}
+    SET ${data.key} = ${JSON.stringify(data.value)}
+    WHERE ${stringifyQuery(query.params)}
+  `, query.values);
 };

@@ -23,13 +23,8 @@ async function createDungeon (data) {
 }
 
 async function updateDungeon (data) {
-  return axios.patch('/dungeons', data)
-    .then((res) => {
-
-    })
-    .catch(() => {
-
-    })
+  return axios.patch('/dungeon', data)
+    .then((res) => res.data)
 }
 
 async function getDungeons () {

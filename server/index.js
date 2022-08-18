@@ -48,22 +48,9 @@ app.get('/dungeon', (req, res) => {
   const output = {};
   Dungeon.get(req.userId, Number(req.query.id))
     .then((data) => {
-      output.id = data.id;
-      output.title = data.title;
-      return Dungeon.getTracks(req.body.id);
-    })
-    .then((tracks) => {
-      output.tracks = genPlaylist(tracks);
-      return Dungeon.getEffects(req.body.id);
-    })
-    .then((effects) => {
-      output.effects = genPlaylist(effects);
-    })
-    .then(() => {
-      res.status(200).send(output);
+      res.status(200).send(data);
     })
     .catch((err) => {
-      console.log(err);
       res.status(400).send();
     })
 });
@@ -83,7 +70,17 @@ app.post('/dungeons', (req, res) => {
 });
 
 // Edit existing dungeon
-app.patch('/dungeons', (req, res) => {
+app.patch('/dungeon', (req, res) => {
+  Dungeon.updateTitle(req.userId, req.body.id, req.body.title)
+    .then(() => {
+      return Dungeon.get(req.userId, Number(req.body.id))
+    })
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(400).send();
+    })
 });
 
 // Request login
