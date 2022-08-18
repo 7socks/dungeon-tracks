@@ -58,6 +58,7 @@ module.exports.create = async (userId, data) => {
 };
 
 module.exports.updateTitle = async (userId, dungeonId, title) => {
+  if (title === undefined) return null;
   return db.PATCH('dungeons', {
     params: ['id', 'user'],
     values: [dungeonId, userId]
@@ -66,6 +67,39 @@ module.exports.updateTitle = async (userId, dungeonId, title) => {
     value: title
   })
 };
+
+module.exports.updateTracks = async (dungeonId, data) => {
+  return updatePlaylist(dungeonId, data, 'tracks');
+};
+
+
+module.exports.updateEffects = async (dungeonId, data) => {
+  return updatePlaylist(dungeonId, data, 'effects');
+};
+
+const updatePlaylist = async (dungeonId, data, playlist) => {
+
+  // From linked list
+  // let ids = [data.id];
+  // let item = data;
+  // while (item.next) {
+  //   ids.push(data.next.id);
+  //   item = data.next;
+  // }
+
+  // From array
+  let ids = data;
+
+  return Promise.promisifyAll(ids.map((id, i) => {
+    return db.PATCH('/dungeons_' + playlist, {
+      params: ['dungeon_id', '_id'],
+      values: [dungeonId, id]
+    }, {
+      key: 'position',
+      value: i
+    })
+  }))
+}
 
 const getTracks = async (dungeonId) => {
   return db.GET('dungeons_tracks', {

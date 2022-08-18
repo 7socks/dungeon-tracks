@@ -5,6 +5,7 @@ import { ImCheckmark } from 'react-icons/im';
 
 import { PlaylistControls } from './AudioControls';
 import Playlist from './Playlist';
+import REQUEST from '../router/router';
 
 const DungeonContainer = styled.div`
   display: flex;
@@ -90,38 +91,26 @@ const DungeonTitle = ({title, update}) => {
 
 const Dungeon = ({viewDungeon, setViewDungeon}) => {
   const updateDungeon = (updated) => {
-    // send to server
+    REQUEST.updateDungeon(updated)
+      .then((data) => {
+        setViewDungeon(data);
+      })
   };
 
   const updatePlaylist = (isFX, list) => {
-    let playlist = isFX ? 'effects' : 'tracks';
-
-    // simplify this later, since server will send back a fresh obj
-    let updatedDungeon = {
+    updateDungeon({
       id: viewDungeon.id,
-      title: viewDungeon.title,
-      tracks: viewDungeon.tracks,
-      effects: viewDungeon.effects,
-      creator: viewDungeon.creator,
-      cover: viewDungeon.cover,
-    };
-
-    updatedDungeon[playlist] = list;
-    setViewDungeon(updatedDungeon);
-    updateDungeon(updatedDungeon);
+      key: isFX ? 'effects' : 'tracks',
+      payload: list
+    });
   };
 
   const updateTitle = (title) => {
-    let updatedDungeon = {
+    updateDungeon({
       id: viewDungeon.id,
-      title: title,
-      tracks: viewDungeon.tracks,
-      effects: viewDungeon.effects,
-      creator: viewDungeon.creator,
-      cover: viewDungeon.cover,
-    };
-    setViewDungeon(updatedDungeon);
-    updateDungeon(updatedDungeon);
+      key: 'title',
+      payload: title
+    });
   };
 
   return (

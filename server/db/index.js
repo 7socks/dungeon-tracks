@@ -25,8 +25,6 @@ const stringifyData = (data) => {
     }
   }
 
-  console.log('keystring', keyString, 'valuestring', valueString)
-
   return {
     keys: keyString,
     values: valueString

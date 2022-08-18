@@ -71,7 +71,16 @@ app.post('/dungeons', (req, res) => {
 
 // Edit existing dungeon
 app.patch('/dungeon', (req, res) => {
-  Dungeon.updateTitle(req.userId, req.body.id, req.body.title)
+  Dungeon.get(req.userId, Number(req.body.id))
+    .then(() => {
+      if (req.body.key === 'title') {
+        return Dungeon.updateTitle(req.userId, req.body.id, req.body.payload)
+      } else if (req.body.key === 'tracks') {
+        return Dungeon.updateTracks(req.body.id, req.body.payload)
+      } else if (req.body.key === 'effects') {
+        return Dungeon.updateEffects(req.body.id, req.body.payload)
+      }
+    })
     .then(() => {
       return Dungeon.get(req.userId, Number(req.body.id))
     })
