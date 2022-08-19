@@ -62,7 +62,7 @@ module.exports.init = async () => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS tracks (
           id INT NOT NULL AUTO_INCREMENT,
-          title VARCHAR(30) NOT NULL,
+          title VARCHAR(50) NOT NULL,
           source VARCHAR(50) NOT NULL,
           PRIMARY KEY (id)
         );
@@ -72,7 +72,7 @@ module.exports.init = async () => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS effects (
           id INT NOT NULL AUTO_INCREMENT,
-          title VARCHAR(30) NOT NULL,
+          title VARCHAR(50) NOT NULL,
           source VARCHAR(50) NOT NULL,
           PRIMARY KEY (id)
         );
@@ -102,9 +102,11 @@ module.exports.init = async () => {
     .then(() => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS dungeons_tracks (
+          id INT NOT NULL AUTO_INCREMENT,
           track_id INT,
           dungeon_id INT,
           position INT,
+          PRIMARY KEY (id),
           FOREIGN KEY (track_id) REFERENCES tracks(id),
           FOREIGN KEY (dungeon_id) REFERENCES dungeons(id)
         );
@@ -113,11 +115,13 @@ module.exports.init = async () => {
     .then(() => {
       return pool.query(`
         CREATE TABLE IF NOT EXISTS dungeons_effects (
+          id INT NOT NULL AUTO_INCREMENT,
           effect_id INT,
           dungeon_id INT,
-          icon VARCHAR(10),
-          color VARCHAR(10),
+          icon VARCHAR(10) DEFAULT "music",
+          color VARCHAR(10) DEFAULT "green",
           position INT,
+          PRIMARY KEY (id),
           FOREIGN KEY (effect_id) REFERENCES effects(id),
           FOREIGN KEY (dungeon_id) REFERENCES dungeons(id)
         );

@@ -45,12 +45,13 @@ app.get('/dungeons', (req, res) => {
 
 // Request dungeon data
 app.get('/dungeon', (req, res) => {
-  const output = {};
   Dungeon.get(req.userId, Number(req.query.id))
     .then((data) => {
+      console.log(data);
       res.status(200).send(data);
     })
     .catch((err) => {
+      console.log(err)
       res.status(400).send();
     })
 });

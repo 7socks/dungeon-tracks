@@ -40,17 +40,17 @@ module.exports.get = async (userId, dungeonId) => {
       }
     })
     .then(() => {
-      return getTracks(dungeonId);
+      return getPlaylist(dungeonId, 'tracks');
     })
     .then((tracks) => {
       output.tracks = tracks;
-      return getEffects(dungeonId);
+      return getPlaylist(dungeonId, 'effects');
     })
     .then((effects) => {
       output.effects = effects;
       return output;
     })
-}
+};
 
 module.exports.create = async (userId, data) => {
   data.user = userId;
@@ -90,7 +90,7 @@ const updatePlaylist = async (dungeonId, data, playlist) => {
   // From array
   let ids = data;
 
-  return Promise.promisifyAll(ids.map((id, i) => {
+  return Promise.all(ids.map((id, i) => {
     return db.PATCH('/dungeons_' + playlist, {
       params: ['dungeon_id', '_id'],
       values: [dungeonId, id]
@@ -99,26 +99,28 @@ const updatePlaylist = async (dungeonId, data, playlist) => {
       value: i
     })
   }))
-}
-
-const getTracks = async (dungeonId) => {
-  return db.GET('dungeons_tracks', {
-    keys: ['*'],
-    params: ['dungeon_id'],
-    values: [dungeonId]
-  })
-    .then(([res]) => {
-      return orderList(res);
-    })
 };
 
-const getEffects = async (dungeonId) => {
-  return db.GET('dungeons_effects', {
+const getPlaylist = async (dungeonId, playlist) => {
+  let singular = playlist.slice(0, playlist.length - 1);
+  return db.GET('dungeons_' + playlist, {
     keys: ['*'],
     params: ['dungeon_id'],
     values: [dungeonId]
   })
     .then(([res]) => {
-      return orderList(res);
+      let tracks = orderList(res);
+      return Promise.all(tracks.map((track) => {
+        return db.GET(playlist, {
+          keys: ['title', 'source'],
+          params: ['id'],
+          values: [track[singular + '_id']]
+        })
+          .then(([res]) => {
+            track.title = res[0].title;
+            track.source = res[0].source;
+            return track;
+          })
+      }))
     })
 };
