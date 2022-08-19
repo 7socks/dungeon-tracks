@@ -119,6 +119,9 @@ const getPlaylist = async (dungeonId, playlist) => {
           .then(([res]) => {
             track.title = res[0].title;
             track.source = res[0].source;
+
+            delete track.dungeon_id;
+            delete track[singular + '_id'];
             return track;
           })
       }))

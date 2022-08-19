@@ -47,11 +47,9 @@ app.get('/dungeons', (req, res) => {
 app.get('/dungeon', (req, res) => {
   Dungeon.get(req.userId, Number(req.query.id))
     .then((data) => {
-      console.log(data);
       res.status(200).send(data);
     })
     .catch((err) => {
-      console.log(err)
       res.status(400).send();
     })
 });
