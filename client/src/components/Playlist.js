@@ -104,6 +104,7 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
   const dispatch = useDispatch();
 
   const isSelected = playingDungeon.id === viewDungeon.id;
+  const selectedTrack = playingDungeon.tracks[playingTrack];
 
   const orderPlaylist = (e, index, shift) => {
     e.stopPropagation();
@@ -167,7 +168,7 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
                 : null
               }
 
-              <TrackTitle selected={!fx && isSelected && playingTrack === i}>
+              <TrackTitle selected={!fx && isSelected && selectedTrack.id === track.id}>
                 {track.title}
               </TrackTitle>
 
