@@ -3,7 +3,7 @@ const express = require('express');
 const db = require('./db/index');
 const { matchUser, createUser, logIn, logOut } = require('./db/users');
 const Dungeon = require('./db/dungeon');
-const { genPlaylist } = require('./util');
+const { genPlaylist, checkSession } = require('./util');
 
 const app = express();
 app.use(express.json());
@@ -23,17 +23,17 @@ app.use((req, res, next) => {
     req.userId = null;
     next();
   }
-})
+});
 
 // Search sound library
 app.get('/sounds', (req, res) => {
 });
 
 // Request dungeon list
-app.get('/dungeons', (req, res) => {
-  if (req.userId === null) {
-    res.status(401).send();
-  }
+app.get('/dungeons', checkSession, (req, res) => {
+  // if (req.userId === null) {
+  //   res.status(401).send();
+  // }
   Dungeon.list(req.userId)
     .then((data) => {
       res.status(200).send(data);
@@ -44,7 +44,7 @@ app.get('/dungeons', (req, res) => {
 });
 
 // Request dungeon data
-app.get('/dungeon', (req, res) => {
+app.get('/dungeon', checkSession, (req, res) => {
   Dungeon.get(req.userId, Number(req.query.id))
     .then((data) => {
       res.status(200).send(data);
@@ -55,7 +55,7 @@ app.get('/dungeon', (req, res) => {
 });
 
 // Create new dungeon
-app.post('/dungeons', (req, res) => {
+app.post('/dungeons', checkSession, (req, res) => {
   Dungeon.create(req.userId, req.body)
     .then(() => {
       return Dungeon.list(req.userId)
@@ -69,15 +69,15 @@ app.post('/dungeons', (req, res) => {
 });
 
 // Edit existing dungeon
-app.patch('/dungeon', (req, res) => {
+app.patch('/dungeon', checkSession, (req, res) => {
   Dungeon.get(req.userId, Number(req.body.id))
     .then(() => {
       if (req.body.key === 'title') {
         return Dungeon.updateTitle(req.userId, req.body.id, req.body.payload)
-      } else if (req.body.key === 'tracks') {
-        return Dungeon.updateTracks(req.body.id, req.body.payload)
-      } else if (req.body.key === 'effects') {
-        return Dungeon.updateEffects(req.body.id, req.body.payload)
+      } else if ((['tracks', 'effects']).includes(req.body.key)) {
+        return Dungeon.updatePlaylist(req.body.id, req.body.payload, req.body.key)
+      } else {
+        throw new Error('Invalid property key');
       }
     })
     .then(() => {

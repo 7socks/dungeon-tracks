@@ -39,3 +39,12 @@ module.exports.genPlaylist = (list) => {
 
   return playlist[0];
 };
+
+
+module.exports.checkSession = (req, res, next) => {
+  if (req.userId === null) {
+    res.status(401).send();
+  } else {
+    next();
+  }
+};
