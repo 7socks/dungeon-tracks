@@ -25,7 +25,9 @@ const App = () => {
 
   return (
     <AppContainer>
-      <Nav setPage={setPage}/>
+      <Nav setPage={setPage} reset={() => {
+        setDungeonList([])
+      }}/>
 
       {page === 0 && <LogIn setPage={setPage}/>}
       {page === 1 && <Search/>}
@@ -33,8 +35,13 @@ const App = () => {
         dungeonList={dungeonList}
         setDungeonList={setDungeonList}
         setViewDungeon={setViewDungeon}
+        setPage={setPage}
       />}
-      {page === 3 && <Dungeon viewDungeon={viewDungeon} setViewDungeon={setViewDungeon}/>}
+      {page === 3 && <Dungeon
+        viewDungeon={viewDungeon}
+        setViewDungeon={setViewDungeon}
+        setPage={setPage}
+      />}
 
       <ControlBar/>
     </AppContainer>

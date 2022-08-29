@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ImCheckmark, ImCross } from 'react-icons/im';
 import {
@@ -72,10 +72,10 @@ const FXIconEditorContainer = styled.div`
   top: 2.5em;
   display: flex;
   flex-direction: column;
-  background: var(--theme-bg);
+  background: var(--theme-popup-bg);
   font-size: 18px;
   padding: .5em;
-  border: 2px solid black;
+  border: 2px solid var(--theme-popup-border);
   border-radius: 1.5em;
   width: 15em;
   height: 10em;
@@ -151,25 +151,37 @@ const CancelConfirmContainer = styled.div`
 const FXIconEditor = ({effect, onCancel, onConfirm}) => {
   const [icon, setIcon] = useState(effect.icon);
   const [color, setColor] = useState(effect.color);
+  const focusRef = useCallback((element) => {
+    element && element.focus();
+  }, []);
 
   const confirm = (e) => {
     e.stopPropagation();
     onConfirm(icon, color);
   };
 
-  return <FXIconEditorContainer>
+  return <FXIconEditorContainer tabIndex="-1" ref={focusRef} onBlur={onCancel}>
     <PickerContainer type="color">
       {COLORS.map((opt) => {
         return <ColorInput
-          key={opt} onClick={() => setColor(opt)}
-          color={opt} selected={color === opt}
+          key={opt}
+          onClick={(e) => {
+            e.stopPropagation();
+            setColor(opt);
+          }}
+          color={opt}
+          selected={color === opt}
         />
       })}
     </PickerContainer>
     <PickerContainer type="icon">
       {Object.keys(ICONS).map((opt) => {
         return <IconInput
-          key={opt} onClick={() => setIcon(opt)}
+          key={opt}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIcon(opt);
+          }}
           selected={icon === opt}
         >
           {ICONS[opt]}

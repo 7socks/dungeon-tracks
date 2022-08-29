@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { HiPencilAlt } from 'react-icons/hi';
 import { TiArrowSortedUp, TiArrowSortedDown } from 'react-icons/ti';
@@ -37,7 +37,7 @@ const PlaylistContainer = styled.div`
     padding: .2em 0;
     position: relative;
 
-    button {
+    button:not(.edit-btn-confirm):not(.edit-btn-cancel) {
       visibility: hidden;
     }
 
@@ -49,7 +49,7 @@ const PlaylistContainer = styled.div`
   li:hover {
     background: var(--theme-list-bg-highlight);
 
-    button {
+    button:not(.edit-btn-confirm):not(.edit-btn-cancel) {
       visibility: visible;
     }
   }
@@ -103,8 +103,14 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
   const playingDungeon = useSelector((state) => state.audio.dungeon);
   const dispatch = useDispatch();
 
-  const isSelected = playingDungeon.id === viewDungeon.id;
-  const selectedTrack = playingDungeon.tracks[playingTrack];
+  // useEffect(() => {
+  //   if (playingDungeon === null) {
+  //     dispatch(setDungeosn(viewDungeon));
+  //   }
+  // },[]);
+
+  const isSelected = playingDungeon && playingDungeon.id === viewDungeon.id;
+  const selectedTrack = playingDungeon ? playingDungeon.tracks[playingTrack] : null;
 
   const orderPlaylist = (e, index, shift) => {
     e.stopPropagation();
@@ -122,11 +128,16 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
   const updateIcon = (index, icon, color) => {
     let effect = playlist[index];
     let updatedPlaylist = playlist.slice();
+    let updatedEffect = {
+      id: effect.id,
+      position: effect.position,
+      source: effect.source,
+      title: effect.title,
+      icon: icon,
+      color: color,
+    };
 
-    effect.icon = icon;
-    effect.color = color;
-    updatedPlaylist[index] = effect;
-
+    updatedPlaylist[index] = updatedEffect;
     updateList(true, updatedPlaylist);
   };
 

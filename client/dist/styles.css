@@ -31,6 +31,10 @@
   --theme-login-btn-text: #fff;
   --theme-login-error: #850000;
 
+  --theme-popup-bg: #213352;
+  --theme-popup-border: #fff;
+  --theme-popup-text: #fff;
+
   --icon-color-green: #2e8b2e;
   --icon-color-blue: #0F8CD1;
   --icon-color-red: #D10F5C;

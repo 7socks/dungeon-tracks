@@ -50,7 +50,7 @@ const example = {
 export const audioSlice = createSlice({
   name: 'audio',
   initialState: {
-    dungeon: example,
+    dungeon: null,
     track: 0,
     effect: null,
     playing: false,

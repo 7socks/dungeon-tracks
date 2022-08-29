@@ -40,7 +40,7 @@ const NavContainer = styled.div`
   }
 `;
 
-const Nav = ({setPage}) => {
+const Nav = ({setPage, reset}) => {
   const loggedIn = useSelector((state) => state.user.loggedIn);
   const dispatch = useDispatch();
 
@@ -49,6 +49,7 @@ const Nav = ({setPage}) => {
       REQUEST.logOut()
         .then(() => {
           dispatch(logout());
+          reset();
           setPage(1);
         })
     } else {

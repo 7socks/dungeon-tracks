@@ -44,9 +44,9 @@ const ControlsContainer = styled.div`
 const ControlBarContainer = styled(ControlsContainer)`
   z-index: var(--layer-bar);
   height: 2.5em;
+  width: 100%;
   position: absolute;
   bottom: 0;
-  width: 100%;
   background: var(--theme-bar-bg);
   display: flex;
   align-items: center;
@@ -118,29 +118,46 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
     playing ? Audio.pause() : Audio.resume();
   };
 
+  // if (currentDungeon === null) {
+  //   return (<>
+  //     <span className="track-title"></span>
+  //   </>);
+  // }
   return (<>
-    <span className="track-title">{currentTrack.title}</span>
+    <span className="track-title">{currentTrack && currentTrack.title}</span>
 
     <div className="audio-bar">
-      <button onClick={() => {
-        dispatch(trackBackward());
-        Audio.skipBack((i) => {
-          dispatch(setTrack(i));
-        });
-      }}>
+      <button onClick={
+        currentDungeon === null
+        ? () => {}
+        : () => {
+          dispatch(trackBackward());
+          Audio.skipBack((i) => {
+            dispatch(setTrack(i));
+          });
+        }
+      }>
         <IoMdSkipBackward/>
       </button>
 
-      <button onClick={onPlayPause}>
+      <button onClick={
+        currentDungeon === null
+        ? () => {}
+        : onPlayPause
+      }>
         { playing ? <FaPause/> : <FaPlay/> }
       </button>
 
-      <button onClick={() => {
-        dispatch(trackForward());
-        Audio.skipForward((i) => {
-          dispatch(setTrack(i));
-        });
-      }}>
+      <button onClick={
+        currentDungeon === null
+        ? () => {}
+        : () => {
+          dispatch(trackForward());
+          Audio.skipForward((i) => {
+            dispatch(setTrack(i));
+          });
+        }
+      }>
         <IoMdSkipForward/>
       </button>
     </div>
@@ -167,7 +184,7 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
     <MuffleButton/>
 
     <div className="fx-bar">
-      {currentDungeon.effects.slice(0, fxCount).map((effect, i) => {
+      {currentDungeon && currentDungeon.effects.slice(0, fxCount).map((effect, i) => {
         return <FXIcon
           key={i}
           icon={effect.icon}
@@ -182,7 +199,7 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
         />;
       })}
       {
-        fxCount > 0
+        currentDungeon && fxCount > 0
         ? <button id="more-fx"><BsThreeDots/></button>
         : null
       }
@@ -199,9 +216,9 @@ const ControlBar = () => {
     <AudioControls
       fxCount={3}
       currentDungeon={dungeon}
-      currentTrack={dungeon.tracks[track]}
+      currentTrack={dungeon ? dungeon.tracks[track] : null}
     />
-    <span id="dungeon-title">{dungeon.title}</span>
+    <span id="dungeon-title">{dungeon && dungeon.title}</span>
   </ControlBarContainer>;
 };
 
@@ -210,14 +227,22 @@ const PlaylistControls = ({dungeon}) => {
   const track = useSelector((state) => state.audio.track)
   const dispatch = useDispatch();
 
-  let selected = selectedDungeon.id === dungeon.id;
+  let selected = selectedDungeon && selectedDungeon.id === dungeon.id;
 
   return (<PlaylistControlsContainer>
     <AudioControls
       currentDungeon={dungeon}
-      currentTrack={selected ? selectedDungeon.tracks[track] : {}}
+      currentTrack={selected ? selectedDungeon.tracks[track] : null}
       fxCount={0}
-      onPlay={() => dispatch(setDungeon(dungeon))}
+      onPlay={() => {
+        if (selectedDungeon !== dungeon) {
+          dispatch(setDungeon(dungeon));
+          dispatch(setTrack(0));
+          Audio.playQueue(dungeon.tracks, 0, (i) => {
+            dispatch(setTrack(i));
+          });
+        }
+      }}
     />
   </PlaylistControlsContainer>);
 };

@@ -16,16 +16,16 @@ Audio.playTrack = (src, callback) => {
   if (Audio.queueIndex < Audio.queue.length - 1) {
     Audio.track.on('end', () => {
       Audio.queueIndex += 1;
-      Audio.playTrack(Audio.queue[Audio.queueIndex], callback);
       callback(Audio.queueIndex);
+      Audio.playTrack(Audio.queue[Audio.queueIndex], callback);
     });
   }
 };
 
-Audio.playQueue = (tracks, index, callback) => {
+Audio.playQueue = (tracks, index = 0, callback) => {
   Audio.queue = tracks.map((track) => track.source);
-  Audio.queueIndex = 0;
-  Audio.playTrack(Audio.queue[0], callback);
+  Audio.queueIndex = index;
+  Audio.playTrack(Audio.queue[index], callback);
 };
 
 Audio.skipBack = (callback) => {

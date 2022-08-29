@@ -6,10 +6,9 @@ import { useSelector } from 'react-redux';
 import REQUEST from '../router/router';
 
 const ListContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  justify-items: center;
   overflow-y: scroll;
   height: 100%;
 `;
@@ -49,7 +48,7 @@ const CreateContainer = styled(DungeonContainer)`
   }
 `;
 
-const DungeonList = ({setViewDungeon, dungeonList, setDungeonList}) => {
+const DungeonList = ({setViewDungeon, dungeonList, setDungeonList, setPage}) => {
   const loggedIn = useSelector((state) => state.user.loggedIn);
 
   useEffect(() => {
@@ -72,6 +71,7 @@ const DungeonList = ({setViewDungeon, dungeonList, setDungeonList}) => {
     REQUEST.getDungeon(id)
       .then((data) => {
         setViewDungeon(data);
+        setPage(3);
       });
   };
 
