@@ -35,9 +35,18 @@ async function getDungeons () {
 async function getDungeon (id) {
   return axios({
     url: '/dungeon',
+    method: 'get',
     params: {id}
   })
     .then((res) => res.data)
+}
+
+async function deleteDungeon (id) {
+  return axios({
+    url: '/dungeon',
+    method: 'delete',
+    data: {id}
+  })
 }
 
 async function getSounds (query) {
@@ -53,5 +62,6 @@ export default {
   updateDungeon,
   getDungeons,
   getDungeon,
+  deleteDungeon,
   getSounds
 };

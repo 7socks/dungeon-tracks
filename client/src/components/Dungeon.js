@@ -86,12 +86,18 @@ const DeletionContainer = styled.div`
   }
 `;
 
-const DeletionWindow = ({confirm, cancel}) => {
+const DeletionWindow = ({ confirm, cancel }) => {
   const focusRef = useCallback((element) => {
     element && element.focus();
   }, []);
 
-  return <DeletionContainer tabIndex="-1" ref={focusRef} onBlur={cancel}>
+  return <DeletionContainer
+    tabIndex="-1"
+    ref={focusRef}
+    onBlur={(e) => {
+      e.relatedTarget.id !== 'del-delete-btn' && cancel();
+    }}
+  >
     <p>Delete this dungeon?<br/>This cannot be undone.</p>
     <div>
       <button id="del-cancel-btn" onClick={cancel}>CANCEL</button>
@@ -100,7 +106,7 @@ const DeletionWindow = ({confirm, cancel}) => {
   </DeletionContainer>
 };
 
-const DungeonTitle = ({title, update}) => {
+const DungeonTitle = ({ title, update }) => {
   const [focused, setFocused] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
@@ -123,21 +129,21 @@ const DungeonTitle = ({title, update}) => {
     return <TitleContainer>
       <h1>{title}</h1>
       <button onClick={() => setEditing(true)}>
-        <HiPencil/>
+        <HiPencil />
       </button>
     </TitleContainer>;
   } else {
     return (<TitleContainer onBlur={focused ? handleBlur : null}>
-      <input type="text" value={editTitle} onChange={edit} autoFocus/>
+      <input type="text" value={editTitle} onChange={edit} autoFocus />
       <button onClick={(e) => {
         update(editTitle);
         setEditing(false);
-      }}><ImCheckmark/></button>
+      }}><ImCheckmark /></button>
     </TitleContainer>);
   }
 };
 
-const Dungeon = ({viewDungeon, setViewDungeon, setPage}) => {
+const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
   const [deletion, setDeletion] = useState(false);
   const playingDungeon = useSelector((state) => state.audio.dungeon);
   const playingTrack = useSelector((state) => state.audio.track);
@@ -146,9 +152,9 @@ const Dungeon = ({viewDungeon, setViewDungeon, setPage}) => {
   const deleteDungeon = () => {
     REQUEST.deleteDungeon(viewDungeon.id)
       .then(() => {
-        setViewDungeon(null);
         setPage(2);
-      });
+      })
+      .catch(() => setDeletion(false))
   };
 
   const updateDungeon = (update) => {
@@ -190,22 +196,22 @@ const Dungeon = ({viewDungeon, setViewDungeon, setPage}) => {
   return (
     <DungeonContainer>
       <HeaderContainer>
-        <DungeonTitle title={viewDungeon.title} update={updateTitle}/>
+        <DungeonTitle title={viewDungeon.title} update={updateTitle} />
         <button className="del-btn" onClick={() => {
           setDeletion(true);
         }}>
-          <MdDeleteForever/>
+          <MdDeleteForever />
         </button>
         {
           deletion
-          ? <DeletionWindow confirm={deleteDungeon} cancel={() => setDeletion(false)}/>
-          : null
+            ? <DeletionWindow confirm={deleteDungeon} cancel={() => setDeletion(false)} />
+            : null
         }
       </HeaderContainer>
 
-      <PlaylistControls dungeon={viewDungeon}/>
-      <Playlist updateList={updatePlaylist} playlist={viewDungeon.tracks} viewDungeon={viewDungeon}fx={0}/>
-      <Playlist updateList={updatePlaylist} playlist={viewDungeon.effects} viewDungeon={viewDungeon} fx={1}/>
+      <PlaylistControls dungeon={viewDungeon} />
+      <Playlist updateList={updatePlaylist} playlist={viewDungeon.tracks} viewDungeon={viewDungeon} fx={0} />
+      <Playlist updateList={updatePlaylist} playlist={viewDungeon.effects} viewDungeon={viewDungeon} fx={1} />
     </DungeonContainer>
   );
 };

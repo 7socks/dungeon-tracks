@@ -57,6 +57,25 @@ module.exports.create = async (userId, data) => {
   return db.POST('dungeons', data)
 };
 
+module.exports.delete = async (userId, dungeonId) => {
+  return db.DELETE('dungeons', {
+    params: ['user', 'id'],
+    values: [userId, dungeonId]
+  })
+    .then(() => {
+      return db.DELETE('dungeons_tracks', {
+        params: ['dungeon_id'],
+        values: [dungeonId]
+      })
+    })
+    .then(() => {
+      return db.DELETE('dungeons_effects', {
+        params: ['dungeon_id'],
+        values: [dungeonId]
+      })
+    })
+};
+
 module.exports.updateTitle = async (userId, dungeonId, title) => {
   if (title === undefined) return null;
   return db.PATCH('dungeons', {
@@ -77,7 +96,7 @@ module.exports.updateEffects = async (dungeonId, data) => {
   return updatePlaylist(dungeonId, data, 'effects');
 };
 
-const updatePlaylist = async (dungeonId, data, playlist) => {
+module.exports.updatePlaylist = async (dungeonId, data, playlist) => {
 
   // From linked list
   // let ids = [data.id];
@@ -88,11 +107,13 @@ const updatePlaylist = async (dungeonId, data, playlist) => {
   // }
 
   // From array
-  let ids = data;
+  let ids = data.map((item) => {
+    return item.id;
+  });
 
   return Promise.all(ids.map((id, i) => {
-    return db.PATCH('/dungeons_' + playlist, {
-      params: ['dungeon_id', '_id'],
+    return db.PATCH('dungeons_' + playlist, {
+      params: ['dungeon_id', 'id'],
       values: [dungeonId, id]
     }, {
       key: 'position',

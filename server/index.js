@@ -87,6 +87,22 @@ app.patch('/dungeon', checkSession, (req, res) => {
       res.status(200).send(data);
     })
     .catch((err) => {
+      console.log(err)
+      res.status(400).send();
+    })
+});
+
+// Delete dungeon
+app.delete('/dungeon', checkSession, (req, res) => {
+  Dungeon.get(req.userId, Number(req.body.id))
+    .then(() => {
+      return Dungeon.delete(req.userId, Number(req.body.id))
+    })
+    .then(() => {
+      res.status(200).send();
+    })
+    .catch((err) => {
+      console.log(err);
       res.status(400).send();
     })
 });
