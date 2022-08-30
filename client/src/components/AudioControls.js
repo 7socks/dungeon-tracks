@@ -45,7 +45,7 @@ const ControlBarContainer = styled(ControlsContainer)`
   z-index: var(--layer-bar);
   height: 2.5em;
   width: 100%;
-  position: absolute;
+  position: relative;
   bottom: 0;
   background: var(--theme-bar-bg);
   display: flex;

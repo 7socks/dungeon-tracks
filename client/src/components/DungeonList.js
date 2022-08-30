@@ -5,6 +5,13 @@ import { FaPlus } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import REQUEST from '../router/router';
 
+const MsgContainer = styled.div`
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  height: 100%;
+`;
+
 const ListContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -75,18 +82,21 @@ const DungeonList = ({setViewDungeon, dungeonList, setDungeonList, setPage}) => 
       });
   };
 
-  return <ListContainer>
+  if (loggedIn) {
+    return <ListContainer>
     {dungeonList.map((dungeon, i) => {
       return <DungeonContainer key={i} onClick={() => selectDungeon(dungeon.id)}>
         <span>{dungeon.title}</span>
       </DungeonContainer>;
     })}
-    {
-      loggedIn
-      ? <CreateContainer onClick={handleCreate}><span><FaPlus/></span></CreateContainer>
-      : <span>Log in to view or create your dungeons!</span>
-    }
+    <CreateContainer onClick={handleCreate}><span><FaPlus/></span></CreateContainer>
   </ListContainer>
+  } else {
+    return <MsgContainer>
+      <span>Log in to view or create your dungeons!</span>
+    </MsgContainer>
+  }
+
 };
 
 export default DungeonList;

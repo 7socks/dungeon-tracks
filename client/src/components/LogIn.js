@@ -7,8 +7,6 @@ import REQUEST from '../router/router';
 
 const PageContainer = styled.div`
   z-index: var(--layer-main);
-  position: absolute;
-  top: 0;
   display: flex;
   justify-content: center;
   align-items: center;
