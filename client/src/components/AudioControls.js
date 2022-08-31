@@ -89,8 +89,9 @@ const ControlBarContainer = styled(ControlsContainer)`
 
     span {
       height: fit-content;
-      text-overflow: ellipsis;
       width: 15em;
+      overflow: hidden;
+      text-overflow: ellipsis;
       margin: 0;
     }
 
@@ -99,6 +100,7 @@ const ControlBarContainer = styled(ControlsContainer)`
 
       span {
         position: absolute;
+        overflow: visible;
         animation: ${scrollAnimation} 3s linear infinite;
       }
     }
