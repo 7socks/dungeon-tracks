@@ -10,6 +10,27 @@ const MsgContainer = styled.div`
   justify-content: center;
   align-content: center;
   height: 100%;
+  cursor: default;
+
+  div {
+    display: flex;
+    flex-direction: row;
+    justify-content: baseline;
+
+    span {
+      margin: 0 .2em;
+    }
+  }
+
+  .hover-text {
+    color: var(--theme-text-highlight);
+    cursor: pointer;
+
+    :hover {
+      color: var(--theme-text)
+      text-decoration: underline;
+    }
+  }
 `;
 
 const ListContainer = styled.div`
@@ -93,7 +114,10 @@ const DungeonList = ({setViewDungeon, dungeonList, setDungeonList, setPage}) => 
   </ListContainer>
   } else {
     return <MsgContainer>
-      <span>Log in to view or create your dungeons!</span>
+      <div>
+        <span className="hover-text" onClick={() => setPage(0)}>Log in </span>
+        <span>to view or create your dungeons!</span>
+      </div>
     </MsgContainer>
   }
 

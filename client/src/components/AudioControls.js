@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { IoMdSkipBackward, IoMdSkipForward } from 'react-icons/io';
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { BsThreeDots } from 'react-icons/bs';
@@ -15,6 +15,16 @@ import {
 
 import MuffleButton from './MuffleButton';
 import { FXIcon } from './FXIcon';
+
+const scrollAnimation = keyframes`
+  from {
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+`;
 
 const ControlsContainer = styled.div`
   button:not(.muffle-btn) {
@@ -63,6 +73,34 @@ const ControlBarContainer = styled(ControlsContainer)`
 
     * {
       margin: 0 .2em;
+    }
+  }
+
+  .track-title {
+    position: relative;
+    width: 15em;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    span {
+      height: fit-content;
+      text-overflow: ellipsis;
+      width: 15em;
+      margin: 0;
+    }
+
+    :hover {
+      text-overflow: clip;
+
+      span {
+        position: absolute;
+        animation: ${scrollAnimation} 3s linear infinite;
+      }
     }
   }
 
@@ -124,7 +162,7 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
   //   </>);
   // }
   return (<>
-    <span className="track-title">{currentTrack && currentTrack.title}</span>
+    <span className="track-title"><span>{currentTrack && currentTrack.title}</span></span>
 
     <div className="audio-bar">
       <button onClick={
