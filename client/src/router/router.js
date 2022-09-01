@@ -49,9 +49,13 @@ async function deleteDungeon (id) {
   })
 }
 
-async function getSounds (query) {
-  return axios.get('/sounds', {
+async function getSounds (s) {
+  return axios({
+    url: '/sounds',
+    method: 'get',
+    params: {s}
   })
+    .then((res) => res.data)
 }
 
 export default {

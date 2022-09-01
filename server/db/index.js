@@ -31,11 +31,11 @@ const stringifyData = (data) => {
   };
 };
 
-const stringifyQuery = (keys) => {
+const stringifyQuery = (keys, match = '=') => {
   let output = '';
   for (let i = 0; i < keys.length; i++) {
     let key = keys[i];
-    output += '`' + key + '` = ?';
+    output += '`' + key + '` ' + match + ' ?';
     if (i < keys.length - 1) {
       output += ' AND ';
     }
@@ -159,6 +159,13 @@ module.exports.GET = async (table, query) => {
   return pool.query(`
     SELECT ${query.keys.join(', ')} FROM ${table}
     WHERE ${stringifyQuery(query.params)}
+  `, query.values)
+};
+
+module.exports.MATCH = async (table, query) => {
+  return pool.query(`
+    SELECT ${query.keys.join(', ')} FROM ${table}
+    WHERE ${stringifyQuery(query.params, 'REGEXP')}
   `, query.values)
 };
 

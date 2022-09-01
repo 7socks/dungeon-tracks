@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const db = require('./db/index');
 const { matchUser, createUser, logIn, logOut } = require('./db/users');
+const { getFX, getTracks } = require('./db/sounds');
 const Dungeon = require('./db/dungeon');
 const { genPlaylist, checkSession } = require('./util');
 
@@ -27,13 +28,18 @@ app.use((req, res, next) => {
 
 // Search sound library
 app.get('/sounds', (req, res) => {
+  getTracks(req.query.s)
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).send();
+    })
 });
 
 // Request dungeon list
 app.get('/dungeons', checkSession, (req, res) => {
-  // if (req.userId === null) {
-  //   res.status(401).send();
-  // }
   Dungeon.list(req.userId)
     .then((data) => {
       res.status(200).send(data);
