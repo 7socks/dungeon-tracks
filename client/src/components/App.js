@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { useSelector } from 'react-redux';
+import Audio from '../app/audio';
 
 import Nav from './Nav';
 import LogIn from './LogIn';
@@ -22,6 +23,11 @@ const App = () => {
   const [dungeonList, setDungeonList] = useState([]);
   const [viewDungeon, setViewDungeon] = useState(selectedDungeon);
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    // Stop sample audio upon leaving search page
+    page !== 1 && Audio.stopSample();
+  }, [page]);
 
   return (
     <AppContainer>

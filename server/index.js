@@ -28,9 +28,15 @@ app.use((req, res, next) => {
 
 // Search sound library
 app.get('/sounds', (req, res) => {
+  const responseData = {};
   getTracks(req.query.s)
     .then((data) => {
-      res.status(200).send(data);
+      responseData.tracks = data;
+      return getFX(req.query.s);
+    })
+    .then((data) => {
+      responseData.fx = data;
+      res.status(200).send(responseData);
     })
     .catch((err) => {
       console.log(err);

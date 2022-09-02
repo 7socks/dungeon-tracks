@@ -76,8 +76,12 @@ export const audioSlice = createSlice({
         state.track -= 1;
       }
     },
-    playPause: (state) => {
-      state.playing = !state.playing;
+    playPause: (state, action) => {
+      if (action.playload !== undefined) {
+        state.playing = action.payload;
+      } else {
+        state.playing = !state.playing;
+      }
     },
     mute: (state) => {
       state.muted = !state.muted;

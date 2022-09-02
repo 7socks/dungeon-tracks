@@ -80,7 +80,7 @@ const ControlBarContainer = styled(ControlsContainer)`
     position: relative;
     width: 15em;
     height: 100%;
-    display: flex;
+    display: inline-flex;
     justify-content: flex-start;
     align-items: center;
     overflow: hidden;
@@ -88,8 +88,9 @@ const ControlBarContainer = styled(ControlsContainer)`
     white-space: nowrap;
 
     span {
+      display: inline-block;
       height: fit-content;
-      width: 15em;
+      width: fit-content;
       overflow: hidden;
       text-overflow: ellipsis;
       margin: 0;

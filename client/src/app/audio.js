@@ -4,10 +4,12 @@ const Audio = {
   queue: [],
   queueIndex: 0,
   track: null,
-  fx: null
+  fx: null,
+  sample: null
 };
 
 Audio.playTrack = (src, callback) => {
+  Audio.sample && Audio.sample.stop();
   Audio.track && Audio.track.unload();
 
   Audio.track = new Howl({ src: [src] });
@@ -43,6 +45,7 @@ Audio.skipForward = (callback) => {
 };
 
 Audio.playFX = (src, callback) => {
+  Audio.sample && Audio.sample.stop();
   Audio.fx && Audio.fx.unload();
 
   Audio.fx = new Howl({ src: [src] });
@@ -79,5 +82,18 @@ Audio.timecode = () => {
     return null;
   }
 };
+
+Audio.playSample = (src) => {
+  Audio.sample && Audio.sample.unload();
+  Audio.sample = new Howl({src: [src]});
+
+  Audio.track && Audio.track.pause();
+
+  Audio.sample.play();
+};
+
+Audio.stopSample = () => {
+  Audio.sample && Audio.sample.stop();
+}
 
 export default Audio;
