@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { playPause } from '../app/reducers/audioSlice';
 
 import REQUEST from '../router/router';
+import Loader from './Loader';
 
 const PageContainer = styled.div`
   height: 100%;
@@ -61,25 +62,25 @@ const ResultItem = styled.li`
   align-items: center;
   height: 2em;
   width: 100%;
-  color: ${({playing}) =>
+  color: ${({ playing }) =>
     playing
       ? 'var(--theme-list-text-selected)'
       : 'var(--theme-btn-text-undim)'
   };
 
   span.play-icon {
-    visibility: ${({playing}) => playing ? 'visible' : 'hidden'};
+    visibility: ${({ playing }) => playing ? 'visible' : 'hidden'};
     color: var(--theme-text);
     position: absolute;
     left: -1.5em;
   }
 
   :hover {
-    color: ${({playing}) =>
-      playing
-        ? 'var(--theme-list-text-selected)'
-        : 'var(--theme-text)'
-    };
+    color: ${({ playing }) =>
+    playing
+      ? 'var(--theme-list-text-selected)'
+      : 'var(--theme-text)'
+  };
 
     .play-icon {
       visibility: visible;
@@ -95,7 +96,14 @@ const ListHeader = styled.span`
   margin: .5em 0;
 `;
 
-const ResultList = ({playingSample, playSound, results, type}) => {
+const ResultList = ({ playingSample, playSound, results, type, loading }) => {
+  if (loading) {
+    return <ResultListContainer>
+      <ListHeader>{type}</ListHeader>
+      <ResultItem><Loader size='20px'/></ResultItem>
+    </ResultListContainer>
+  }
+
   return <ResultListContainer>
     <ListHeader>{type}</ListHeader>
     {results.map((item, i) => {
@@ -105,7 +113,7 @@ const ResultList = ({playingSample, playSound, results, type}) => {
         onClick={() => playSound(item, i, type)}
       >
         <span className="play-icon">
-          {playingSample === type + '-' + i ? <FaStop/> : <FaPlay/>}
+          {playingSample === type + '-' + i ? <FaStop /> : <FaPlay />}
         </span>
         <span>{item.title}</span>
       </ResultItem>
@@ -151,7 +159,7 @@ const Search = () => {
         value={term}
         onChange={(e) => setTerm(e.target.value)}
       />
-      <button onClick={submit}><FaSearch/></button>
+      <button onClick={submit}><FaSearch /></button>
     </SearchContainer>
 
     <ResultsContainer>
@@ -160,12 +168,14 @@ const Search = () => {
         results={trackResults}
         playingSample={playingSample}
         playSound={playSound}
+        loading={loading}
       />
       <ResultList
         type="effects"
         results={fxResults}
         playingSample={playingSample}
         playSound={playSound}
+        loading={loading}
       />
     </ResultsContainer>
   </PageContainer>;
