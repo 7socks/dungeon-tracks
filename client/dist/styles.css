@@ -31,8 +31,14 @@
   --theme-login-btn-text: #fff;
   --theme-login-error: #850000;
 
-  --theme-search-bar-bg: #fff;
-  --theme-search-bar-text: #282828;
+  --theme-search-bar-bg: transparent;
+  --theme-search-bar-text: #fff;
+  --theme-search-bar-border: #fff;
+  --theme-search-bar-outline: #00dc84;
+  --theme-search-go-bg: transparent;
+  --theme-search-go-bg-hover: #5b80c0;
+  --theme-search-go-text: #fff;
+  --theme-search-go-border: #fff;
 
   --theme-popup-bg: #213352;
   --theme-popup-border: #fff;

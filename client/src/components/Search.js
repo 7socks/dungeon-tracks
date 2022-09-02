@@ -24,14 +24,32 @@ const SearchContainer = styled.div`
   justify-content: center;
 
   input[type="text"] {
-    border: none;
-    background: (--theme-search-bar-bg);
-    color: (--theme-search-bar-text);
+    border: 2px solid var(--theme-search-bar-border);
+    background: var(--theme-search-bar-bg);
+    color: var(--theme-search-bar-text);
     height: 2em;
     width: 30em;
     font-size: 18px;
     padding: 0 1em;
     border-radius: 1em 0 0 1em;
+
+    :focus {
+      outline: var(--theme-search-bar-outline);
+    }
+  }
+
+  button {
+    border: 2px solid var(--theme-search-go-border);
+    border-left: none;
+    background: var(--theme-search-go-bg);
+    color: var(--theme-search-go-text);
+    border-radius: 0 1em 1em 0;
+    padding: 0 .5em;
+    font-size: 18px;
+
+    :hover {
+      background: var(--theme-search-go-bg-hover);
+    }
   }
 `;
 
@@ -61,7 +79,6 @@ const ResultItem = styled.li`
   justify-content: flex-start;
   align-items: center;
   height: 2em;
-  width: 100%;
   color: ${({ playing }) =>
     playing
       ? 'var(--theme-list-text-selected)'
