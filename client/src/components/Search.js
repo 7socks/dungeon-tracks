@@ -155,7 +155,12 @@ const Search = () => {
         setTrackResults(data.tracks);
         setFxResults(data.fx);
         setLoading(false);
-      });
+      })
+      .catch(() => {
+        setTrackResults([]);
+        setFxResults([]);
+        setLoading(false);
+      })
   };
 
   const playSound = (sound, i, type) => {
