@@ -52,6 +52,8 @@ const HeaderContainer = styled.div`
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: flex-start;
+  max-height: 2em;
 
   h1 {
     margin: 0;
@@ -67,6 +69,7 @@ const TitleContainer = styled.div`
     border-bottom: 2px solid var(--theme-btn-text-undim);
     outline: none;
     font-family: inherit;
+    font-weight: bold;
   }
 `;
 

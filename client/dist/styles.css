@@ -70,4 +70,5 @@ body {
   background: var(--theme-bg);
   color: var(--theme-text);
   font-family: 'Raleway', sans-serif;
+  --theme-font: 'Raleway', sans-serif;
 }
