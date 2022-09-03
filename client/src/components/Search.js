@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { FaSearch, FaPlay, FaStop, FaPlus, FaMinus } from 'react-icons/fa';
 import { AiOutlineLoading3Quarters as AiLoading } from 'react-icons/fa';
@@ -179,9 +179,12 @@ const ToggleIcon = styled.span`
   color: var(--theme-btn-text-undim);
 `;
 
-const DungeonsList = ({ sound, type, list }) => {
+const DungeonsList = ({ sound, type, list, closePopup}) => {
   const [selected, setSelected] = useState(null);
   const [loadState, setLoadState] = useState(false);
+  const focusRef = useCallback((element) => {
+    element && element.focus();
+  }, []);
 
   const addSound = (dungeon) => {
     setLoadState(true);
@@ -195,7 +198,11 @@ const DungeonsList = ({ sound, type, list }) => {
       })
   };
 
-  return <DungeonsListContainer>
+  return <DungeonsListContainer
+      tabIndex="-1"
+      ref={focusRef}
+      onBlur={closePopup}
+    >
     <ul>
       {
         list.map((dungeon, i) => {
@@ -263,6 +270,7 @@ const ResultList = ({ playingSample, playSound, results, type, loading, cache })
               sound={item}
               type={type}
               list={cache}
+              closePopup={() => setAddingSound(null)}
             />
         }
       </ResultItem>
