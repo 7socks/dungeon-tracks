@@ -91,6 +91,12 @@ const LogInContainer = styled.div`
     margin-top: 1em;
     font-size: 14px;
     color: var(--theme-login-text-plain);
+    display: inline-flex;
+    align-items: flex-end;
+
+    span {
+      margin: 0 .1em;
+    }
 
     .selector {
       color: var(--theme-login-text);
@@ -193,13 +199,11 @@ const LogIn = ({setPage}) => {
       </button>
 
       <div className="login-toggle">
-        {
-          existing
-          ? <span>New?  </span>
-          : <span>Already have an account?  </span>
-        }
+        <span className="login-toggle">
+          {existing ? 'New?' : 'Already have an account?'}
+        </span>
         <span
-          className="login-toggle selector"
+          className="selector"
           onClick={() => setExisting(!existing)}
         >
           {existing ? 'Create an account' : 'Log in'}
