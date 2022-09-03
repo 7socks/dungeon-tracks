@@ -107,17 +107,39 @@ module.exports.updatePlaylist = async (dungeonId, data, playlist) => {
   // }
 
   // From array
-  let ids = data.map((item) => {
-    return item.id;
-  });
+  // let ids = data.map((item) => {
+  //   return item.id;
+  // });
 
-  return Promise.all(ids.map((id, i) => {
+  return Promise.all(data.map((item, i) => {
     return db.PATCH('dungeons_' + playlist, {
       params: ['dungeon_id', 'id'],
-      values: [dungeonId, id]
+      values: [dungeonId, item.id]
     }, {
       key: 'position',
       value: i
+    })
+    .then((res) => {
+      if (playlist === 'tracks') return;
+
+      return db.PATCH('dungeons_' + playlist, {
+        params: ['dungeon_id', 'id'],
+        values: [dungeonId, item.id]
+      }, {
+        key: 'icon',
+        value: item.icon
+      })
+    })
+    .then(() => {
+      if (playlist === 'tracks') return;
+
+      return db.PATCH('dungeons_' + playlist, {
+        params: ['dungeon_id', 'id'],
+        values: [dungeonId, item.id]
+      }, {
+        key: 'color',
+        value: item.color
+      })
     })
   }))
 };

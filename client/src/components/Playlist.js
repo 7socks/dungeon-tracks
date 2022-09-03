@@ -103,12 +103,6 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
   const playingDungeon = useSelector((state) => state.audio.dungeon);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (playingDungeon === null) {
-  //     dispatch(setDungeosn(viewDungeon));
-  //   }
-  // },[]);
-
   const isSelected = playingDungeon && playingDungeon.id === viewDungeon.id;
   const selectedTrack = playingDungeon ? playingDungeon.tracks[playingTrack] : null;
 
@@ -130,6 +124,7 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
     let updatedPlaylist = playlist.slice();
     let updatedEffect = {
       id: effect.id,
+      effect_id: effect.effect_id,
       position: effect.position,
       source: effect.source,
       title: effect.title,
@@ -174,7 +169,6 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
                   icon={track.icon}
                   color={track.color}
                   playing={playingEffect === track}
-                  onClick={()=>{}}
                   />
                 : null
               }

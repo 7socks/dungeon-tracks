@@ -155,12 +155,17 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
     element && element.focus();
   }, []);
 
-  const confirm = (e) => {
-    e.stopPropagation();
-    onConfirm(icon, color);
-  };
-
-  return <FXIconEditorContainer tabIndex="-1" ref={focusRef} onBlur={onCancel}>
+  return <FXIconEditorContainer
+    tabIndex="-1"
+    ref={focusRef}
+    onBlur={(e) => {
+      if (e.relatedTarget.classList.contains('edit-btn-confirm')) {
+        e.stopPropagation();
+      } else {
+        onCancel();
+      }
+    }}
+  >
     <PickerContainer type="color">
       {COLORS.map((opt) => {
         return <ColorInput
@@ -192,7 +197,10 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
       <button className="edit-btn-cancel" onClick={onCancel}>
         <ImCross />
       </button>
-      <button className="edit-btn-confirm" onClick={confirm}>
+      <button className="edit-btn-confirm" onClick={(e) => {
+        e.stopPropagation();
+        onConfirm(icon, color)
+      }}>
         <ImCheckmark />
       </button>
     </CancelConfirmContainer>

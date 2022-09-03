@@ -153,7 +153,6 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
   const playingDungeon = useSelector((state) => state.audio.dungeon);
   const playingTrack = useSelector((state) => state.audio.track);
   const dispatch = useDispatch();
-  console.log(viewDungeon)
 
   const deleteDungeon = () => {
     REQUEST.deleteDungeon(viewDungeon.id)

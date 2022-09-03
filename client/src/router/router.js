@@ -25,6 +25,7 @@ async function createDungeon (data) {
 async function updateDungeon (data) {
   return axios.patch('/dungeon', data)
     .then((res) => res.data)
+    .catch(() => console.log('failure'))
 }
 
 async function addSoundToDungeon (data) {
