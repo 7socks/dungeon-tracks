@@ -2,7 +2,7 @@ const db = require('./index.js');
 
 module.exports.getFX = async (query) => {
   return db.MATCH('effects', {
-    keys: ['title', 'source'],
+    keys: ['title', 'source', 'id'],
     params: ['title'],
     values: [query]
   })
@@ -11,7 +11,7 @@ module.exports.getFX = async (query) => {
 
 module.exports.getTracks = async (query) => {
   return db.MATCH('tracks', {
-    keys: ['title, source'],
+    keys: ['title, source', 'id'],
     params: ['title'],
     values: [query]
   })

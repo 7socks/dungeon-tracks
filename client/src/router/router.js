@@ -27,6 +27,11 @@ async function updateDungeon (data) {
     .then((res) => res.data)
 }
 
+async function addSoundToDungeon (data) {
+  return axios.post('/dungeon_sounds', data)
+    .then((res) => res.data)
+};
+
 async function getDungeons () {
   return axios.get('/dungeons')
     .then((res) => res.data)
@@ -67,5 +72,6 @@ export default {
   getDungeons,
   getDungeon,
   deleteDungeon,
+  addSoundToDungeon,
   getSounds
 };

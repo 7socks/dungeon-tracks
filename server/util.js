@@ -15,12 +15,14 @@ module.exports.genPlaylist = (list) => {
         id: track._id,
         title: track.title,
         icon: track.icon,
-        color: track.color
+        color: track.color,
+        sound_id: track.effect_id || track.track_id
       };
     } else {
       return {
         id: track.id,
-        title: track.title
+        title: track.title,
+        sound_id: track.effect_id || track.track_id
       };
     }
   })

@@ -104,6 +104,26 @@ app.patch('/dungeon', checkSession, (req, res) => {
     })
 });
 
+// Add fx or track to a dungeon
+app.post('/dungeon_sounds', checkSession, (req, res) => {
+  let playlist = req.body.type;
+  Dungeon.get(req.userId, Number(req.body.dungeonId))
+    .then((data) => {
+      let key = playlist.slice(0, playlist.length - 1) + '_id';
+      let ids = data[req.body.type].map((item) => item[key]);
+      if (!ids.includes(req.body.soundId)) {
+        return Dungeon.addToPlaylist(req.body)
+      }
+    })
+    .then(() => {
+      res.status(200).send();
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(400).send();
+    })
+})
+
 // Delete dungeon
 app.delete('/dungeon', checkSession, (req, res) => {
   Dungeon.get(req.userId, Number(req.body.id))

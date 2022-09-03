@@ -122,6 +122,14 @@ module.exports.updatePlaylist = async (dungeonId, data, playlist) => {
   }))
 };
 
+module.exports.addToPlaylist = async ({dungeonId, soundId, type}) => {
+  let soundIdKey = type.slice(0, type.length - 1) + '_id';
+  return db.POST('dungeons_' + type, {
+    dungeon_id: dungeonId,
+    [soundIdKey]: soundId
+  })
+};
+
 const getPlaylist = async (dungeonId, playlist) => {
   let singular = playlist.slice(0, playlist.length - 1);
   return db.GET('dungeons_' + playlist, {
@@ -142,7 +150,7 @@ const getPlaylist = async (dungeonId, playlist) => {
             track.source = res[0].source;
 
             delete track.dungeon_id;
-            delete track[singular + '_id'];
+            //delete track[singular + '_id'];
             return track;
           })
       }))
