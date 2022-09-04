@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { muffle } from '../app/reducers/audioSlice';
+import Audio from '../app/audio';
 
 const StyledButton = styled.button`
   padding: .2em;
@@ -29,9 +30,14 @@ const MuffleButton = () => {
   const muffled = useSelector((state) => state.audio.muffled);
   const dispatch = useDispatch();
 
+  const handleClick = () => {
+    dispatch(muffle());
+    Audio.muffle();
+  }
+
   return (<StyledButton className="muffle-btn"
     muffled={muffled}
-    onClick={() => dispatch(muffle())}
+    onClick={handleClick}
   >Muffle
   </StyledButton>);
 };

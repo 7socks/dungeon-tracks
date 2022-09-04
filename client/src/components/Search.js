@@ -292,6 +292,7 @@ const Search = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // mem leak warning (if switch pg while waiting for response)
     if (loggedIn) {
       REQUEST.getDungeons()
         .then((data) => {

@@ -150,20 +150,24 @@ const DungeonTitle = ({ title, update }) => {
 
 const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
   const [deletion, setDeletion] = useState(false);
+  //const [loadingDeletion, setLoadingDeletion] = useState(false);
+
   const playingDungeon = useSelector((state) => state.audio.dungeon);
   const playingTrack = useSelector((state) => state.audio.track);
   const dispatch = useDispatch();
 
   const deleteDungeon = () => {
+    //setLoadingDeletion(true);
     REQUEST.deleteDungeon(viewDungeon.id)
       .then(() => {
         setPage(2);
       })
       .catch(() => setDeletion(false))
+      //.finally(() => setLoadingDeletion(false))
   };
 
-  const updateDungeon = (update) => {
-    REQUEST.updateDungeon(update)
+  const updateDungeon = async (update) => {
+    return REQUEST.updateDungeon(update)
       .then((data) => {
         setViewDungeon(data);
         if (playingDungeon && playingDungeon.id === data.id) {
@@ -182,16 +186,16 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
       });
   };
 
-  const updatePlaylist = (isFX, list) => {
-    updateDungeon({
+  const updatePlaylist = async (isFX, list) => {
+    return updateDungeon({
       id: viewDungeon.id,
       key: isFX ? 'effects' : 'tracks',
       payload: list
     });
   };
 
-  const updateTitle = (title) => {
-    updateDungeon({
+  const updateTitle = async (title) => {
+    return updateDungeon({
       id: viewDungeon.id,
       key: 'title',
       payload: title

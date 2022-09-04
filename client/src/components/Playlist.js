@@ -6,7 +6,7 @@ import { TiArrowSortedUp, TiArrowSortedDown } from 'react-icons/ti';
 import Audio from '../app/audio';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setTrack, setDungeon, playFX } from '../app/reducers/audioSlice';
+import { setTrack, setDungeon, playFX, playPause } from '../app/reducers/audioSlice';
 
 import { FXIcon, FXIconEditor } from './FXIcon';
 
@@ -136,10 +136,11 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
     updateList(true, updatedPlaylist);
   };
 
-  const selectTrack = (i) => {
+  const selectTrack = (index) => {
     dispatch(setDungeon(viewDungeon));
-    dispatch(setTrack(i));
-    Audio.playQueue(viewDungeon.tracks.slice(i), (i) => {
+    dispatch(setTrack(index));
+    dispatch(playPause(true));
+    Audio.playQueue(viewDungeon.tracks, index, (i) => {
       dispatch(setTrack(i));
     });
   };
@@ -152,13 +153,14 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
           playlist.map((track, i) => {
             return <li
               key={i}
-              onClick={() => {
+              onClick={(e) => {
                 if (fx) {
                   dispatch(playFX(track));
                   Audio.playFX(track.source, () => {
                     dispatch(playFX(null));
                   });
                 } else {
+                  console.log(e.relatedTarget)
                   selectTrack(i);
                 }
               }}

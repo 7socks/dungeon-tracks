@@ -63,7 +63,6 @@ export const audioSlice = createSlice({
       state.dungeon = action.payload;
     },
     setTrack: (state, action) => {
-      state.playing = true;
       state.track = action.payload;
     },
     trackForward: (state) => {
@@ -77,7 +76,7 @@ export const audioSlice = createSlice({
       }
     },
     playPause: (state, action) => {
-      if (action.playload !== undefined) {
+      if (action.payload !== undefined) {
         state.playing = action.payload;
       } else {
         state.playing = !state.playing;

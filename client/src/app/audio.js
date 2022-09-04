@@ -1,19 +1,24 @@
 import { Howl, Howler } from 'howler';
+import AudioFX from 'audiofx';
 
 const Audio = {
   queue: [],
   queueIndex: 0,
   track: null,
   fx: null,
-  sample: null
+  sample: null,
+  muffled: false
 };
 
-Audio.playTrack = (src, callback) => {
+Audio.playTrack = (src, callback, autoplay = true) => {
   Audio.sample && Audio.sample.stop();
   Audio.track && Audio.track.unload();
 
-  Audio.track = new Howl({ src: [src] });
-  Audio.track.play();
+  Audio.track = new Howl({
+    src: [src],
+    autoplay: autoplay,
+    html5: true
+  });
 
   if (Audio.queueIndex < Audio.queue.length - 1) {
     Audio.track.on('end', () => {
@@ -31,16 +36,18 @@ Audio.playQueue = (tracks, index = 0, callback) => {
 };
 
 Audio.skipBack = (callback) => {
+  let autoplay = Audio.track && Audio.track.playing();
   if (Audio.queueIndex > 0) {
     Audio.queueIndex -= 1;
-    Audio.playTrack(Audio.queue[Audio.queueIndex], callback);
+    Audio.playTrack(Audio.queue[Audio.queueIndex], callback, autoplay);
   }
 };
 
 Audio.skipForward = (callback) => {
+  let autoplay = Audio.track && Audio.track.playing();
   if (Audio.queueIndex < Audio.queue.length - 1) {
     Audio.queueIndex += 1;
-    Audio.playTrack(Audio.queue[Audio.queueIndex], callback);
+    Audio.playTrack(Audio.queue[Audio.queueIndex], callback, autoplay);
   }
 };
 
@@ -70,6 +77,15 @@ Audio.setVolume = (volume) => {
 
 Audio.mute = (state) => {
   Howler.mute(state);
+};
+
+Audio.muffle = () => {
+  // if (Audio.muffled) {
+  //   Audio.track.filter(1, null);
+  // } else {
+  //   Audio.track.filter(.5, null);
+  // }
+  // Audio.muffled = !Audio.muffled;
 };
 
 Audio.duration = (track) => {

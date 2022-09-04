@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaPlus } from 'react-icons/fa';
 
 import { useSelector } from 'react-redux';
 import REQUEST from '../router/router';
+import Loader from './Loader';
 
 const MsgContainer = styled.div`
   display: grid;
@@ -78,10 +79,12 @@ const CreateContainer = styled(DungeonContainer)`
 
 const DungeonList = ({setViewDungeon, dungeonList, setDungeonList, setPage}) => {
   const loggedIn = useSelector((state) => state.user.loggedIn);
+  const [loading, setLoading] = useState(loggedIn);
 
   useEffect(() => {
-    REQUEST.getDungeons()
+    loggedIn && REQUEST.getDungeons()
       .then((data) => {
+        setLoading(false);
         setDungeonList(data);
       })
   }, []);
@@ -103,12 +106,16 @@ const DungeonList = ({setViewDungeon, dungeonList, setDungeonList, setPage}) => 
       });
   };
 
-  if (loggedIn) {
+  if (loading) {
+    return <MsgContainer>
+      <Loader/>
+    </MsgContainer>
+  } else if (loggedIn) {
     return <ListContainer>
     {dungeonList.map((dungeon, i) => {
       return <DungeonContainer key={i} onClick={() => selectDungeon(dungeon.id)}>
         <span>{dungeon.title}</span>
-      </DungeonContainer>;
+      </DungeonContainer>
     })}
     <CreateContainer onClick={handleCreate}><span><FaPlus/></span></CreateContainer>
   </ListContainer>

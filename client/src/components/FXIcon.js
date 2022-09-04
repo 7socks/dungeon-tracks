@@ -158,6 +158,7 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
   return <FXIconEditorContainer
     tabIndex="-1"
     ref={focusRef}
+    onClick={(e) => e.stopPropagation()}
     onBlur={(e) => {
       if (e.relatedTarget.classList.contains('edit-btn-confirm')) {
         e.stopPropagation();
