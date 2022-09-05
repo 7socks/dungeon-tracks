@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setTrack, setDungeon, playFX, playPause } from '../app/reducers/audioSlice';
 
 import { FXIcon, FXIconEditor } from './FXIcon';
+import Loader from './Loader';
 
 const PlaylistContainer = styled.div`
   position: relative;
@@ -16,6 +17,8 @@ const PlaylistContainer = styled.div`
   cursor: default;
 
   h2 {
+    display: flex;
+    flex-direction: row;
     margin: 0 0 .2em .2em;
     font-size: 18px;
   }
@@ -72,7 +75,6 @@ const EditButton = styled.button`
 
   :hover {
     color: var(--theme-btn-text-undim);
-  }
 `;
 
 const EditIconButton = styled(EditButton)`
@@ -96,7 +98,7 @@ const EditButtonsContainer = styled.div`
   right: 0;
 `;
 
-const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
+const Playlist = ({playlist, fx, updateList, viewDungeon, loading}) => {
   const [editIcon, setEditIcon] = useState(null);
   const playingEffect = useSelector((state) => state.audio.effect);
   const playingTrack = useSelector((state) => state.audio.track);
@@ -109,14 +111,16 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
   const orderPlaylist = (e, index, shift) => {
     e.stopPropagation();
 
-    let updatedPlaylist = playlist.slice();
-    let current = playlist[index];
-    let alt = playlist[index + shift];
+    if (!loading) {
+      let updatedPlaylist = playlist.slice();
+      let current = playlist[index];
+      let alt = playlist[index + shift];
 
-    updatedPlaylist[index] = alt;
-    updatedPlaylist[index + shift] = current;
+      updatedPlaylist[index] = alt;
+      updatedPlaylist[index + shift] = current;
 
-    updateList(!!fx, updatedPlaylist);
+      updateList(!!fx, updatedPlaylist);
+    }
   };
 
   const updateIcon = (index, icon, color) => {
@@ -147,7 +151,10 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
 
   return (
     <PlaylistContainer fx={fx}>
-      <h2>{fx ? 'Effects' : 'Tracks'}</h2>
+      <h2>
+        <span>{fx ? 'Effects' : 'Tracks'}</span>
+        { loading && <Loader size="inherit"/> }
+      </h2>
       <ol>
         {
           playlist.map((track, i) => {
@@ -160,7 +167,6 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
                     dispatch(playFX(null));
                   });
                 } else {
-                  console.log(e.relatedTarget)
                   selectTrack(i);
                 }
               }}
@@ -182,7 +188,7 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
               <EditButtonsContainer>
                 {
                   i > 0
-                  ? <EditButton onClick={(e) => orderPlaylist(e, i, -1, fx)}>
+                  ? <EditButton loading={loading} onClick={(e) => orderPlaylist(e, i, -1, fx)}>
                       <TiArrowSortedUp/>
                     </EditButton>
                   : null
@@ -190,7 +196,7 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
 
                 {
                   i + 1 < playlist.length
-                  ? <EditButton onClick={(e) => orderPlaylist(e, i, 1, fx)}>
+                  ? <EditButton loading={loading} onClick={(e) => orderPlaylist(e, i, 1, fx)}>
                       <TiArrowSortedDown/>
                     </EditButton>
                   : null
@@ -220,10 +226,7 @@ const Playlist = ({playlist, fx, updateList, viewDungeon}) => {
                       updateIcon(i, icon, color);
                       setEditIcon(null);
                     }}
-                    onCancel={(e) => {
-                      e.stopPropagation();
-                      setEditIcon(null);
-                    }}
+                    onCancel={() => setEditIcon(null)}
                   />
                 : null
               }

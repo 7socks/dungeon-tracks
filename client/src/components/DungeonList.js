@@ -103,6 +103,7 @@ const DungeonList = ({setViewDungeon, dungeonList, setDungeonList, setPage}) => 
   };
 
   const selectDungeon = (id) => {
+    setViewDungeon(null);
     setPage(3);
     REQUEST.getDungeon(id)
       .then((data) => {

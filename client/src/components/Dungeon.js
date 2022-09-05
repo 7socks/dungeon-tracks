@@ -140,7 +140,7 @@ const DeletionWindow = ({ confirm, cancel, loading }) => {
   </DeletionContainer>
 };
 
-const DungeonTitle = ({ title, update }) => {
+const DungeonTitle = ({ title, update, loading }) => {
   const [focused, setFocused] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
@@ -162,9 +162,13 @@ const DungeonTitle = ({ title, update }) => {
   if (!editing) {
     return <TitleContainer>
       <h1>{title}</h1>
-      <button onClick={() => setEditing(true)}>
-        <HiPencil />
-      </button>
+      {
+        loading
+        ? <Loader size="18px"/>
+        : <button onClick={() => setEditing(true)}>
+            <HiPencil />
+          </button>
+      }
     </TitleContainer>;
   } else {
     return (<TitleContainer onBlur={focused ? handleBlur : null}>
@@ -180,6 +184,9 @@ const DungeonTitle = ({ title, update }) => {
 const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
   const [deletion, setDeletion] = useState(false);
   const [loadingDeletion, setLoadingDeletion] = useState(false);
+  const [loadingTitle, setLoadingTitle] = useState(false);
+  const [loadingTracks, setLoadingTracks] = useState(false);
+  const [loadingEffects, setLoadingEffects] = useState(false);
 
   const playingDungeon = useSelector((state) => state.audio.dungeon);
   const playingTrack = useSelector((state) => state.audio.track);
@@ -215,20 +222,25 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
       });
   };
 
-  const updatePlaylist = async (isFX, list) => {
-    return updateDungeon({
+  const updatePlaylist = (isFX, list) => {
+    let setLoadingList = isFX ? setLoadingEffects : setLoadingTracks;
+    setLoadingList(true);
+    updateDungeon({
       id: viewDungeon.id,
       key: isFX ? 'effects' : 'tracks',
       payload: list
-    });
+    })
+      .then(() => setLoadingList(false))
   };
 
-  const updateTitle = async (title) => {
-    return updateDungeon({
+  const updateTitle = (title) => {
+    setLoadingTitle(true)
+    updateDungeon({
       id: viewDungeon.id,
       key: 'title',
       payload: title
-    });
+    })
+      .then(() => setLoadingTitle(false))
   };
 
   if (viewDungeon === null) {
@@ -239,7 +251,12 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
     return (
       <DungeonContainer>
         <HeaderContainer>
-          <DungeonTitle title={viewDungeon.title} update={updateTitle} />
+          <DungeonTitle
+            title={viewDungeon.title}
+            update={updateTitle}
+            loading={loadingTitle}
+          />
+
           <button className="del-btn" onClick={() => {
             setDeletion(true);
           }}>
@@ -256,8 +273,20 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
         </HeaderContainer>
 
         <PlaylistControls dungeon={viewDungeon} />
-        <Playlist updateList={updatePlaylist} playlist={viewDungeon.tracks} viewDungeon={viewDungeon} fx={0} />
-        <Playlist updateList={updatePlaylist} playlist={viewDungeon.effects} viewDungeon={viewDungeon} fx={1} />
+        <Playlist
+          loading={loadingTracks}
+          updateList={updatePlaylist}
+          playlist={viewDungeon.tracks}
+          viewDungeon={viewDungeon}
+          fx={0}
+        />
+        <Playlist
+          loading={loadingEffects}
+          updateList={updatePlaylist}
+          playlist={viewDungeon.effects}
+          viewDungeon={viewDungeon}
+          fx={1}
+        />
       </DungeonContainer>
     );
   }
