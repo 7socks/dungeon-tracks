@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { FaSearch, FaPlay, FaStop, FaPlus, FaMinus } from 'react-icons/fa';
 import { AiOutlineLoading3Quarters as AiLoading } from 'react-icons/fa';
+import { MdPlaylistAdd } from 'react-icons/md';
 import Audio from '../app/audio';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -100,6 +101,10 @@ const ResultItem = styled.li`
     border: none;
     background: none;
     color: var(--theme-btn-text-dim);
+    font-size: 24px;
+    display: grid;
+    justify-content: center;
+    align-content: center;
 
     :hover {
       color: var(--theme-btn-text-undim);
@@ -261,7 +266,7 @@ const ResultList = ({ playingSample, playSound, results, type, loading, cache })
               setAddingSound(i)
             }}
           >
-            <FaPlus />
+            <MdPlaylistAdd />
           </button>
         }
         {
@@ -299,7 +304,9 @@ const Search = () => {
           setCachedDungeons(data);
         });
     }
-  }, [loggedIn]);
+
+    return () => setCachedDungeons([])
+  }, []);
 
   const submit = () => {
     setLoading(true);
