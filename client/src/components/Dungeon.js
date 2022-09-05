@@ -11,6 +11,15 @@ import Audio from '../app/audio';
 
 import { PlaylistControls } from './AudioControls';
 import Playlist from './Playlist';
+import Loader from './Loader';
+
+const PageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  height: 100%;
+  width: 100%;
+`;
 
 const DungeonContainer = styled.div`
   display: flex;
@@ -89,9 +98,24 @@ const DeletionContainer = styled.div`
     flex-direction: row;
     justify-content: space-around;
   }
+
+  #del-delete-btn {
+    background: var(--theme-btn-bg-warning);
+    color: var(--theme-btn-text-undim);
+    border-radius: .3em;
+    width: 5em;
+
+    :hover {
+      color: var(--theme-text);
+    }
+  }
+
+  #del-delete-loader {
+    width: 5em;
+  }
 `;
 
-const DeletionWindow = ({ confirm, cancel }) => {
+const DeletionWindow = ({ confirm, cancel, loading }) => {
   const focusRef = useCallback((element) => {
     element && element.focus();
   }, []);
@@ -100,13 +124,18 @@ const DeletionWindow = ({ confirm, cancel }) => {
     tabIndex="-1"
     ref={focusRef}
     onBlur={(e) => {
-      e.relatedTarget.id !== 'del-delete-btn' && cancel();
+      if (e.relatedTarget && e.relatedTarget.id !== 'del-delete-btn') {
+        cancel();
+      }
     }}
   >
-    <p>Delete this dungeon?<br/>This cannot be undone.</p>
+    <p>Delete this dungeon?<br />This cannot be undone.</p>
     <div>
       <button id="del-cancel-btn" onClick={cancel}>CANCEL</button>
-      <button id="del-delete-btn" onClick={confirm}>DELETE</button>
+      { loading
+        ? <span id="del-delete-loader"><Loader size="inherit"/></span>
+        : <button id="del-delete-btn" onClick={confirm}>DELETE</button>
+      }
     </div>
   </DeletionContainer>
 };
@@ -150,20 +179,20 @@ const DungeonTitle = ({ title, update }) => {
 
 const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
   const [deletion, setDeletion] = useState(false);
-  //const [loadingDeletion, setLoadingDeletion] = useState(false);
+  const [loadingDeletion, setLoadingDeletion] = useState(false);
 
   const playingDungeon = useSelector((state) => state.audio.dungeon);
   const playingTrack = useSelector((state) => state.audio.track);
   const dispatch = useDispatch();
 
   const deleteDungeon = () => {
-    //setLoadingDeletion(true);
+    setLoadingDeletion(true);
     REQUEST.deleteDungeon(viewDungeon.id)
       .then(() => {
         setPage(2);
       })
       .catch(() => setDeletion(false))
-      //.finally(() => setLoadingDeletion(false))
+      .finally(() => setLoadingDeletion(false))
   };
 
   const updateDungeon = async (update) => {
@@ -202,27 +231,36 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
     });
   };
 
-  return (
-    <DungeonContainer>
-      <HeaderContainer>
-        <DungeonTitle title={viewDungeon.title} update={updateTitle} />
-        <button className="del-btn" onClick={() => {
-          setDeletion(true);
-        }}>
-          <MdDeleteForever />
-        </button>
-        {
-          deletion
-            ? <DeletionWindow confirm={deleteDungeon} cancel={() => setDeletion(false)} />
-            : null
-        }
-      </HeaderContainer>
+  if (viewDungeon === null) {
+    return <PageContainer>
+      <Loader/>
+    </PageContainer>
+  } else {
+    return (
+      <DungeonContainer>
+        <HeaderContainer>
+          <DungeonTitle title={viewDungeon.title} update={updateTitle} />
+          <button className="del-btn" onClick={() => {
+            setDeletion(true);
+          }}>
+            <MdDeleteForever />
+          </button>
+          {
+            deletion
+              ? <DeletionWindow
+                loading={loadingDeletion}
+                confirm={deleteDungeon}
+                cancel={() => setDeletion(false)} />
+              : null
+          }
+        </HeaderContainer>
 
-      <PlaylistControls dungeon={viewDungeon} />
-      <Playlist updateList={updatePlaylist} playlist={viewDungeon.tracks} viewDungeon={viewDungeon} fx={0} />
-      <Playlist updateList={updatePlaylist} playlist={viewDungeon.effects} viewDungeon={viewDungeon} fx={1} />
-    </DungeonContainer>
-  );
+        <PlaylistControls dungeon={viewDungeon} />
+        <Playlist updateList={updatePlaylist} playlist={viewDungeon.tracks} viewDungeon={viewDungeon} fx={0} />
+        <Playlist updateList={updatePlaylist} playlist={viewDungeon.effects} viewDungeon={viewDungeon} fx={1} />
+      </DungeonContainer>
+    );
+  }
 };
 
 export default Dungeon;
