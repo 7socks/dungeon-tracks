@@ -7,17 +7,34 @@ const Audio = {
   track: null,
   fx: null,
   sample: null,
-  muffled: false
+  volume: 1,
+  muted: false,
+  muffled: false,
+  muffleTrack: null
 };
 
 Audio.playTrack = (src, callback, autoplay = true) => {
   Audio.sample && Audio.sample.stop();
   Audio.track && Audio.track.unload();
+  Audio.muffleTrack && Audio.muffleTrack.remove();
 
   Audio.track = new Howl({
     src: [src],
-    autoplay: autoplay,
+    autoplay: Audio.muffled ? false : autoplay,
     html5: true
+  });
+
+  if (Audio.muffled) {
+    Audio.track.mute(true);
+  }
+
+  Audio.muffleTrack = new AudioFX(src, () => {
+    Audio.muffleTrack.filter(.5, 0);
+    Audio.muffleTrack.volume(Audio.muted ? 0 : Audio.volume / 2);
+    if (Audio.muffled && autoplay) {
+      Audio.track.play();
+      Audio.muffleTrack.play();
+    }
   });
 
   if (Audio.queueIndex < Audio.queue.length - 1) {
@@ -64,19 +81,35 @@ Audio.playFX = (src, callback) => {
 };
 
 Audio.pause = () => {
-  Audio.track && Audio.track.pause();
+  if (Audio.muffled) {
+    Audio.muffleTrack && Audio.muffleTrack.pause();
+    Audio.track && Audio.track.pause();
+  } else {
+    Audio.track && Audio.track.pause();
+  }
 };
 
 Audio.resume = () => {
-  Audio.track && Audio.track.play();
+  if (Audio.muffled) {
+    Audio.muffleTrack && Audio.muffleTrack.play(Audio.track.seek())
+    Audio.track && Audio.track.play();
+  } else {
+    Audio.track && Audio.track.play();
+  }
 };
 
 Audio.setVolume = (volume) => {
   Howler.volume(volume);
+  Audio.volume = volume;
+  if (!Audio.muted) {
+    AudioFXGlobal.changeVolumeAll(volume / 2);
+  }
 };
 
 Audio.mute = (state) => {
   Howler.mute(state);
+  Audio.muted = state;
+  AudioFXGlobal.changeVolumeAll(state ? 0 : Audio.volume);
 };
 
 Audio.muffle = () => {
@@ -86,6 +119,39 @@ Audio.muffle = () => {
   //   Audio.track.filter(.5, null);
   // }
   // Audio.muffled = !Audio.muffled;
+
+  // temp dev info button:
+  // console.log('Howler:')
+  // console.log(Audio.track)
+  // console.log(Audio.track.duration())
+
+  // console.log('AudioFX:')
+  // console.log(Audio.muffleTrack)
+  // Audio.track.pause();
+  // Audio.muffleTrack.play(Audio.track.seek())
+  // console.log(Audio.muffleTrack.getDuration())
+
+  // if (Audio.muffled) {
+  //   Audio.muffleTrack.volume(0);
+  //   Audio.track.mute();
+  // } else {
+  //   Audio.track.mute();
+  //   Audio.muffleTrack.play(Audio.track.seek());
+  // }
+  // Audio.muffled = !Audio.muffled;
+
+  Audio.muffled = !Audio.muffled;
+  if (Audio.track) {
+    if (Audio.muffled) {
+      Audio.track.mute(true);
+      if (Audio.track.playing()) {
+        Audio.muffleTrack.play(Audio.track.seek())
+      }
+    } else {
+      Audio.muffleTrack.pause();
+      Audio.track.mute(false);
+    }
+  }
 };
 
 Audio.duration = (track) => {
