@@ -13,11 +13,11 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 
 
 // !! Artificial response delay (for testing loader wheel)
-app.use((req, res, next) => {
-  setTimeout(() => {
-    next();
-  }, 3000);
-});
+// app.use((req, res, next) => {
+//   setTimeout(() => {
+//     next();
+//   }, 3000);
+// });
 
 
 

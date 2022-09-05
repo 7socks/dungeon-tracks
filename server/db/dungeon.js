@@ -58,20 +58,20 @@ module.exports.create = async (userId, data) => {
 };
 
 module.exports.delete = async (userId, dungeonId) => {
-  return db.DELETE('dungeons', {
-    params: ['user', 'id'],
-    values: [userId, dungeonId]
+  return db.DELETE('dungeons_tracks', {
+    params: ['dungeon_id'],
+    values: [dungeonId]
   })
     .then(() => {
-      return db.DELETE('dungeons_tracks', {
+      return db.DELETE('dungeons_effects', {
         params: ['dungeon_id'],
         values: [dungeonId]
       })
     })
     .then(() => {
-      return db.DELETE('dungeons_effects', {
-        params: ['dungeon_id'],
-        values: [dungeonId]
+      return db.DELETE('dungeons', {
+        params: ['user', 'id'],
+        values: [userId, dungeonId]
       })
     })
 };
