@@ -38,6 +38,7 @@ const ListContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   justify-items: center;
+  align-content: start;
   overflow-y: scroll;
   height: 100%;
 `;
@@ -80,6 +81,7 @@ const CreateContainer = styled(DungeonContainer)`
 const DungeonList = ({setViewDungeon, dungeonList, setDungeonList, setPage}) => {
   const loggedIn = useSelector((state) => state.user.loggedIn);
   const [loading, setLoading] = useState(loggedIn);
+  const [loadingCreate, setLoadingCreate] = useState(false);
 
   useEffect(() => {
     loggedIn && REQUEST.getDungeons()
@@ -90,19 +92,21 @@ const DungeonList = ({setViewDungeon, dungeonList, setDungeonList, setPage}) => 
   }, []);
 
   const handleCreate = () => {
+    setLoadingCreate(true);
     REQUEST.createDungeon({
       title: 'Untitled Dungeon'
     })
       .then((data) => {
         setDungeonList(data);
+        setLoadingCreate(false);
       })
   };
 
   const selectDungeon = (id) => {
+    setPage(3);
     REQUEST.getDungeon(id)
       .then((data) => {
         setViewDungeon(data);
-        setPage(3);
       });
   };
 
@@ -117,7 +121,11 @@ const DungeonList = ({setViewDungeon, dungeonList, setDungeonList, setPage}) => 
         <span>{dungeon.title}</span>
       </DungeonContainer>
     })}
-    <CreateContainer onClick={handleCreate}><span><FaPlus/></span></CreateContainer>
+    {
+      loadingCreate
+      ? <CreateContainer><span><Loader/></span></CreateContainer>
+      : <CreateContainer onClick={handleCreate}><span><FaPlus/></span></CreateContainer>
+    }
   </ListContainer>
   } else {
     return <MsgContainer>
