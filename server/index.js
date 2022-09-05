@@ -11,6 +11,16 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
+
+// !! Artificial response delay (for testing loader wheel)
+app.use((req, res, next) => {
+  setTimeout(() => {
+    next();
+  }, 3000);
+});
+
+
+
 // Validate user session from xsrf token
 app.use((req, res, next) => {
   let cookie = req.get('x-xsrf-token');

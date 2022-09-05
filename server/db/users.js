@@ -5,14 +5,12 @@ const db = require('./index');
 module.exports.createUser = async (username, password) => {
   return Auth.generate(password)
     .then((hash) => {
-      console.log('Hash length:', hash.length);
       return db.POST('users', {
         user: username,
         hashkey: hash
       });
     })
     .then(([data]) => {
-      console.log('created:', data);
       return db.GET('users', {
         keys: ['id'],
         params: ['user'],
@@ -54,6 +52,6 @@ module.exports.matchUser = async (cookie) => {
     values: [cookie]
   })
     .then(([data]) => {
-      return data[0].user;
+      return data[0] ? data[0].user : null;
     })
 };

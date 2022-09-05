@@ -146,8 +146,6 @@ module.exports.init = async () => {
 };
 
 module.exports.POST = async (table, data) => {
-  console.log('post data:', data)
-  stringifyData(data);
   return pool.query(`
     INSERT INTO ${table}
     (${stringifyData(data).keys})
