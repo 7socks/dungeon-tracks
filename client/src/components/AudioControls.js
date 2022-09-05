@@ -153,10 +153,12 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
   const dispatch = useDispatch();
 
   const onPlayPause = () => {
-    onPlay && onPlay();
-    dispatch(playPause());
+    if (currentDungeon.tracks.length > 0) {
+      onPlay && onPlay();
+      dispatch(playPause());
 
-    playing ? Audio.pause() : Audio.resume();
+      playing ? Audio.pause() : Audio.resume();
+    }
   };
 
   // if (currentDungeon === null) {
