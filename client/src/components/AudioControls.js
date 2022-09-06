@@ -62,6 +62,7 @@ const ControlBarContainer = styled(ControlsContainer)`
   align-items: center;
   justify-content: space-between;
   cursor: default;
+  border-top: 1px solid var(--theme-bar-border);
 
   span {
     margin: 0 .5em;

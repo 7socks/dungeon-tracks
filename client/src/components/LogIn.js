@@ -39,7 +39,7 @@ const LogInContainer = styled.div`
     padding: .1em .3em;
 
     :focus {
-      outline: 2px solid var(--theme-login-text-highlight);
+      outline: 2px solid var(--theme-login-select);
     }
   }
 
@@ -99,10 +99,10 @@ const LogInContainer = styled.div`
     }
 
     .selector {
-      color: var(--theme-login-text);
+      color: var(--theme-login-text-link);
       cursor: pointer;
       :hover {
-        color: var(--theme-login-text-highlight);
+        text-decoration: underline;
       }
     }
   }

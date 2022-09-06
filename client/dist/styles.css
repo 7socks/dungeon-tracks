@@ -13,7 +13,7 @@
 
   --theme-dungeoncard-bg: #fff;
   --theme-dungeoncard-text: #000;
-  --theme-dungeoncard-text-highlight: #006a3f;
+  --theme-dungeoncard-text-highlight: #4570a3;
 
   --theme-list-bg: rgba(163, 197, 255, 0.2);
   --theme-list-bg-highlight: rgba(198, 219, 255, 0.2);
@@ -24,16 +24,19 @@
 
   --theme-nav-bg: rgba(255, 255, 255, .3);
 
-  --theme-bar-bg: #32486d;
+  --theme-bar-bg: #151b26;
+  --theme-bar-border: rgba(255, 255, 255, .3);
 
   --theme-login-bg: #fff;
-  --theme-login-text: #006a3f;
-  --theme-login-text-highlight: #00dc84;
+  --theme-login-text: #4570a3;
+  --theme-login-text-link: #74c5ff;
+  --theme-login-text-highlight: #74c5ff;
   --theme-login-text-plain: #282828;
-  --theme-login-btn-bg: #006a3f;
-  --theme-login-btn-bg-hover: #00dc84;
+  --theme-login-btn-bg: #4570a3;
+  --theme-login-btn-bg-hover: #74c5ff;
   --theme-login-btn-text: #fff;
   --theme-login-error: #850000;
+  --theme-login-select: #a8dbff;
 
   --theme-search-bar-bg: transparent;
   --theme-search-bar-text: #fff;
