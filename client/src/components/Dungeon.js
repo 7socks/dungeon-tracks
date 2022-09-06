@@ -27,8 +27,12 @@ const DungeonContainer = styled.div`
   flex-wrap: wrap;
   justify-content: space-around;
   align-content: flex-start;
+  align-items: flex-start;
   width: 100%;
   height: 100%;
+  overflow: scroll;
+  padding-bottom: 1em;
+  background: var(--theme-bg-mask);
 
   button:not(.muffle-btn) {
     border: none;

@@ -15,6 +15,7 @@ const PlaylistContainer = styled.div`
   position: relative;
   width: ${({fx}) => fx ? '30' : '40'}%;
   cursor: default;
+  margin-bottom: 1em;
 
   h2 {
     display: flex;

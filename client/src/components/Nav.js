@@ -13,7 +13,8 @@ const NavContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   cursor: default;
-  margin-bottom: 1.2em;
+  padding-bottom: .2em;
+  background: var(--theme-nav-bg);
 
   h1 {
     margin: 0;

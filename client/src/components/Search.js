@@ -17,6 +17,7 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 1.2em;
 `;
 
 const SearchContainer = styled.div`
@@ -95,8 +96,7 @@ const ResultItem = styled.li`
   }
 
   #btn-add-to-dungeon {
-    position: absolute;
-    right: 2em;
+    position: relative;
     visibility: hidden;
     border: none;
     background: none;
@@ -140,7 +140,7 @@ const DungeonsListContainer = styled.div`
   z-index: var(--layer-popup);
   position: absolute;
   top: 2em;
-  right: 0;
+  left: 0;
   width: 15em;
   height: 18em;
   font-size: 14px;
