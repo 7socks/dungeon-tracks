@@ -51,19 +51,43 @@ const ICONS = {
 const COLORS = ['green', 'teal', 'blue', 'orange', 'red', 'pink'];
 
 const IconContainer = styled.span`
+  position: relative;
   height: 2em;
   width: 2em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-size: 18px;
-  border-radius: 50%;
-  background: var(--icon-color-${({color}) => color});
-  color: ${({playing}) =>
-    playing
-    ? 'var(--theme-list-text-selected)'
-    : '#fff'
-  };
+
+  .icon-main {
+    z-index: var(--layer-icon-main);
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    height: 2em;
+    width: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: var(--icon-color-${({color}) => color});
+    color: #fff;
+  }
+
+  .icon-glow {
+    z-index: var(--layer-icon-glow);
+    position: absolute;
+    top: -.5em;
+    left: -.5em;
+    margin: 0;
+    height: 3em;
+    width: 3em;
+    background: radial-gradient(
+      circle at center,
+      var(--theme-icon-glow),
+      transparent 1.4em,
+      transparent
+    );
+    border-radius: 50%;
+  }
 `;
 
 const FXIconEditorContainer = styled.div`
@@ -210,7 +234,8 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
 
 const FXIcon = ({playing, icon, color, onClick}) => {
   return <IconContainer playing={playing} color={color} onClick={onClick}>
-    {ICONS[icon]}
+    <span className="icon-main">{ICONS[icon]}</span>
+    { playing ? <span className="icon-glow"/> : null }
   </IconContainer>;
 };
 

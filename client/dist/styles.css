@@ -46,6 +46,7 @@
   --theme-popup-text: #fff;
 
   --theme-loader-color: rgba(255, 255, 255, 0.8);
+  --theme-icon-glow: #ff0;
 
   --icon-color-green: #2e8b2e;
   --icon-color-blue: #0F8CD1;
@@ -59,6 +60,8 @@
   --layer-nav: 30;
   --layer-bar: 20;
   --layer-main: 10;
+  --layer-icon-main: 25;
+  --layer-icon-glow: 24;
 }
 
 /* Base */

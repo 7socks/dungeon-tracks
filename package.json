@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.3",
+    "audiofx": "^0.1.0",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "express": "^4.18.1",

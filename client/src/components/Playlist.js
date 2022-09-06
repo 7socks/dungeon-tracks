@@ -153,7 +153,7 @@ const Playlist = ({playlist, fx, updateList, viewDungeon, loading}) => {
     <PlaylistContainer fx={fx}>
       <h2>
         <span>{fx ? 'Effects' : 'Tracks'}</span>
-        { loading && <Loader size="inherit"/> }
+        { loading ? <Loader size="inherit"/> : null }
       </h2>
       <ol>
         {
