@@ -3,6 +3,7 @@
   --theme-bg: #22223c;
   --theme-text: #fff;
   --theme-text-highlight: #b9ffff;
+  --theme-bg-mask: rgba(13, 14, 15, 0.8);
 
   --theme-btn-text-dim: rgba(255, 255, 255, 0.4);
   --theme-btn-text-undim: rgba(255, 255, 255, 0.8);
@@ -14,12 +15,14 @@
   --theme-dungeoncard-text: #000;
   --theme-dungeoncard-text-highlight: #006a3f;
 
-  --theme-list-bg: #213352;
-  --theme-list-bg-highlight: #32486d;
+  --theme-list-bg: rgba(163, 197, 255, 0.2);
+  --theme-list-bg-highlight: rgba(198, 219, 255, 0.2);
   --theme-list-border-inner: #5b80c0;
   --theme-list-border-outer: #5b80c0;
   --theme-list-text: #fff;
   --theme-list-text-selected: rgb(52, 255, 147);
+
+  --theme-nav-bg: rgba(255, 255, 255, .3);
 
   --theme-bar-bg: #32486d;
 
@@ -71,7 +74,8 @@ body {
   margin: 0;
   height: 100vh;
   width: 100vw;
-  background: var(--theme-bg);
+  background-color: var(--theme-bg);
+  background: no-repeat 5% 25% url('./assets/mountain_bg.jpg');
   color: var(--theme-text);
   font-family: 'Raleway', sans-serif;
   --theme-font: 'Raleway', sans-serif;
