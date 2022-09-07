@@ -18,6 +18,10 @@ const NavContainer = styled.div`
 
   h1 {
     margin: 0;
+    :hover {
+      color: var(--theme-text-highlight);
+      cursor: pointer;
+    }
   }
 
   div {
@@ -34,6 +38,7 @@ const NavContainer = styled.div`
 
   span:hover {
     color: var(--theme-text-highlight);
+    cursor: pointer;
   }
 
   .small {
@@ -60,7 +65,7 @@ const Nav = ({setPage, reset}) => {
   };
 
   return <NavContainer>
-    <h1>Dungeon Tracks</h1>
+    <h1 onClick={() => setPage(4)}>Dungeon Tracks</h1>
     <div>
       <span onClick={() => setPage(1)}>Browse Sounds</span>
       <span onClick={() => setPage(2)}>Your Dungeons</span>

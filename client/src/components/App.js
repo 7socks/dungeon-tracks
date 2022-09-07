@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import Audio from '../app/audio';
 
 import Nav from './Nav';
+import Home from './Home';
 import LogIn from './LogIn';
 import Search from './Search';
 import Dungeon from './Dungeon';
@@ -22,7 +23,7 @@ const App = () => {
   const selectedDungeon = useSelector((state) => state.audio.dungeon);
   const [dungeonList, setDungeonList] = useState([]);
   const [viewDungeon, setViewDungeon] = useState(selectedDungeon);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(4);
 
   useEffect(() => {
     // Stop sample audio upon leaving search page
@@ -48,6 +49,7 @@ const App = () => {
         setViewDungeon={setViewDungeon}
         setPage={setPage}
       />}
+      {page === 4 && <Home/>}
 
       <ControlBar/>
     </AppContainer>
