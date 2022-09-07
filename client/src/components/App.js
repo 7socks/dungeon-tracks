@@ -51,7 +51,7 @@ const App = () => {
       />}
       {page === 4 && <Home/>}
 
-      <ControlBar/>
+      <ControlBar setPage={setPage} setViewDungeon={setViewDungeon}/>
     </AppContainer>
   );
 };

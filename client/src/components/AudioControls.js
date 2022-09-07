@@ -120,6 +120,11 @@ const ControlBarContainer = styled(ControlsContainer)`
 
   #dungeon-title {
     font-size: 18px;
+
+    :hover {
+      color: var(--theme-text-highlight);
+      cursor: pointer;
+    }
   }
 `;
 
@@ -251,10 +256,17 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
   </>);
 }
 
-const ControlBar = () => {
+const ControlBar = ({ setPage, setViewDungeon }) => {
   const dungeon = useSelector((state) => state.audio.dungeon)
   const track = useSelector((state) => state.audio.track);
   const dispatch = useDispatch();
+
+  const handleClick = () => {
+    if (dungeon) {
+      setViewDungeon(dungeon);
+      setPage(3);
+    }
+  };
 
   return <ControlBarContainer>
     <AudioControls
@@ -262,7 +274,9 @@ const ControlBar = () => {
       currentDungeon={dungeon}
       currentTrack={dungeon ? dungeon.tracks[track] : null}
     />
-    <span id="dungeon-title">{dungeon && dungeon.title}</span>
+    <span id="dungeon-title" onClick={handleClick}>
+      {dungeon && dungeon.title}
+    </span>
   </ControlBarContainer>;
 };
 
