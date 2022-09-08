@@ -57,7 +57,7 @@ const Nav = ({setPage, reset}) => {
         .then(() => {
           dispatch(logout());
           reset();
-          setPage(1);
+          setPage(4);
         })
     } else {
       setPage(0);

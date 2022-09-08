@@ -213,15 +213,14 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
         if (playingDungeon && playingDungeon.id === data.id) {
           var trackIndex = 0;
           let trackId = playingDungeon.tracks[playingTrack].id;
-          for (var i = 0; i < data.tracks; i++) {
+          for (var i = 0; i < data.tracks.length; i++) {
             if (data.tracks[i].id === trackId) {
               trackIndex = i;
             }
           }
           dispatch(setDungeon(data));
-          Audio.playQueue(data.tracks, trackIndex, (i) => {
-            dispatch(setTrack(i));
-          });
+          dispatch(setTrack(trackIndex));
+          Audio.refreshQueue(data.tracks, trackIndex);
         }
       });
   };
@@ -280,6 +279,7 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
         <Playlist
           loading={loadingTracks}
           updateList={updatePlaylist}
+          addSounds={() => setPage(1)}
           playlist={viewDungeon.tracks}
           viewDungeon={viewDungeon}
           fx={0}
@@ -287,6 +287,7 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
         <Playlist
           loading={loadingEffects}
           updateList={updatePlaylist}
+          addSounds={() => setPage(1)}
           playlist={viewDungeon.effects}
           viewDungeon={viewDungeon}
           fx={1}

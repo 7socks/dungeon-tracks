@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { FaPlus } from 'react-icons/fa';
 import { HiPencilAlt } from 'react-icons/hi';
 import { TiArrowSortedUp, TiArrowSortedDown } from 'react-icons/ti';
 
@@ -57,6 +58,15 @@ const PlaylistContainer = styled.div`
       visibility: visible;
     }
   }
+
+  .link {
+    display: inline-flex;
+    cursor: pointer;
+    color: var(--theme-btn-text-dim);
+    :hover {
+      color: var(--theme-btn-text-undim);
+    }
+  }
 `;
 
 const TrackTitle = styled.span`
@@ -99,7 +109,7 @@ const EditButtonsContainer = styled.div`
   right: 0;
 `;
 
-const Playlist = ({playlist, fx, updateList, viewDungeon, loading}) => {
+const Playlist = ({playlist, fx, updateList, viewDungeon, loading, addSounds}) => {
   const [editIcon, setEditIcon] = useState(null);
   const playingEffect = useSelector((state) => state.audio.effect);
   const playingTrack = useSelector((state) => state.audio.track);
@@ -156,6 +166,13 @@ const Playlist = ({playlist, fx, updateList, viewDungeon, loading}) => {
         <span>{fx ? 'Effects' : 'Tracks'}</span>
         { loading ? <Loader size="inherit"/> : null }
       </h2>
+      {
+          playlist.length === 0
+          ? <span className="link" onClick={addSounds}>
+            <FaPlus/> Add {fx ? 'effects' : 'tracks'}
+            </span>
+          : null
+      }
       <ol>
         {
           playlist.map((track, i) => {

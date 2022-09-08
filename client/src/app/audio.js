@@ -52,6 +52,13 @@ Audio.playQueue = (tracks, index = 0, callback) => {
   Audio.playTrack(Audio.queue[index], callback);
 };
 
+Audio.refreshQueue = (tracks, index) => {
+  let currentTrack = Audio.queue[Audio.queueIndex];
+  Audio.queue = tracks.map((track) => track.source);
+  Audio.queueIndex = index;
+  //let refreshTrack = Audio.queue[Audio.queueIndex];
+;}
+
 Audio.skipBack = (callback) => {
   let autoplay = Audio.track && Audio.track.playing();
   if (Audio.queueIndex > 0) {
