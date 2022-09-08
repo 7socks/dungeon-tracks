@@ -34,10 +34,11 @@ const DungeonContainer = styled.div`
   padding-bottom: 1em;
   background: var(--theme-bg-mask);
 
-  button:not(.muffle-btn) {
+  button:not(.muffle-btn):not(.block-btn) {
     border: none;
     background: none;
     color: var(--theme-btn-text-dim);
+    cursor: pointer;
 
     :hover {
       color: var(--theme-btn-text-undim);
@@ -59,6 +60,16 @@ const HeaderContainer = styled.div`
 
   .del-btn {
     margin-right: 2em;
+    display: inline-flex;
+
+    span {
+      visibility: hidden;
+    }
+    :hover {
+      span {
+        visibility: visible;
+      }
+    }
   }
 `;
 
@@ -97,25 +108,45 @@ const DeletionContainer = styled.div`
   padding: 1em;
   font-size: 14px;
 
+  p {
+    margin: 0;
+    margin-bottom: .5em;
+    text-align: center;
+  }
+
   div {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
   }
 
-  #del-delete-btn {
-    background: var(--theme-btn-bg-warning);
-    color: var(--theme-btn-text-undim);
+  button {
+    cursor: pointer;
+    color: var(--theme-popup-text);
+    border: 1px solid var(--theme-popup-text);
     border-radius: .3em;
     width: 5em;
+    margin: .2em;
+  }
 
+  #del-cancel-btn {
+    background: transparent;
+    color: var(--theme-btn-text-dim);
+    border-color: var(--theme-btn-text-dim);
     :hover {
-      color: var(--theme-text);
+      color: var(--theme-popup-text);
+      border-color: var(--theme-popup-text);
     }
+  }
+
+  #del-delete-btn {
+    background: var(--theme-btn-bg-warning);
   }
 
   #del-delete-loader {
     width: 5em;
+    margin: .2em;
+    border: 1px solid transparent;
   }
 `;
 
@@ -135,11 +166,11 @@ const DeletionWindow = ({ confirm, cancel, loading }) => {
   >
     <p>Delete this dungeon?<br />This cannot be undone.</p>
     <div>
-      <button id="del-cancel-btn" onClick={cancel}>CANCEL</button>
       { loading
         ? <span id="del-delete-loader"><Loader size="inherit"/></span>
-        : <button id="del-delete-btn" onClick={confirm}>DELETE</button>
+        : <button className="block-btn" id="del-delete-btn" onClick={confirm}>DELETE</button>
       }
+      <button className="block-btn" id="del-cancel-btn" onClick={cancel}>CANCEL</button>
     </div>
   </DeletionContainer>
 };
@@ -263,6 +294,7 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
           <button className="del-btn" onClick={() => {
             setDeletion(true);
           }}>
+            <span>DELETE DUNGEON</span>
             <MdDeleteForever />
           </button>
           {
