@@ -105,6 +105,13 @@ Audio.resume = () => {
   }
 };
 
+Audio.clear = () => {
+  Audio.track && Audio.track.unload();
+  Audio.track = null;
+  Audio.queue = [];
+  Audio.queueIndex = 0;
+}
+
 Audio.setVolume = (volume) => {
   Howler.volume(volume);
   Audio.volume = volume;

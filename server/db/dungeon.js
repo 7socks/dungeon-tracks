@@ -97,20 +97,6 @@ module.exports.updateEffects = async (dungeonId, data) => {
 };
 
 module.exports.updatePlaylist = async (dungeonId, data, playlist) => {
-
-  // From linked list
-  // let ids = [data.id];
-  // let item = data;
-  // while (item.next) {
-  //   ids.push(data.next.id);
-  //   item = data.next;
-  // }
-
-  // From array
-  // let ids = data.map((item) => {
-  //   return item.id;
-  // });
-
   return Promise.all(data.map((item, i) => {
     return db.PATCH('dungeons_' + playlist, {
       params: ['dungeon_id', 'id'],
@@ -151,6 +137,13 @@ module.exports.addToPlaylist = async ({dungeonId, soundId, type}) => {
     [soundIdKey]: soundId
   })
 };
+
+module.exports.removeFromPlaylist = async({dungeonId, soundId, type}) => {
+  return db.DELETE('dungeons_' + type, {
+    params: ['dungeon_id', 'id'],
+    values: [dungeonId, soundId]
+  })
+}
 
 const getPlaylist = async (dungeonId, playlist) => {
   let singular = playlist.slice(0, playlist.length - 1);

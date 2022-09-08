@@ -115,7 +115,7 @@ app.patch('/dungeon', checkSession, (req, res) => {
 });
 
 // Add fx or track to a dungeon
-app.post('/dungeon_sounds', checkSession, (req, res) => {
+app.post('/dungeon_playlist', checkSession, (req, res) => {
   let playlist = req.body.type;
   Dungeon.get(req.userId, Number(req.body.dungeonId))
     .then((data) => {
@@ -132,7 +132,26 @@ app.post('/dungeon_sounds', checkSession, (req, res) => {
       console.log(err)
       res.status(400).send();
     })
-})
+});
+
+// Remove track/fx from a dungeon
+app.delete('/dungeon_playlist', checkSession, (req, res) => {
+  console.log(req.body)
+  Dungeon.get(req.userId, Number(req.body.dungeonId))
+    .then(() => {
+      return Dungeon.removeFromPlaylist(req.body)
+    })
+    .then(() => {
+      return Dungeon.get(req.userId, Number(req.body.dungeonId))
+    })
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(400).send();
+    })
+});
 
 // Delete dungeon
 app.delete('/dungeon', checkSession, (req, res) => {

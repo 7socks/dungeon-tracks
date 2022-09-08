@@ -5,7 +5,7 @@ import { ImCheckmark } from 'react-icons/im';
 import { MdDeleteForever } from 'react-icons/md';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setDungeon, setTrack } from '../app/reducers/audioSlice';
+import { setDungeon, setTrack, playPause } from '../app/reducers/audioSlice';
 import REQUEST from '../router/router';
 import Audio from '../app/audio';
 
@@ -34,7 +34,7 @@ const DungeonContainer = styled.div`
   padding-bottom: 1em;
   background: var(--theme-bg-mask);
 
-  button:not(.muffle-btn):not(.block-btn) {
+  button:not(.muffle-btn):not(.block-btn):not(.opt-btn) {
     border: none;
     background: none;
     color: var(--theme-btn-text-dim);
@@ -217,6 +217,7 @@ const DungeonTitle = ({ title, update, loading }) => {
 };
 
 const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
+  console.log(viewDungeon);
   const [deletion, setDeletion] = useState(false);
   const [loadingDeletion, setLoadingDeletion] = useState(false);
   const [loadingTitle, setLoadingTitle] = useState(false);
@@ -226,6 +227,28 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
   const playingDungeon = useSelector((state) => state.audio.dungeon);
   const playingTrack = useSelector((state) => state.audio.track);
   const dispatch = useDispatch();
+
+  const refresh = (data) => {
+    setViewDungeon(data);
+    if (playingDungeon && playingDungeon.id === data.id) {
+      var trackIndex = null;
+      let trackId = playingDungeon.tracks[playingTrack].id;
+      for (var i = 0; i < data.tracks.length; i++) {
+        if (data.tracks[i].id === trackId) {
+          trackIndex = i;
+        }
+      }
+      if (trackIndex === null) {
+        dispatch(setDungeon(null));
+        dispatch(playPause(false));
+        Audio.clear();
+      } else {
+        dispatch(setDungeon(data));
+        dispatch(setTrack(trackIndex));
+        Audio.refreshQueue(data.tracks, trackIndex);
+      }
+    }
+  };
 
   const deleteDungeon = () => {
     setLoadingDeletion(true);
@@ -237,23 +260,21 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
       .finally(() => setLoadingDeletion(false))
   };
 
+  const removeSound = (isFx, id) => {
+    let setLoadingList = isFx ? setLoadingEffects : setLoadingTracks;
+    setLoadingList(true);
+    REQUEST.removeSoundFromDungeon({
+      type: isFx ? 'effects' : 'tracks',
+      dungeonId: viewDungeon.id,
+      soundId: id
+    })
+      .then((data) => refresh(data))
+      .finally(() => setLoadingList(false))
+  };
+
   const updateDungeon = async (update) => {
     return REQUEST.updateDungeon(update)
-      .then((data) => {
-        setViewDungeon(data);
-        if (playingDungeon && playingDungeon.id === data.id) {
-          var trackIndex = 0;
-          let trackId = playingDungeon.tracks[playingTrack].id;
-          for (var i = 0; i < data.tracks.length; i++) {
-            if (data.tracks[i].id === trackId) {
-              trackIndex = i;
-            }
-          }
-          dispatch(setDungeon(data));
-          dispatch(setTrack(trackIndex));
-          Audio.refreshQueue(data.tracks, trackIndex);
-        }
-      });
+      .then((data) => refresh(data));
   };
 
   const updatePlaylist = (isFX, list) => {
@@ -264,7 +285,7 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
       key: isFX ? 'effects' : 'tracks',
       payload: list
     })
-      .then(() => setLoadingList(false))
+      .finally(() => setLoadingList(false))
   };
 
   const updateTitle = (title) => {
@@ -274,7 +295,7 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
       key: 'title',
       payload: title
     })
-      .then(() => setLoadingTitle(false))
+      .finally(() => setLoadingTitle(false))
   };
 
   if (viewDungeon === null) {
@@ -311,6 +332,7 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
         <Playlist
           loading={loadingTracks}
           updateList={updatePlaylist}
+          removeSound={removeSound}
           addSounds={() => setPage(1)}
           playlist={viewDungeon.tracks}
           viewDungeon={viewDungeon}
@@ -319,6 +341,7 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
         <Playlist
           loading={loadingEffects}
           updateList={updatePlaylist}
+          removeSound={removeSound}
           addSounds={() => setPage(1)}
           playlist={viewDungeon.effects}
           viewDungeon={viewDungeon}

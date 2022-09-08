@@ -29,9 +29,18 @@ async function updateDungeon (data) {
 }
 
 async function addSoundToDungeon (data) {
-  return axios.post('/dungeon_sounds', data)
+  return axios.post('/dungeon_playlist', data)
     .then((res) => res.data)
-};
+}
+
+async function removeSoundFromDungeon (data) {
+  return axios({
+    url: '/dungeon_playlist',
+    method: 'delete',
+    data: data
+  })
+    .then((res) => res.data)
+}
 
 async function getDungeons () {
   return axios.get('/dungeons')
@@ -74,5 +83,6 @@ export default {
   getDungeon,
   deleteDungeon,
   addSoundToDungeon,
+  removeSoundFromDungeon,
   getSounds
 };
