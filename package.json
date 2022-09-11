@@ -12,15 +12,27 @@
   "author": "7socks",
   "license": "ISC",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.3",
+    "audiofx": "^0.1.0",
+    "axios": "^0.27.2",
+    "bcrypt": "^5.0.1",
     "express": "^4.18.1",
+    "howler": "^2.2.3",
+    "js-cookie": "^3.0.1",
+    "mysql2": "^2.3.3",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.4.0",
+    "react-redux": "^8.0.2",
+    "styled-components": "^5.3.5",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-react": "^7.17.12",
     "babel-loader": "^8.2.5",
+    "nodemon": "^2.0.19",
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2"
   }

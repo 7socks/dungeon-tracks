@@ -1,0 +1,86 @@
+:root {
+  /* Theme Colors */
+  --theme-bg: #22223c;
+  --theme-text: #fff;
+  --theme-text-soft: #e4e4e4;
+  --theme-text-highlight: #b9ffff;
+  --theme-bg-mask: rgba(13, 14, 15, 0.8);
+
+  --theme-btn-text-dim: rgba(255, 255, 255, 0.4);
+  --theme-btn-text-undim: rgba(255, 255, 255, 0.8);
+  --theme-btn-bg-light: rgb(255, 166, 0);
+  --theme-btn-bg-dark: rgb(220, 110, 10);
+  --theme-btn-bg-warning: #bd1515;
+
+  --theme-dungeoncard-bg: #fff;
+  --theme-dungeoncard-text: #000;
+  --theme-dungeoncard-text-highlight: #4570a3;
+
+  --theme-list-bg: rgba(163, 197, 255, 0.2);
+  --theme-list-bg-highlight: rgba(198, 219, 255, 0.2);
+  --theme-list-border-inner: #5b80c0;
+  --theme-list-border-outer: #5b80c0;
+  --theme-list-text: #fff;
+  --theme-list-text-selected: rgb(52, 255, 147);
+
+  --theme-nav-bg: rgba(255, 255, 255, .3);
+
+  --theme-bar-bg: #151b26;
+  --theme-bar-border: rgba(255, 255, 255, .3);
+
+  --theme-login-bg: #fff;
+  --theme-login-text: #4570a3;
+  --theme-login-text-link: #74c5ff;
+  --theme-login-text-highlight: #74c5ff;
+  --theme-login-text-plain: #282828;
+  --theme-login-btn-bg: #4570a3;
+  --theme-login-btn-bg-hover: #74c5ff;
+  --theme-login-btn-text: #fff;
+  --theme-login-error: #850000;
+  --theme-login-select: #a8dbff;
+
+  --theme-search-bar-bg: transparent;
+  --theme-search-bar-text: #fff;
+  --theme-search-bar-border: #fff;
+  --theme-search-bar-outline: #00dc84;
+  --theme-search-go-bg: transparent;
+  --theme-search-go-bg-hover: #5b80c0;
+  --theme-search-go-text: #fff;
+  --theme-search-go-border: #fff;
+
+  --theme-popup-bg: #213352;
+  --theme-popup-border: #fff;
+  --theme-popup-text: #fff;
+
+  --theme-loader-color: rgba(255, 255, 255, 0.8);
+  --theme-icon-glow: #ff0;
+
+  --icon-color-green: #2e8b2e;
+  --icon-color-blue: #0F8CD1;
+  --icon-color-red: #D10F5C;
+  --icon-color-pink: #E73AE4;
+  --icon-color-teal: #2FD6B0;
+  --icon-color-orange: #FFA800;
+
+  /* Layers (z-index) */
+  --layer-popup: 40;
+  --layer-nav: 30;
+  --layer-bar: 20;
+  --layer-main: 10;
+  --layer-icon-main: 25;
+  --layer-icon-glow: 24;
+}
+
+/* Base */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--theme-bg);
+  background: no-repeat 5% 25% url('./assets/mountain_bg.jpg');
+  color: var(--theme-text);
+  font-family: 'Raleway', sans-serif;
+  --theme-font: 'Raleway', sans-serif;
+}
