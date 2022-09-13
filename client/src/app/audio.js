@@ -13,6 +13,12 @@ const Audio = {
   muffleTrack: null
 };
 
+const toTimeStamp = (time) => {
+  let m = Math.floor(time / 60);
+  let s = Math.trunc(time % 60);
+  return m + ':' + (s < 10 ? '0' + s : s);
+};
+
 Audio.playTrack = (src, callback, autoplay = true) => {
   Audio.sample && Audio.sample.stop();
   Audio.track && Audio.track.unload();
@@ -127,33 +133,6 @@ Audio.mute = (state) => {
 };
 
 Audio.muffle = () => {
-  // if (Audio.muffled) {
-  //   Audio.track.filter(1, null);
-  // } else {
-  //   Audio.track.filter(.5, null);
-  // }
-  // Audio.muffled = !Audio.muffled;
-
-  // temp dev info button:
-  // console.log('Howler:')
-  // console.log(Audio.track)
-  // console.log(Audio.track.duration())
-
-  // console.log('AudioFX:')
-  // console.log(Audio.muffleTrack)
-  // Audio.track.pause();
-  // Audio.muffleTrack.play(Audio.track.seek())
-  // console.log(Audio.muffleTrack.getDuration())
-
-  // if (Audio.muffled) {
-  //   Audio.muffleTrack.volume(0);
-  //   Audio.track.mute();
-  // } else {
-  //   Audio.track.mute();
-  //   Audio.muffleTrack.play(Audio.track.seek());
-  // }
-  // Audio.muffled = !Audio.muffled;
-
   Audio.muffled = !Audio.muffled;
   if (Audio.track) {
     if (Audio.muffled) {
@@ -168,12 +147,28 @@ Audio.muffle = () => {
   }
 };
 
-Audio.duration = (track) => {
+Audio.duration = async (src) => {
+  return new Promise((resolve, reject) => {
+    // let sound = new AudioFX(src, () => {
+    //   let seconds = sound.getDuration();
+    //   sound.destroy();
+    //   resolve(toTimeStamp(seconds));
+    // })
+    let sound = new Howl({
+      src: [src],
+      preload: 'metadata'
+    });
+
+    sound.on('load', () => {
+      resolve(toTimeStamp(sound.duration()));
+      sound.unload();
+    })
+  })
 };
 
 Audio.timecode = () => {
   if (Audio.track) {
-    return Audio.track.seek();
+    return toTimeStamp(Audio.track.seek());
   } else {
     return null;
   }

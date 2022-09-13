@@ -22,7 +22,7 @@ const AppContainer = styled.div`
 const App = () => {
   const selectedDungeon = useSelector((state) => state.audio.dungeon);
   const [dungeonList, setDungeonList] = useState([]);
-  const [viewDungeon, setViewDungeon] = useState(selectedDungeon);
+  const [viewDungeon, setViewDungeon] = useState(null);
   const [page, setPage] = useState(4);
 
   useEffect(() => {
@@ -52,7 +52,10 @@ const App = () => {
       />}
       {page === 4 && <Home/>}
 
-      <ControlBar setPage={setPage} setViewDungeon={setViewDungeon}/>
+      <ControlBar
+        setPage={setPage}
+        setViewDungeon={setViewDungeon}
+      />
     </AppContainer>
   );
 };

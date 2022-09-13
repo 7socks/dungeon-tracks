@@ -217,7 +217,6 @@ const DungeonTitle = ({ title, update, loading }) => {
 };
 
 const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
-  console.log(viewDungeon);
   const [deletion, setDeletion] = useState(false);
   const [loadingDeletion, setLoadingDeletion] = useState(false);
   const [loadingTitle, setLoadingTitle] = useState(false);

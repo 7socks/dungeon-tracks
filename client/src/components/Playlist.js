@@ -81,6 +81,10 @@ const TrackTitle = styled.span`
   }
 `;
 
+const TimeCode = styled.span`
+  color: var(--theme-btn-text-undim);
+`;
+
 const EditButton = styled.button`
   background: none;
   border: none;
@@ -150,6 +154,7 @@ const EditButtonsContainer = styled.div`
 const Playlist = ({playlist, fx, updateList, viewDungeon, loading, addSounds, removeSound}) => {
   const [editIcon, setEditIcon] = useState(null);
   const [removingTracks, setRemovingTracks] = useState(false);
+  const [timecodes, setTimecodes] = useState([]);
 
   const playingEffect = useSelector((state) => state.audio.effect);
   const playingTrack = useSelector((state) => state.audio.track);
@@ -160,10 +165,61 @@ const Playlist = ({playlist, fx, updateList, viewDungeon, loading, addSounds, re
   const selectedTrack = playingDungeon ? playingDungeon.tracks[playingTrack] : null;
 
   useEffect(() => {
+    refreshTimecodes();
     if (playlist.length === 0) {
       setRemovingTracks(false);
     }
   }, [playlist]);
+
+  const refreshTimecodes = () => {
+    let id = fx ? 'effect_id' : 'track_id';
+    // const refresh = (sound, index) => {
+    //   return new Promise((resolve, reject) => {
+    //     let slot = timecodes[index];
+    //     if (slot === undefined || slot.id !== sound[id]) {
+    //       Audio.duration(sound.source)
+    //         .then((duration) => resolve(duration))
+    //     } else {
+    //       resolve(timecodes[index].duration);
+    //     }
+    //   })
+    // };
+
+    // for (let i = 0; i < playlist.length; i++) {
+    //   let sound = playlist[i];
+    //   refresh(sound, i)
+    //     .then((duration) => {
+    //       let data = {
+    //         id: sound[id],
+    //         duration: duration
+    //       };
+    //       timecodes[i] = {
+    //         id: sound[id],
+    //         duration: duration
+    //       }
+    //       setTimecodes(timecodes.slice());
+    //     })
+    // }
+
+    Promise.all(playlist.map((sound, i) => {
+      return new Promise((resolve, reject) => {
+        if (timecodes[i] === undefined || timecodes[i].id !== sound[id]) {
+          Audio.duration(sound.source)
+          .then((duration) => {
+            resolve({
+              id: sound[id],
+              duration: duration
+            })
+          })
+        } else {
+          resolve(timecodes[i])
+        }
+      })
+    }))
+      .then((updated) => {
+        setTimecodes(updated);
+      })
+  };
 
   const orderPlaylist = (e, index, shift) => {
     e.stopPropagation();
@@ -270,6 +326,14 @@ const Playlist = ({playlist, fx, updateList, viewDungeon, loading, addSounds, re
               <TrackTitle selected={!fx && isSelected && selectedTrack.id === track.id}>
                 {track.title}
               </TrackTitle>
+
+              {
+                timecodes[i] && timecodes[i].id === track[fx ? 'effect_id' : 'track_id']
+                ? <TimeCode>
+                    {timecodes[i].duration}
+                  </TimeCode>
+                : <TimeCode><Loader size="inherit"/></TimeCode>
+              }
 
               <EditButtonsContainer>
                 {
