@@ -167,11 +167,6 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
     }
   };
 
-  // if (currentDungeon === null) {
-  //   return (<>
-  //     <span className="track-title"></span>
-  //   </>);
-  // }
   return (<>
     <span className="track-title"><span>{currentTrack && currentTrack.title}</span></span>
 
@@ -238,7 +233,7 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
           key={i}
           icon={effect.icon}
           color={effect.color}
-          playing={playingFX && playingFX.index === effect.index}
+          playing={playingFX && playingFX.id === effect.id}
           onClick={() => {
             dispatch(playFX(effect));
             Audio.playFX(effect.source, () => {
