@@ -136,7 +136,6 @@ app.post('/dungeon_playlist', checkSession, (req, res) => {
 
 // Remove track/fx from a dungeon
 app.delete('/dungeon_playlist', checkSession, (req, res) => {
-  console.log(req.body)
   Dungeon.get(req.userId, Number(req.body.dungeonId))
     .then(() => {
       return Dungeon.removeFromPlaylist(req.body)
@@ -148,7 +147,6 @@ app.delete('/dungeon_playlist', checkSession, (req, res) => {
       res.status(200).send(data);
     })
     .catch((err) => {
-      console.log(err)
       res.status(400).send();
     })
 });
