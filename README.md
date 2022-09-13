@@ -32,3 +32,4 @@ Other major dependencies are [Howler.js](https://www.npmjs.com/package/howler), 
 [Axios](https://axios-http.com), and [Styled Components](https://styled-components.com).
 
 ## Preview
+![Dungeon Page](dungeon_page.png)
