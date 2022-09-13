@@ -5,7 +5,7 @@ import { ImCheckmark } from 'react-icons/im';
 import { MdDeleteForever } from 'react-icons/md';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setDungeon, setTrack } from '../app/reducers/audioSlice';
+import { setDungeon, setTrack, playPause } from '../app/reducers/audioSlice';
 import REQUEST from '../router/router';
 import Audio from '../app/audio';
 
@@ -34,10 +34,11 @@ const DungeonContainer = styled.div`
   padding-bottom: 1em;
   background: var(--theme-bg-mask);
 
-  button:not(.muffle-btn) {
+  button:not(.muffle-btn):not(.block-btn):not(.opt-btn) {
     border: none;
     background: none;
     color: var(--theme-btn-text-dim);
+    cursor: pointer;
 
     :hover {
       color: var(--theme-btn-text-undim);
@@ -59,6 +60,16 @@ const HeaderContainer = styled.div`
 
   .del-btn {
     margin-right: 2em;
+    display: inline-flex;
+
+    span {
+      visibility: hidden;
+    }
+    :hover {
+      span {
+        visibility: visible;
+      }
+    }
   }
 `;
 
@@ -97,25 +108,45 @@ const DeletionContainer = styled.div`
   padding: 1em;
   font-size: 14px;
 
+  p {
+    margin: 0;
+    margin-bottom: .5em;
+    text-align: center;
+  }
+
   div {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
   }
 
-  #del-delete-btn {
-    background: var(--theme-btn-bg-warning);
-    color: var(--theme-btn-text-undim);
+  button {
+    cursor: pointer;
+    color: var(--theme-popup-text);
+    border: 1px solid var(--theme-popup-text);
     border-radius: .3em;
     width: 5em;
+    margin: .2em;
+  }
 
+  #del-cancel-btn {
+    background: transparent;
+    color: var(--theme-btn-text-dim);
+    border-color: var(--theme-btn-text-dim);
     :hover {
-      color: var(--theme-text);
+      color: var(--theme-popup-text);
+      border-color: var(--theme-popup-text);
     }
+  }
+
+  #del-delete-btn {
+    background: var(--theme-btn-bg-warning);
   }
 
   #del-delete-loader {
     width: 5em;
+    margin: .2em;
+    border: 1px solid transparent;
   }
 `;
 
@@ -135,11 +166,11 @@ const DeletionWindow = ({ confirm, cancel, loading }) => {
   >
     <p>Delete this dungeon?<br />This cannot be undone.</p>
     <div>
-      <button id="del-cancel-btn" onClick={cancel}>CANCEL</button>
       { loading
         ? <span id="del-delete-loader"><Loader size="inherit"/></span>
-        : <button id="del-delete-btn" onClick={confirm}>DELETE</button>
+        : <button className="block-btn" id="del-delete-btn" onClick={confirm}>DELETE</button>
       }
+      <button className="block-btn" id="del-cancel-btn" onClick={cancel}>CANCEL</button>
     </div>
   </DeletionContainer>
 };
@@ -196,6 +227,28 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
   const playingTrack = useSelector((state) => state.audio.track);
   const dispatch = useDispatch();
 
+  const refresh = (data) => {
+    setViewDungeon(data);
+    if (playingDungeon && playingDungeon.id === data.id) {
+      var trackIndex = null;
+      let trackId = playingDungeon.tracks[playingTrack].id;
+      for (var i = 0; i < data.tracks.length; i++) {
+        if (data.tracks[i].id === trackId) {
+          trackIndex = i;
+        }
+      }
+      if (trackIndex === null) {
+        dispatch(setDungeon(null));
+        dispatch(playPause(false));
+        Audio.clear();
+      } else {
+        dispatch(setDungeon(data));
+        dispatch(setTrack(trackIndex));
+        Audio.refreshQueue(data.tracks, trackIndex);
+      }
+    }
+  };
+
   const deleteDungeon = () => {
     setLoadingDeletion(true);
     REQUEST.deleteDungeon(viewDungeon.id)
@@ -206,24 +259,21 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
       .finally(() => setLoadingDeletion(false))
   };
 
+  const removeSound = (isFx, id) => {
+    let setLoadingList = isFx ? setLoadingEffects : setLoadingTracks;
+    setLoadingList(true);
+    REQUEST.removeSoundFromDungeon({
+      type: isFx ? 'effects' : 'tracks',
+      dungeonId: viewDungeon.id,
+      soundId: id
+    })
+      .then((data) => refresh(data))
+      .finally(() => setLoadingList(false))
+  };
+
   const updateDungeon = async (update) => {
     return REQUEST.updateDungeon(update)
-      .then((data) => {
-        setViewDungeon(data);
-        if (playingDungeon && playingDungeon.id === data.id) {
-          var trackIndex = 0;
-          let trackId = playingDungeon.tracks[playingTrack].id;
-          for (var i = 0; i < data.tracks; i++) {
-            if (data.tracks[i].id === trackId) {
-              trackIndex = i;
-            }
-          }
-          dispatch(setDungeon(data));
-          Audio.playQueue(data.tracks, trackIndex, (i) => {
-            dispatch(setTrack(i));
-          });
-        }
-      });
+      .then((data) => refresh(data));
   };
 
   const updatePlaylist = (isFX, list) => {
@@ -234,7 +284,7 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
       key: isFX ? 'effects' : 'tracks',
       payload: list
     })
-      .then(() => setLoadingList(false))
+      .finally(() => setLoadingList(false))
   };
 
   const updateTitle = (title) => {
@@ -244,7 +294,7 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
       key: 'title',
       payload: title
     })
-      .then(() => setLoadingTitle(false))
+      .finally(() => setLoadingTitle(false))
   };
 
   if (viewDungeon === null) {
@@ -264,6 +314,7 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
           <button className="del-btn" onClick={() => {
             setDeletion(true);
           }}>
+            <span>DELETE DUNGEON</span>
             <MdDeleteForever />
           </button>
           {
@@ -280,6 +331,8 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
         <Playlist
           loading={loadingTracks}
           updateList={updatePlaylist}
+          removeSound={removeSound}
+          addSounds={() => setPage(1)}
           playlist={viewDungeon.tracks}
           viewDungeon={viewDungeon}
           fx={0}
@@ -287,6 +340,8 @@ const Dungeon = ({ viewDungeon, setViewDungeon, setPage }) => {
         <Playlist
           loading={loadingEffects}
           updateList={updatePlaylist}
+          removeSound={removeSound}
+          addSounds={() => setPage(1)}
           playlist={viewDungeon.effects}
           viewDungeon={viewDungeon}
           fx={1}

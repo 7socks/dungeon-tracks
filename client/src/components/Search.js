@@ -184,15 +184,17 @@ const ToggleIcon = styled.span`
   color: var(--theme-btn-text-undim);
 `;
 
-const DungeonsList = ({ sound, type, list, closePopup}) => {
+const DungeonsList = ({ sound, type, list, data, refresh, closePopup}) => {
   const [selected, setSelected] = useState(null);
   const [loadState, setLoadState] = useState(false);
+  const [loadingDungeon, setLoadingDungeon] = useState(null);
   const focusRef = useCallback((element) => {
     element && element.focus();
   }, []);
 
   const addSound = (dungeon) => {
     setLoadState(true);
+    setLoadingDungeon(dungeon.id);
     REQUEST.addSoundToDungeon({
       dungeonId: dungeon.id,
       soundId: sound.id,
@@ -200,6 +202,8 @@ const DungeonsList = ({ sound, type, list, closePopup}) => {
     })
       .then(() => {
         setLoadState(false);
+        setLoadingDungeon(null);
+        refresh();
       })
   };
 
@@ -211,7 +215,16 @@ const DungeonsList = ({ sound, type, list, closePopup}) => {
     <ul>
       {
         list.map((dungeon, i) => {
-          //let ids = dungeon[type].map(item => item.id);
+          let added = data[dungeon.id][type].includes(sound.id);
+          if (added) return null;
+
+          let optionIcon = null;
+          if (loadState && loadingDungeon === dungeon.id) {
+            optionIcon = <Loader size="14px"/>
+          } else if (selected === i) {
+            optionIcon = <FaPlus/>
+          }
+
           return <li
             key={i}
             onClick={(e) => {
@@ -221,11 +234,7 @@ const DungeonsList = ({ sound, type, list, closePopup}) => {
             onMouseOver={() => setSelected(i)}
             onMouseOut={() => setSelected(null)}
           >
-            {
-              selected === i
-              ? (loadState ? <Loader size={'14px'}/> : <FaPlus/>)
-              : null
-            }
+            { optionIcon }
             <span className="title">{dungeon.title}</span>
           </li>;
         })
@@ -234,7 +243,7 @@ const DungeonsList = ({ sound, type, list, closePopup}) => {
   </DungeonsListContainer>
 };
 
-const ResultList = ({ playingSample, playSound, results, type, loading, cache }) => {
+const ResultList = ({ playingSample, playSound, results, type, loading, dungeons, dungeonData, refresh }) => {
   const [addingSound, setAddingSound] = useState(null);
   const loggedIn = useSelector((state) => state.user.loggedIn);
 
@@ -274,7 +283,9 @@ const ResultList = ({ playingSample, playSound, results, type, loading, cache })
             <DungeonsList
               sound={item}
               type={type}
-              list={cache}
+              list={dungeons}
+              data={dungeonData}
+              refresh={refresh}
               closePopup={() => setAddingSound(null)}
             />
         }
@@ -290,23 +301,51 @@ const Search = () => {
   const [fxResults, setFxResults] = useState([]);
   const [playingSample, setPlayingSample] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [cachedDungeons, setCachedDungeons] = useState([]);
+  const [dungeons, setDungeons] = useState([]);
+  const [dungeonData, setDungeonData] = useState({});
 
   const playingTrack = useSelector((state) => state.audio.playing);
   const loggedIn = useSelector((state) => state.user.loggedIn);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // mem leak warning (if switch pg while waiting for response)
+    refreshDungeons();
+    return () => setDungeons([])
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn && dungeons) {
+      Promise.all(dungeons.map((dungeon) => {
+        return new Promise((resolve, reject) => {
+          REQUEST.getDungeon(dungeon.id)
+            .then(({id, effects, tracks}) => {
+              resolve({id, effects, tracks})
+            })
+            .catch(() => reject())
+        })
+      }))
+        .then((results) => {
+          let data = {};
+          for (let i = 0; i < results.length; i++) {
+            let item = results[i];
+            data[item.id] = {
+              effects: item.effects.map((effect) => effect.effect_id),
+              tracks: item.tracks.map((track) => track.track_id)
+            }
+          }
+          setDungeonData(data);
+        })
+    }
+  }, [dungeons]);
+
+  const refreshDungeons = () => {
     if (loggedIn) {
       REQUEST.getDungeons()
         .then((data) => {
-          setCachedDungeons(data);
+          setDungeons(data);
         });
     }
-
-    return () => setCachedDungeons([])
-  }, []);
+  };
 
   const submit = () => {
     setLoading(true);
@@ -350,16 +389,20 @@ const Search = () => {
         results={trackResults}
         playingSample={playingSample}
         playSound={playSound}
+        refresh={refreshDungeons}
         loading={loading}
-        cache={cachedDungeons}
+        dungeons={dungeons}
+        dungeonData={dungeonData}
       />
       <ResultList
         type="effects"
         results={fxResults}
         playingSample={playingSample}
         playSound={playSound}
+        refresh={refreshDungeons}
         loading={loading}
-        cache={cachedDungeons}
+        dungeons={dungeons}
+        dungeonData={dungeonData}
       />
     </ResultsContainer>
   </PageContainer>;

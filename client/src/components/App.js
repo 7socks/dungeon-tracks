@@ -34,6 +34,7 @@ const App = () => {
     <AppContainer>
       <Nav setPage={setPage} reset={() => {
         setDungeonList([])
+        setViewDungeon(null);
       }}/>
 
       {page === 0 && <LogIn setPage={setPage}/>}

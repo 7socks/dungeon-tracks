@@ -12,7 +12,7 @@ module.exports.genPlaylist = (list) => {
   let playlist = list.map((track) => {
     if (track.icon && track.color) {
       return {
-        id: track._id,
+        id: track.id,
         title: track.title,
         icon: track.icon,
         color: track.color,
