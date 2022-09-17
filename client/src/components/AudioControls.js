@@ -126,6 +126,10 @@ const FxContainer = styled.div`
   position: relative;
   width: 10em;
 
+  .icon-main {
+    cursor: pointer;
+  }
+
   .fx-window {
     z-index: var(--layer-popup);
     display: grid;
