@@ -10,6 +10,7 @@ const StyledButton = styled.button`
   border: none;
   border-radius: .5em;
   font-size: 18px;
+  cursor: pointer;
 
   ${({muffled}) => {
     if (muffled) {
