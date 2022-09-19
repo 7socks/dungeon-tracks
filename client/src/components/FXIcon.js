@@ -184,7 +184,7 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
     ref={focusRef}
     onClick={(e) => e.stopPropagation()}
     onBlur={(e) => {
-      if (e.relatedTarget.classList.contains('edit-btn-confirm')) {
+      if (e.relatedTarget && e.relatedTarget.classList.contains('edit-btn-confirm')) {
         e.stopPropagation();
       } else {
         onCancel();
@@ -233,7 +233,7 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
 };
 
 const FXIcon = ({playing, icon, color, onClick}) => {
-  return <IconContainer playing={playing} color={color} onClick={onClick}>
+  return <IconContainer className="icon" playing={playing} color={color} onClick={onClick}>
     <span className="icon-main">{ICONS[icon]}</span>
     { playing ? <span className="icon-glow"/> : null }
   </IconContainer>;

@@ -159,7 +159,7 @@ const DeletionWindow = ({ confirm, cancel, loading }) => {
     tabIndex="-1"
     ref={focusRef}
     onBlur={(e) => {
-      if (e.relatedTarget && e.relatedTarget.id !== 'del-delete-btn') {
+      if (!e.relatedTarget || e.relatedTarget.id !== 'del-delete-btn') {
         cancel();
       }
     }}
