@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { IoMdSkipBackward, IoMdSkipForward } from 'react-icons/io';
-import { FaPlay, FaPause } from 'react-icons/fa';
-import { BsThreeDots } from 'react-icons/bs';
+import { FaPlay, FaPause, FaChevronUp, FaChevronDown } from 'react-icons/fa';
 import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 
 import Audio from '../app/audio';
@@ -33,6 +32,7 @@ const ControlsContainer = styled.div`
     border: none;
     color: var(--theme-btn-text-undim);
     font-size: 16px;
+    cursor: pointer;
   }
 
   button:not(.muffle-btn):hover {
@@ -54,6 +54,7 @@ const ControlsContainer = styled.div`
 const ControlBarContainer = styled(ControlsContainer)`
   z-index: var(--layer-bar);
   height: 2.5em;
+  min-height: 2.5em;
   width: 100%;
   position: relative;
   bottom: 0;
@@ -108,16 +109,6 @@ const ControlBarContainer = styled(ControlsContainer)`
     }
   }
 
-  #more-fx {
-    background: none;
-    color: var(--theme-text);
-    border: none;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   #dungeon-title {
     font-size: 18px;
 
@@ -125,6 +116,46 @@ const ControlBarContainer = styled(ControlsContainer)`
       color: var(--theme-text-highlight);
       cursor: pointer;
     }
+  }
+`;
+
+const FxContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  position: relative;
+  width: 10em;
+
+  .icon-main {
+    cursor: pointer;
+  }
+
+  .fx-window {
+    z-index: var(--layer-popup);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    position: absolute;
+    bottom: 2em;
+    left: -2em;
+    background: var(--theme-bar-bg);
+    padding: .2em;
+    padding-bottom: 0;
+    border: 1px solid var(--theme-bar-border);
+    border-bottom: none;
+    border-radius: .5em .5em 0 0;
+
+    .icon {
+      margin-bottom: .2em;
+    }
+  }
+
+  #more-fx {
+    background: none;
+    border: none;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
@@ -151,7 +182,46 @@ const PlaylistControlsContainer = styled(ControlsContainer)`
   }
 `;
 
-const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
+const FxBar = ({ dungeon }) => {
+  const [moreFx, setMoreFx] = useState(false);
+  const playingFX = useSelector((state) => state.audio.effect);
+  const dispatch = useDispatch();
+
+  return <FxContainer>
+    <div className={moreFx ? 'fx-window' : 'fx-bar'}>
+      {dungeon && dungeon.effects.slice(0, moreFx ? dungeon.effects.length : 3).map((effect, i) => {
+        return <FXIcon
+          key={i}
+          icon={effect.icon}
+          color={effect.color}
+          playing={playingFX && playingFX.id === effect.id}
+          onClick={() => {
+            dispatch(playFX(effect));
+            Audio.playFX(effect.source, () => {
+              dispatch(playFX(null));
+            });
+          }}
+        />;
+      })}
+    </div>
+    {
+        dungeon && dungeon.effects.length > 3
+          ? <button
+            id="more-fx"
+            onClick={() => setMoreFx(!moreFx)}
+          >
+            {
+              moreFx
+                ? <FaChevronDown/>
+                : <FaChevronUp/>
+            }
+          </button>
+          : null
+      }
+  </FxContainer>
+};
+
+const AudioControls = ({currentDungeon, currentTrack, includeFx, onPlay}) => {
   const playing = useSelector((state) => state.audio.playing);
   const volume = useSelector((state) => state.audio.volume);
   const muted = useSelector((state) => state.audio.muted);
@@ -227,27 +297,11 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
     </div>
     <MuffleButton/>
 
-    <div className="fx-bar">
-      {currentDungeon && currentDungeon.effects.slice(0, fxCount).map((effect, i) => {
-        return <FXIcon
-          key={i}
-          icon={effect.icon}
-          color={effect.color}
-          playing={playingFX && playingFX.id === effect.id}
-          onClick={() => {
-            dispatch(playFX(effect));
-            Audio.playFX(effect.source, () => {
-              dispatch(playFX(null));
-            });
-          }}
-        />;
-      })}
-      {
-        currentDungeon && fxCount > 0
-        ? <button id="more-fx"><BsThreeDots/></button>
-        : null
-      }
-    </div>
+    {
+      includeFx
+      ? <FxBar dungeon={currentDungeon}/>
+      : null
+    }
   </>);
 }
 
@@ -265,7 +319,7 @@ const ControlBar = ({ setPage, setViewDungeon }) => {
 
   return <ControlBarContainer>
     <AudioControls
-      fxCount={3}
+      includeFx={true}
       currentDungeon={dungeon}
       currentTrack={dungeon ? dungeon.tracks[track] : null}
     />
@@ -286,7 +340,7 @@ const PlaylistControls = ({dungeon}) => {
     <AudioControls
       currentDungeon={dungeon}
       currentTrack={selected ? selectedDungeon.tracks[track] : null}
-      fxCount={0}
+      includeFx={false}
       onPlay={() => {
         if (selectedDungeon !== dungeon) {
           dispatch(setDungeon(dungeon));
