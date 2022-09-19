@@ -37,6 +37,8 @@ const PlaylistContainer = styled.div`
     margin: 0;
     font-size: 16px;
     height: 100%;
+    font-family: var(--theme-font-thin);
+    font-weight: 300;
   }
 
   li {
