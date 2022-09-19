@@ -369,7 +369,9 @@ const Search = () => {
       Audio.stopSample();
     } else {
       setPlayingSample(type + '-' + i);
-      Audio.playSample(sound.source);
+      Audio.playSample(sound.source, () => {
+        setPlayingSample(null);
+      });
     }
   };
 
