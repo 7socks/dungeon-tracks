@@ -27,6 +27,8 @@ const WelcomeContainer = styled.div`
 
   p {
     margin: 0;
+    font-family: var(--theme-font-thin);
+    font-weight: 300;
   }
 `;
 
