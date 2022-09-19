@@ -9,6 +9,7 @@ const StyledButton = styled.button`
   padding: .2em;
   border: none;
   border-radius: .5em;
+  font-family: var(--theme-font-thin);
   font-size: 18px;
   cursor: pointer;
 
@@ -39,7 +40,7 @@ const MuffleButton = () => {
   return (<StyledButton className="muffle-btn"
     muffled={muffled}
     onClick={handleClick}
-  >Muffle
+  >MUFFLE
   </StyledButton>);
 };
 

@@ -8,8 +8,8 @@
 
   --theme-btn-text-dim: rgba(255, 255, 255, 0.4);
   --theme-btn-text-undim: rgba(255, 255, 255, 0.8);
-  --theme-btn-bg-light: rgb(255, 166, 0);
-  --theme-btn-bg-dark: rgb(220, 110, 10);
+  --theme-btn-bg-light:#2f7d83;
+  --theme-btn-bg-dark: #235f60;
   --theme-btn-bg-warning: #bd1515;
 
   --theme-dungeoncard-bg: #fff;
@@ -72,8 +72,6 @@
 }
 
 /* Base */
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
-
 body {
   margin: 0;
   height: 100vh;
@@ -83,4 +81,5 @@ body {
   color: var(--theme-text);
   font-family: 'Raleway', sans-serif;
   --theme-font: 'Raleway', sans-serif;
+  --theme-font-thin: 'Rubik', 'sans-serif';
 }
