@@ -184,7 +184,7 @@ const FXIconEditor = ({effect, onCancel, onConfirm}) => {
     ref={focusRef}
     onClick={(e) => e.stopPropagation()}
     onBlur={(e) => {
-      if (e.relatedTarget.classList.contains('edit-btn-confirm')) {
+      if (e.relatedTarget && e.relatedTarget.classList.contains('edit-btn-confirm')) {
         e.stopPropagation();
       } else {
         onCancel();

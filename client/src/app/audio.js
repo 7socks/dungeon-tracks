@@ -56,7 +56,6 @@ Audio.refreshQueue = (tracks, index) => {
   let currentTrack = Audio.queue[Audio.queueIndex];
   Audio.queue = tracks.map((track) => track.source);
   Audio.queueIndex = index;
-  //let refreshTrack = Audio.queue[Audio.queueIndex];
 ;}
 
 Audio.skipBack = (callback) => {
@@ -127,33 +126,6 @@ Audio.mute = (state) => {
 };
 
 Audio.muffle = () => {
-  // if (Audio.muffled) {
-  //   Audio.track.filter(1, null);
-  // } else {
-  //   Audio.track.filter(.5, null);
-  // }
-  // Audio.muffled = !Audio.muffled;
-
-  // temp dev info button:
-  // console.log('Howler:')
-  // console.log(Audio.track)
-  // console.log(Audio.track.duration())
-
-  // console.log('AudioFX:')
-  // console.log(Audio.muffleTrack)
-  // Audio.track.pause();
-  // Audio.muffleTrack.play(Audio.track.seek())
-  // console.log(Audio.muffleTrack.getDuration())
-
-  // if (Audio.muffled) {
-  //   Audio.muffleTrack.volume(0);
-  //   Audio.track.mute();
-  // } else {
-  //   Audio.track.mute();
-  //   Audio.muffleTrack.play(Audio.track.seek());
-  // }
-  // Audio.muffled = !Audio.muffled;
-
   Audio.muffled = !Audio.muffled;
   if (Audio.track) {
     if (Audio.muffled) {
@@ -179,13 +151,14 @@ Audio.timecode = () => {
   }
 };
 
-Audio.playSample = (src) => {
+Audio.playSample = (src, callback) => {
   Audio.sample && Audio.sample.unload();
   Audio.sample = new Howl({src: [src]});
 
   Audio.track && Audio.track.pause();
 
   Audio.sample.play();
+  Audio.sample.on('end', callback);
 };
 
 Audio.stopSample = () => {
