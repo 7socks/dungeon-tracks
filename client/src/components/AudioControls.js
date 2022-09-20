@@ -46,6 +46,7 @@ const ControlsContainer = styled.div`
   }
 
   #volume-bar {
+    align-items: center;
     * {
       margin: 0;
     }
