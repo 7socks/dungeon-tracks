@@ -38,9 +38,9 @@ const SliderContainer = styled.span`
 const VolumeSlider = ({volume, setVolume}) => {
   const [value, setValue] = useState(volume);
 
-  // useEffect(() => {
-  //   setVolume(value);
-  // }, [value]);
+  useEffect(() => {
+    setVolume(value);
+  }, [value]);
 
   return <SliderContainer
     left={Number(value) * 100}
