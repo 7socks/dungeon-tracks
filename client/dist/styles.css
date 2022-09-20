@@ -21,15 +21,15 @@
   --theme-list-border-inner: #5b80c0;
   --theme-list-border-outer: #5b80c0;
   --theme-list-text: #fff;
-  --theme-list-text-selected: rgb(52, 255, 147);
+  --theme-list-text-selected: #34ff93;
 
   --theme-nav-bg: rgba(255, 255, 255, .3);
 
   --theme-bar-bg: #151b26;
   --theme-bar-border: rgba(255, 255, 255, .3);
 
-  --theme-slider-full: blue;
-  --theme-slider-empty: gray;
+  --theme-slider-full: #34ff93;
+  --theme-slider-empty: #6e6e70;
 
   --theme-login-bg: #fff;
   --theme-login-text: #4570a3;
