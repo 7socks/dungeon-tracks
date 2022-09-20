@@ -18,12 +18,20 @@ const SliderContainer = styled.span`
 
   .slider-left {
     background-color: var(--theme-slider-full);
-    border-radius: .2em 0 0 .2em;
+    border-radius: ${({left}) =>
+      left == 100
+      ? '.2em'
+      : '.2em 0 0 .2em'
+    };
   }
 
   .slider-right {
     background-color: var(--theme-slider-empty);
-    border-radius: 0 .2em .2em 0;
+    border-radius: ${({right}) =>
+      right == 100
+      ? '.2em'
+      : '0 .2em .2em 0'
+    };
   }
 `;
 
