@@ -8,8 +8,8 @@
 
   --theme-btn-text-dim: rgba(255, 255, 255, 0.4);
   --theme-btn-text-undim: rgba(255, 255, 255, 0.8);
-  --theme-btn-bg-light: rgb(255, 166, 0);
-  --theme-btn-bg-dark: rgb(220, 110, 10);
+  --theme-btn-bg-light:#2f7d83;
+  --theme-btn-bg-dark: #235f60;
   --theme-btn-bg-warning: #bd1515;
 
   --theme-dungeoncard-bg: #fff;
@@ -21,12 +21,15 @@
   --theme-list-border-inner: #5b80c0;
   --theme-list-border-outer: #5b80c0;
   --theme-list-text: #fff;
-  --theme-list-text-selected: rgb(52, 255, 147);
+  --theme-list-text-selected: #34ff93;
 
   --theme-nav-bg: rgba(255, 255, 255, .3);
 
   --theme-bar-bg: #151b26;
   --theme-bar-border: rgba(255, 255, 255, .3);
+
+  --theme-slider-full: #00dc84;
+  --theme-slider-empty: #6e6e70;
 
   --theme-login-bg: #fff;
   --theme-login-text: #4570a3;
@@ -72,8 +75,6 @@
 }
 
 /* Base */
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
-
 body {
   margin: 0;
   height: 100vh;
@@ -83,4 +84,39 @@ body {
   color: var(--theme-text);
   font-family: 'Raleway', sans-serif;
   --theme-font: 'Raleway', sans-serif;
+  --theme-font-thin: 'Rubik', 'sans-serif';
+}
+
+/* Volume slider input */
+input[type=range] {
+  -webkit-appearance: none;
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-runnable-track,
+input[type=range]::-moz-range-track,
+input[type=range]::-ms-track {
+  background: transparent;
+  border: none;
+  width: 100%;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 1em;
+  height: .5em;
+  background: transparent;
+  border: 0;
+}
+
+input[type=range]::-moz-range-thumb
+input[type=range]::-ms-thumb {
+  margin-top: 0;
+  background: transparent;
+  border: 0;
+  height: 1em;
+  width: .5em;
 }

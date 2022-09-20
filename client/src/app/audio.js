@@ -114,7 +114,7 @@ Audio.clear = () => {
 Audio.setVolume = (volume) => {
   Howler.volume(volume);
   Audio.volume = volume;
-  if (!Audio.muted) {
+  if (!Audio.muted && Audio.muffleTrack) {
     AudioFXGlobal.changeVolumeAll(volume / 2);
   }
 };
@@ -122,7 +122,7 @@ Audio.setVolume = (volume) => {
 Audio.mute = (state) => {
   Howler.mute(state);
   Audio.muted = state;
-  AudioFXGlobal.changeVolumeAll(state ? 0 : Audio.volume);
+  Audio.muffleTrack && AudioFXGlobal.changeVolumeAll(state ? 0 : Audio.volume);
 };
 
 Audio.muffle = () => {

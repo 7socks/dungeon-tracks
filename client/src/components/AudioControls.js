@@ -13,6 +13,7 @@ import {
 } from '../app/reducers/audioSlice';
 
 import MuffleButton from './MuffleButton';
+import VolumeSlider from './VolumeSlider';
 import { FXIcon } from './FXIcon';
 
 const scrollAnimation = keyframes`
@@ -45,6 +46,7 @@ const ControlsContainer = styled.div`
   }
 
   #volume-bar {
+    align-items: center;
     * {
       margin: 0;
     }
@@ -283,15 +285,11 @@ const AudioControls = ({currentDungeon, currentTrack, includeFx, onPlay}) => {
       }}>
         { muted ? <HiVolumeOff/> : <HiVolumeUp/> }
       </button>
-      <input
-        type="range"
-        step=".05"
-        min="0"
-        max="1"
-        value={volume}
-        onChange={(e) => {
-          dispatch(setVolume(Number(e.target.value)));
-          Audio.setVolume(Number(e.target.value));
+      <VolumeSlider
+        volume={volume}
+        setVolume={(value) => {
+          dispatch(setVolume(Number(value)));
+          Audio.setVolume(Number(value));
         }}
       />
     </div>
