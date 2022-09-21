@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { IoMdSkipBackward, IoMdSkipForward } from 'react-icons/io';
 import { FaPlay, FaPause, FaChevronUp, FaChevronDown } from 'react-icons/fa';
@@ -25,6 +25,18 @@ const scrollAnimation = keyframes`
     transform: translateX(-100%);
   }
 `;
+
+const createScrollAnimation = (offset) => {
+  return keyframes`
+    from {
+      transform: translateX(0px);
+    }
+
+    to {
+      transform: translateX(${offset});
+    }
+  `;
+};
 
 const ControlsContainer = styled.div`
   button:not(.muffle-btn) {
@@ -77,37 +89,6 @@ const ControlBarContainer = styled(ControlsContainer)`
 
     * {
       margin: 0 .2em;
-    }
-  }
-
-  .track-title {
-    position: relative;
-    width: 15em;
-    height: 100%;
-    display: inline-flex;
-    justify-content: flex-start;
-    align-items: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    span {
-      display: inline-block;
-      height: fit-content;
-      width: fit-content;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin: 0;
-    }
-
-    :hover {
-      text-overflow: clip;
-
-      span {
-        position: absolute;
-        overflow: visible;
-        animation: ${scrollAnimation} 3s linear infinite;
-      }
     }
   }
 
@@ -223,6 +204,60 @@ const FxBar = ({ dungeon }) => {
   </FxContainer>
 };
 
+const TrackScrollContainer = styled.span`
+  position: relative;
+  width: 15em;
+  height: 100%;
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  span {
+    display: inline-block;
+    height: fit-content;
+    width: fit-content;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+  }
+
+  :hover {
+    text-overflow: clip;
+
+    span {
+      position: absolute;
+      overflow: visible;
+      animation: ${({animation}) => animation} ${({seconds}) => seconds}s linear infinite;
+    }
+  }
+`;
+
+const TrackScroll = ({track}) => {
+  const [scrollAnimation, setScrollAnimation] = useState(createScrollAnimation('-100%'));
+  const [scrollTime, setScrollTime] = useState(3);
+
+  useEffect(() => {
+    let boxWidth = document.getElementById('scroll-box').scrollWidth;
+    let scrollWidth = document.getElementById('scroll').scrollWidth;
+    let offset = boxWidth - scrollWidth - 30;
+
+    let animation = createScrollAnimation(offset + 'px');
+    setScrollAnimation(animation);
+    setScrollTime(-1 * offset / 60);
+  }, [track]);
+
+  return <TrackScrollContainer
+    id="scroll-box"
+    animation={scrollAnimation}
+    seconds={scrollTime}
+  >
+    <span id="scroll">{track && track.title}</span>
+  </TrackScrollContainer>
+};
+
 const AudioControls = ({currentDungeon, currentTrack, includeFx, onPlay}) => {
   const playing = useSelector((state) => state.audio.playing);
   const volume = useSelector((state) => state.audio.volume);
@@ -240,7 +275,11 @@ const AudioControls = ({currentDungeon, currentTrack, includeFx, onPlay}) => {
   };
 
   return (<>
-    <span className="track-title"><span>{currentTrack && currentTrack.title}</span></span>
+    {
+      includeFx
+        ? <TrackScroll track={currentTrack}/>
+        : <span className="track-title">{currentTrack && currentTrack.title}</span>
+    }
 
     <div className="audio-bar">
       <button onClick={
