@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { IoMdSkipBackward, IoMdSkipForward } from 'react-icons/io';
 import { FaPlay, FaPause, FaChevronUp, FaChevronDown } from 'react-icons/fa';
@@ -16,15 +16,17 @@ import MuffleButton from './MuffleButton';
 import VolumeSlider from './VolumeSlider';
 import { FXIcon } from './FXIcon';
 
-const scrollAnimation = keyframes`
-  from {
-    transform: translateX(0%);
-  }
+const createScrollAnimation = (start, offset) => {
+  return keyframes`
+    from {
+      transform: translateX(${start});
+    }
 
-  to {
-    transform: translateX(-100%);
-  }
-`;
+    to {
+      transform: translateX(${offset});
+    }
+  `;
+};
 
 const ControlsContainer = styled.div`
   button:not(.muffle-btn) {
@@ -77,37 +79,6 @@ const ControlBarContainer = styled(ControlsContainer)`
 
     * {
       margin: 0 .2em;
-    }
-  }
-
-  .track-title {
-    position: relative;
-    width: 15em;
-    height: 100%;
-    display: inline-flex;
-    justify-content: flex-start;
-    align-items: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    span {
-      display: inline-block;
-      height: fit-content;
-      width: fit-content;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin: 0;
-    }
-
-    :hover {
-      text-overflow: clip;
-
-      span {
-        position: absolute;
-        overflow: visible;
-        animation: ${scrollAnimation} 3s linear infinite;
-      }
     }
   }
 
@@ -223,6 +194,81 @@ const FxBar = ({ dungeon }) => {
   </FxContainer>
 };
 
+const TrackScrollContainer = styled.span`
+  position: relative;
+  width: 15em;
+  height: 100%;
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  span {
+    display: inline-block;
+    height: fit-content;
+    width: fit-content;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+  }
+
+  #scroll-2 {
+    display: none;
+  }
+
+  :hover {
+    text-overflow: clip;
+
+    span {
+      position: absolute;
+      overflow: visible;
+    }
+
+    #scroll-2 {
+      display: ${({animation2}) => animation2 === null ? 'none' : 'inline-block'};
+      animation: ${({animation2}) => animation2} ${({seconds}) => seconds}s linear infinite;
+    }
+
+    #scroll {
+      animation: ${({animation}) => animation} ${({seconds}) => seconds}s linear infinite;
+    }
+  }
+`;
+
+const TrackScroll = ({track}) => {
+  const [scrollAnimation, setScrollAnimation] = useState(null);
+  const [scrollAnimation2, setScrollAnimation2] = useState(null);
+  const [scrollTime, setScrollTime] = useState(0);
+
+  useEffect(() => {
+    let boxWidth = document.getElementById('scroll-box').scrollWidth;
+    let scrollWidth = document.getElementById('scroll').scrollWidth;
+
+    if (scrollWidth > boxWidth) {
+      let offset = 0 - scrollWidth - 15;
+      setScrollAnimation(createScrollAnimation('0px', offset + 'px'));
+      setScrollAnimation2(createScrollAnimation((-1 * offset) + 'px', '0px'));
+      setScrollTime(-1 * offset / 60);
+    } else {
+      setScrollAnimation(null);
+      setScrollAnimation2(null);
+      setScrollTime(0);
+    }
+  }, [track]);
+
+  return <TrackScrollContainer
+    id="scroll-box"
+    animation={scrollAnimation}
+    animation2={scrollAnimation2}
+    seconds={scrollTime}
+  >
+    <span id="scroll">{track && track.title}</span>
+    <span id="scroll-2">{track && track.title}</span>
+  </TrackScrollContainer>
+};
+
 const AudioControls = ({currentDungeon, currentTrack, includeFx, onPlay}) => {
   const playing = useSelector((state) => state.audio.playing);
   const volume = useSelector((state) => state.audio.volume);
@@ -240,7 +286,11 @@ const AudioControls = ({currentDungeon, currentTrack, includeFx, onPlay}) => {
   };
 
   return (<>
-    <span className="track-title"><span>{currentTrack && currentTrack.title}</span></span>
+    {
+      includeFx
+        ? <TrackScroll track={currentTrack}/>
+        : <span className="track-title">{currentTrack && currentTrack.title}</span>
+    }
 
     <div className="audio-bar">
       <button onClick={
