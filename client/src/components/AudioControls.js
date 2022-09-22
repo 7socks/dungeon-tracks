@@ -227,7 +227,7 @@ const TrackScrollContainer = styled.span`
     }
 
     #scroll-2 {
-      display: inline-block;
+      display: ${({animation2}) => animation2 === null ? 'none' : 'inline-block'};
       animation: ${({animation2}) => animation2} ${({seconds}) => seconds}s linear infinite;
     }
 
@@ -238,20 +238,24 @@ const TrackScrollContainer = styled.span`
 `;
 
 const TrackScroll = ({track}) => {
-  const [scrollAnimation, setScrollAnimation] = useState(createScrollAnimation('0%', '-100%'));
-  const [scrollAnimation2, setScrollAnimation2] = useState(createScrollAnimation('0%', '-100%'));
-  const [scrollTime, setScrollTime] = useState(3);
+  const [scrollAnimation, setScrollAnimation] = useState(null);
+  const [scrollAnimation2, setScrollAnimation2] = useState(null);
+  const [scrollTime, setScrollTime] = useState(0);
 
   useEffect(() => {
     let boxWidth = document.getElementById('scroll-box').scrollWidth;
     let scrollWidth = document.getElementById('scroll').scrollWidth;
-    let offset = 0 - scrollWidth - 15;
 
-    let animation = createScrollAnimation('0px', offset + 'px');
-    let animation2 = createScrollAnimation((-1 * offset) + 'px', '0px');
-    setScrollAnimation(animation);
-    setScrollAnimation2(animation2);
-    setScrollTime(-1 * offset / 60);
+    if (scrollWidth > boxWidth) {
+      let offset = 0 - scrollWidth - 15;
+      setScrollAnimation(createScrollAnimation('0px', offset + 'px'));
+      setScrollAnimation2(createScrollAnimation((-1 * offset) + 'px', '0px'));
+      setScrollTime(-1 * offset / 60);
+    } else {
+      setScrollAnimation(null);
+      setScrollAnimation2(null);
+      setScrollTime(0);
+    }
   }, [track]);
 
   return <TrackScrollContainer
