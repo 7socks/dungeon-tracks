@@ -16,20 +16,10 @@ import MuffleButton from './MuffleButton';
 import VolumeSlider from './VolumeSlider';
 import { FXIcon } from './FXIcon';
 
-const scrollAnimation = keyframes`
-  from {
-    transform: translateX(0%);
-  }
-
-  to {
-    transform: translateX(-100%);
-  }
-`;
-
-const createScrollAnimation = (offset) => {
+const createScrollAnimation = (start, offset) => {
   return keyframes`
     from {
-      transform: translateX(0px);
+      transform: translateX(${start});
     }
 
     to {
@@ -224,37 +214,54 @@ const TrackScrollContainer = styled.span`
     margin: 0;
   }
 
+  #scroll-2 {
+    display: none;
+  }
+
   :hover {
     text-overflow: clip;
 
     span {
       position: absolute;
       overflow: visible;
+    }
+
+    #scroll-2 {
+      display: inline-block;
+      animation: ${({animation2}) => animation2} ${({seconds}) => seconds}s linear infinite;
+    }
+
+    #scroll {
       animation: ${({animation}) => animation} ${({seconds}) => seconds}s linear infinite;
     }
   }
 `;
 
 const TrackScroll = ({track}) => {
-  const [scrollAnimation, setScrollAnimation] = useState(createScrollAnimation('-100%'));
+  const [scrollAnimation, setScrollAnimation] = useState(createScrollAnimation('0%', '-100%'));
+  const [scrollAnimation2, setScrollAnimation2] = useState(createScrollAnimation('0%', '-100%'));
   const [scrollTime, setScrollTime] = useState(3);
 
   useEffect(() => {
     let boxWidth = document.getElementById('scroll-box').scrollWidth;
     let scrollWidth = document.getElementById('scroll').scrollWidth;
-    let offset = boxWidth - scrollWidth - 30;
+    let offset = 0 - scrollWidth - 15;
 
-    let animation = createScrollAnimation(offset + 'px');
+    let animation = createScrollAnimation('0px', offset + 'px');
+    let animation2 = createScrollAnimation((-1 * offset) + 'px', '0px');
     setScrollAnimation(animation);
+    setScrollAnimation2(animation2);
     setScrollTime(-1 * offset / 60);
   }, [track]);
 
   return <TrackScrollContainer
     id="scroll-box"
     animation={scrollAnimation}
+    animation2={scrollAnimation2}
     seconds={scrollTime}
   >
     <span id="scroll">{track && track.title}</span>
+    <span id="scroll-2">{track && track.title}</span>
   </TrackScrollContainer>
 };
 
