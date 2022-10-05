@@ -17,10 +17,20 @@ const NavContainer = styled.div`
   background: var(--theme-nav-bg);
 
   h1 {
+    display: inline-flex;
+    align-items: center;
+    font-size: 28px;
+    height: 100%;
     margin: 0;
+
     :hover {
       color: var(--theme-text-highlight);
       cursor: pointer;
+    }
+
+    img {
+      height: .9em;
+      margin: 0 .1em;
     }
   }
 
@@ -65,7 +75,10 @@ const Nav = ({setPage, reset}) => {
   };
 
   return <NavContainer>
-    <h1 onClick={() => setPage(4)}>Dungeon Tracks</h1>
+    <h1 onClick={() => setPage(4)}>
+      <img src="assets/rail_white.png"></img>
+      Dungeon Tracks
+    </h1>
     <div>
       <span onClick={() => setPage(1)}>Browse Sounds</span>
       <span onClick={() => setPage(2)}>Your Dungeons</span>

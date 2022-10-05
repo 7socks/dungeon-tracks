@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { IoMdSkipBackward, IoMdSkipForward } from 'react-icons/io';
-import { FaPlay, FaPause } from 'react-icons/fa';
-import { BsThreeDots } from 'react-icons/bs';
+import { FaPlay, FaPause, FaChevronUp, FaChevronDown } from 'react-icons/fa';
 import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 
 import Audio from '../app/audio';
@@ -14,17 +13,20 @@ import {
 } from '../app/reducers/audioSlice';
 
 import MuffleButton from './MuffleButton';
+import VolumeSlider from './VolumeSlider';
 import { FXIcon } from './FXIcon';
 
-const scrollAnimation = keyframes`
-  from {
-    transform: translateX(0%);
-  }
+const createScrollAnimation = (start, offset) => {
+  return keyframes`
+    from {
+      transform: translateX(${start});
+    }
 
-  to {
-    transform: translateX(-100%);
-  }
-`;
+    to {
+      transform: translateX(${offset});
+    }
+  `;
+};
 
 const ControlsContainer = styled.div`
   button:not(.muffle-btn) {
@@ -33,6 +35,7 @@ const ControlsContainer = styled.div`
     border: none;
     color: var(--theme-btn-text-undim);
     font-size: 16px;
+    cursor: pointer;
   }
 
   button:not(.muffle-btn):hover {
@@ -45,6 +48,7 @@ const ControlsContainer = styled.div`
   }
 
   #volume-bar {
+    align-items: center;
     * {
       margin: 0;
     }
@@ -54,6 +58,7 @@ const ControlsContainer = styled.div`
 const ControlBarContainer = styled(ControlsContainer)`
   z-index: var(--layer-bar);
   height: 2.5em;
+  min-height: 2.5em;
   width: 100%;
   position: relative;
   bottom: 0;
@@ -77,47 +82,6 @@ const ControlBarContainer = styled(ControlsContainer)`
     }
   }
 
-  .track-title {
-    position: relative;
-    width: 15em;
-    height: 100%;
-    display: inline-flex;
-    justify-content: flex-start;
-    align-items: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    span {
-      display: inline-block;
-      height: fit-content;
-      width: fit-content;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin: 0;
-    }
-
-    :hover {
-      text-overflow: clip;
-
-      span {
-        position: absolute;
-        overflow: visible;
-        animation: ${scrollAnimation} 3s linear infinite;
-      }
-    }
-  }
-
-  #more-fx {
-    background: none;
-    color: var(--theme-text);
-    border: none;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   #dungeon-title {
     font-size: 18px;
 
@@ -125,6 +89,46 @@ const ControlBarContainer = styled(ControlsContainer)`
       color: var(--theme-text-highlight);
       cursor: pointer;
     }
+  }
+`;
+
+const FxContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  position: relative;
+  width: 10em;
+
+  .icon-main {
+    cursor: pointer;
+  }
+
+  .fx-window {
+    z-index: var(--layer-popup);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    position: absolute;
+    bottom: 2em;
+    left: -2em;
+    background: var(--theme-bar-bg);
+    padding: .2em;
+    padding-bottom: 0;
+    border: 1px solid var(--theme-bar-border);
+    border-bottom: none;
+    border-radius: .5em .5em 0 0;
+
+    .icon {
+      margin-bottom: .2em;
+    }
+  }
+
+  #more-fx {
+    background: none;
+    border: none;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
@@ -151,7 +155,121 @@ const PlaylistControlsContainer = styled(ControlsContainer)`
   }
 `;
 
-const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
+const FxBar = ({ dungeon }) => {
+  const [moreFx, setMoreFx] = useState(false);
+  const playingFX = useSelector((state) => state.audio.effect);
+  const dispatch = useDispatch();
+
+  return <FxContainer>
+    <div className={moreFx ? 'fx-window' : 'fx-bar'}>
+      {dungeon && dungeon.effects.slice(0, moreFx ? dungeon.effects.length : 3).map((effect, i) => {
+        return <FXIcon
+          key={i}
+          icon={effect.icon}
+          color={effect.color}
+          playing={playingFX && playingFX.id === effect.id}
+          onClick={() => {
+            dispatch(playFX(effect));
+            Audio.playFX(effect.source, () => {
+              dispatch(playFX(null));
+            });
+          }}
+        />;
+      })}
+    </div>
+    {
+        dungeon && dungeon.effects.length > 3
+          ? <button
+            id="more-fx"
+            onClick={() => setMoreFx(!moreFx)}
+          >
+            {
+              moreFx
+                ? <FaChevronDown/>
+                : <FaChevronUp/>
+            }
+          </button>
+          : null
+      }
+  </FxContainer>
+};
+
+const TrackScrollContainer = styled.span`
+  position: relative;
+  width: 15em;
+  height: 100%;
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  span {
+    display: inline-block;
+    height: fit-content;
+    width: fit-content;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+  }
+
+  #scroll-2 {
+    display: none;
+  }
+
+  :hover {
+    text-overflow: clip;
+
+    span {
+      position: absolute;
+      overflow: visible;
+    }
+
+    #scroll-2 {
+      display: ${({animation2}) => animation2 === null ? 'none' : 'inline-block'};
+      animation: ${({animation2}) => animation2} ${({seconds}) => seconds}s linear infinite;
+    }
+
+    #scroll {
+      animation: ${({animation}) => animation} ${({seconds}) => seconds}s linear infinite;
+    }
+  }
+`;
+
+const TrackScroll = ({track}) => {
+  const [scrollAnimation, setScrollAnimation] = useState(null);
+  const [scrollAnimation2, setScrollAnimation2] = useState(null);
+  const [scrollTime, setScrollTime] = useState(0);
+
+  useEffect(() => {
+    let boxWidth = document.getElementById('scroll-box').scrollWidth;
+    let scrollWidth = document.getElementById('scroll').scrollWidth;
+
+    if (scrollWidth > boxWidth) {
+      let offset = 0 - scrollWidth - 15;
+      setScrollAnimation(createScrollAnimation('0px', offset + 'px'));
+      setScrollAnimation2(createScrollAnimation((-1 * offset) + 'px', '0px'));
+      setScrollTime(-1 * offset / 60);
+    } else {
+      setScrollAnimation(null);
+      setScrollAnimation2(null);
+      setScrollTime(0);
+    }
+  }, [track]);
+
+  return <TrackScrollContainer
+    id="scroll-box"
+    animation={scrollAnimation}
+    animation2={scrollAnimation2}
+    seconds={scrollTime}
+  >
+    <span id="scroll">{track && track.title}</span>
+    <span id="scroll-2">{track && track.title}</span>
+  </TrackScrollContainer>
+};
+
+const AudioControls = ({currentDungeon, currentTrack, includeFx, onPlay}) => {
   const playing = useSelector((state) => state.audio.playing);
   const volume = useSelector((state) => state.audio.volume);
   const muted = useSelector((state) => state.audio.muted);
@@ -168,7 +286,11 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
   };
 
   return (<>
-    <span className="track-title"><span>{currentTrack && currentTrack.title}</span></span>
+    {
+      includeFx
+        ? <TrackScroll track={currentTrack}/>
+        : <span className="track-title">{currentTrack && currentTrack.title}</span>
+    }
 
     <div className="audio-bar">
       <button onClick={
@@ -213,41 +335,21 @@ const AudioControls = ({currentDungeon, currentTrack, fxCount, onPlay}) => {
       }}>
         { muted ? <HiVolumeOff/> : <HiVolumeUp/> }
       </button>
-      <input
-        type="range"
-        step=".05"
-        min="0"
-        max="1"
-        value={volume}
-        onChange={(e) => {
-          dispatch(setVolume(Number(e.target.value)));
-          Audio.setVolume(Number(e.target.value));
+      <VolumeSlider
+        volume={volume}
+        setVolume={(value) => {
+          dispatch(setVolume(Number(value)));
+          Audio.setVolume(Number(value));
         }}
       />
     </div>
     <MuffleButton/>
 
-    <div className="fx-bar">
-      {currentDungeon && currentDungeon.effects.slice(0, fxCount).map((effect, i) => {
-        return <FXIcon
-          key={i}
-          icon={effect.icon}
-          color={effect.color}
-          playing={playingFX && playingFX.id === effect.id}
-          onClick={() => {
-            dispatch(playFX(effect));
-            Audio.playFX(effect.source, () => {
-              dispatch(playFX(null));
-            });
-          }}
-        />;
-      })}
-      {
-        currentDungeon && fxCount > 0
-        ? <button id="more-fx"><BsThreeDots/></button>
-        : null
-      }
-    </div>
+    {
+      includeFx
+      ? <FxBar dungeon={currentDungeon}/>
+      : null
+    }
   </>);
 }
 
@@ -265,7 +367,7 @@ const ControlBar = ({ setPage, setViewDungeon }) => {
 
   return <ControlBarContainer>
     <AudioControls
-      fxCount={3}
+      includeFx={true}
       currentDungeon={dungeon}
       currentTrack={dungeon ? dungeon.tracks[track] : null}
     />
@@ -286,7 +388,7 @@ const PlaylistControls = ({dungeon}) => {
     <AudioControls
       currentDungeon={dungeon}
       currentTrack={selected ? selectedDungeon.tracks[track] : null}
-      fxCount={0}
+      includeFx={false}
       onPlay={() => {
         if (selectedDungeon !== dungeon) {
           dispatch(setDungeon(dungeon));

@@ -150,6 +150,8 @@ const DungeonsListContainer = styled.div`
   color: var(--theme-popup-text);
   border: 1px solid var(--theme-popup-border);
   border-radius: 1em;
+  font-family: var(--theme-font-thin);
+  font-weight: 300;
 
   ul {
     margin: .5em;
@@ -369,7 +371,9 @@ const Search = () => {
       Audio.stopSample();
     } else {
       setPlayingSample(type + '-' + i);
-      Audio.playSample(sound.source);
+      Audio.playSample(sound.source, () => {
+        setPlayingSample(null);
+      });
     }
   };
 
